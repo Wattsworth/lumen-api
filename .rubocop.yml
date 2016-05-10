@@ -1,0 +1,16 @@
+
+
+AllCops:
+  Include:
+
+    - '**/config.ru'
+  Exclude:
+    - '**/Rakefile'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'test/test_helper.rb'
