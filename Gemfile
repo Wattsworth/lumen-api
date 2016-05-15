@@ -39,6 +39,14 @@ group :development, :test do
   gem 'rubocop', require: false
 end
 
+group :development, :test do
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'spring-commands-rspec'
+  gem 'terminal-notifier-guard'
+  gem 'terminal-notifier'
+end
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
