@@ -1,0 +1,2 @@
+class DbFilesController < ApplicationController
+end
