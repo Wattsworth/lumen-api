@@ -1,0 +1,2 @@
+class DbStreamsController < ApplicationController
+end

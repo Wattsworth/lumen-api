@@ -6,6 +6,5 @@ RSpec.describe 'DbFile' do
     specify { expect(db_file).to respond_to(:name) }
     specify { expect(db_file).to respond_to(:description) }
     specify { expect(db_file).to respond_to(:streams) }
-    
   end
 end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :db_streams
   resources :db_files
   resources :db_folders
   # The priority is based upon order of creation: first created -> highest priority.
