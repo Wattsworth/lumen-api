@@ -32,7 +32,7 @@ class DbFolderService
   def __create_file_on_db(file:)
     return true if @db_service.create_file(file)
     @error_msg = "from db_service: #{db_service.error_msg}"
-    file.path = ''
+    file.path = '' # clear out the file settings
     file.folder = nil
     false
   end
