@@ -19,3 +19,5 @@ vendor/bundle
 
 # Ignore e-macs backup files
 *~
+
+.byebug_history
