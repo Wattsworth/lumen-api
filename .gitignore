@@ -21,3 +21,4 @@ vendor/bundle
 *~
 
 .byebug_history
+spec/cassettes

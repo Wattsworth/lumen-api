@@ -13,7 +13,7 @@ RSpec.describe 'DbFolderAgent' do
 
     it 'adds the given file to the folder' do
       db_folder_agent = DbFolderAgent.new(db_service: db_service,
-                                              db_builder: db_builder)
+                                          db_builder: db_builder)
       db_folder_agent.insert_file(folder: parent_folder, file: new_file)
       expect(new_file.db_folder).to eq(parent_folder)
     end
