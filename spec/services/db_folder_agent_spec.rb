@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'DbFileService' do
+RSpec.describe 'DbFolderAgent' do
   describe 'insert_file' do
     # mock the DbService and DbBuilder
     let(:db_service) { double(create_file: true) }
@@ -12,9 +12,9 @@ RSpec.describe 'DbFileService' do
     let(:parent_folder) { FactoryGirl.build_stubbed(:db_folder) }
 
     it 'adds the given file to the folder' do
-      db_folder_service = DbFolderService.new(db_service: db_service,
+      db_folder_agent = DbFolderAgent.new(db_service: db_service,
                                               db_builder: db_builder)
-      db_folder_service.insert_file(folder: parent_folder, file: new_file)
+      db_folder_agent.insert_file(folder: parent_folder, file: new_file)
       expect(new_file.db_folder).to eq(parent_folder)
     end
 
