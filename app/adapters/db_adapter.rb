@@ -9,7 +9,14 @@ class DbAdapter
   end
 
   def schema
-    x = self.class.get("#{@url}/stream/list")
-    byebug
+    dump = self.class.get("#{@url}/stream/list?extended=1")
+    dump.parsed_response.map do |entry|
+      { path:       entry[0],
+        type:       entry[1],
+        start_time: entry[2] || 0,
+        end_time:   entry[3] || 0,
+        total_rows: entry[4],
+        total_time: entry[5] }
+    end
   end
 end

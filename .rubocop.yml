@@ -1,10 +1,6 @@
-
-
-
 AllCops:
   TargetRubyVersion: 2.3
   Include:
-
     - '**/config.ru'
   Exclude:
     - '**/Rakefile'
@@ -16,3 +12,4 @@ AllCops:
     - 'spec/spec_helper.rb'
     - 'spec/rails_helper.rb'
     - 'test/test_helper.rb'
+    - 'features/support/env.rb'

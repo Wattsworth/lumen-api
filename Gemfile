@@ -44,6 +44,8 @@ group :development, :test do
   gem 'vcr'
   gem 'webmock'
   gem 'rspec-json_expectations'
+  gem 'cucumber-rails', require: false
+  gem 'database_cleaner'
 end
 
 group :development, :test do
