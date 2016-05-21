@@ -16,7 +16,8 @@ class DbAdapter
         start_time: entry[2] || 0,
         end_time:   entry[3] || 0,
         total_rows: entry[4],
-        total_time: entry[5] }
+        total_time: entry[5],
+        metadata: {} }
     end
   end
 end

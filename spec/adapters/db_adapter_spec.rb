@@ -8,7 +8,7 @@ describe DbAdapter do
     adapter = DbAdapter.new(db.url)
     adapter.schema.map do |entry|
       expect(entry).to include(:path, :type, :start_time,
-                               :end_time, :total_rows, :total_time)
+                               :end_time, :total_rows, :total_time, :metadata)
     end
   end
 end
