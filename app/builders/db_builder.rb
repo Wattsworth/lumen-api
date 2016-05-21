@@ -108,12 +108,10 @@ class DbBuilder
   def __process_folder_contents(folder, groups)
     groups.each do |name, entry_group|
       if entry_group.length == 1
-        folder.db_files << __build_file(folder: folder, entry: entry_group[0],
-                                        default_name: name)
+        __build_file(folder: folder, entry: entry_group[0], default_name: name)
       elsif entry_group.length > 1
-        folder.subfolders << __parse_folder_entries(parent: folder,
-                                                    entries: entry_group,
-                                                    default_name: name)
+        __parse_folder_entries(parent: folder, entries: entry_group,
+                               default_name: name)
       end
     end
   end
@@ -122,7 +120,9 @@ class DbBuilder
   # specified path.
   def __build_file(folder:, entry:, default_name:)
     file = folder.db_files.find_by_path(entry[:path])
-    file ||= DbFile.new(name: default_name)
+    file ||= DbFile.new(db_folder: folder, path: entry[:path])
+    info = { name: default_name }.merge(entry[:metadata])
+    file.update_attributes(info)
     file.save!
     file
   end

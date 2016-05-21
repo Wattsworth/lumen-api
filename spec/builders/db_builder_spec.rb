@@ -5,30 +5,37 @@ helper = DbSchemaHelper.new
 
 # a simple schema that could be returned
 # from DbAdapater.schema
-simple_db = [                       # folder1
-  helper.entry('/folder1/file1_1'), #  `- file1_1
-  helper.entry('/folder1/file1_2'), #   - file1_2
-  helper.entry('/folder2/file2_1'), # folder2
-  helper.entry('/folder2/file2_2'), #  '- file2_1
-]                                   #  `- file2_2
+# folder1
+#  `- file1_1
+#   - file1_2
+# folder2
+#  '- file2_1
+#  `- file2_2
+
+simple_db = [
+  helper.entry('/folder1/f1_1', metadata: { name: 'file1_1' }),
+  helper.entry('/folder1/f1_2', metadata: { name: 'file1_2' }),
+  helper.entry('/folder2/f2_1', metadata: { name: 'file2_1' }),
+  helper.entry('/folder2/f2_2', metadata: { name: 'file2_2' })
+]
 
 describe DbBuilder do
   describe '*update_db*' do
-    before(:all) do
+    def update_with_schema(schema)
       @db = Db.new
       @db_builder = DbBuilder.new(db: @db)
+      @db_builder.update_db(schema: schema)
+      @root = @db.root_folder
     end
     describe 'given the simple_db schema' do
-      before(:all) do
-        @db_builder.update_db(schema: simple_db)
-        @root = @db.root_folder
-      end
       it 'builds a root folder' do
+        update_with_schema(simple_db)
         expect(@root.name).to eq('root')
         expect(@root.subfolders.count).to eq(2)
         expect(@root.db_files.count).to eq(0)
       end
       it 'builds sub-folder1' do
+        update_with_schema(simple_db)
         folder1 = @root.subfolders[0]
         expect(folder1.name).to eq('folder1')
         expect(folder1.db_files.count).to eq(2)
@@ -36,6 +43,7 @@ describe DbBuilder do
         expect(folder1.db_files[1].name).to eq('file1_2')
       end
       it 'builds sub-folder2' do
+        update_with_schema(simple_db)
         folder2 = @root.subfolders[1]
         expect(folder2.name).to eq('folder2')
         expect(folder2.db_files.count).to eq(2)
@@ -43,13 +51,18 @@ describe DbBuilder do
         expect(folder2.db_files[1].name).to eq('file2_2')
       end
     end
-    describe 'given simple_db schema with folder info streams' do
-      before(:all) do
-        simple_db << helper.entry('/folder1/info', metadata: { name: 'first' })
-        simple_db << helper.entry('/folder2/info', metadata: { name: 'second' })
-        @db_builder.update_db(schema: simple_db)
-      end
-      it 'uses the name info'
+
+    it 'uses folder info streams if available' do
+      schema = Array.new(simple_db)
+      schema << helper.entry('/folder1/info', metadata: { name: 'first' })
+      update_with_schema(schema)
+      folder1 = @root.subfolders[0]
+      expect(folder1.name).to eq('first')
+    end
+
+    it 'builds file streams' do
+      schema = Array.new(simple_db)
+      schema << helper.entry('/folder1/info', metadata: { name: 'first' })
     end
   end
 end
