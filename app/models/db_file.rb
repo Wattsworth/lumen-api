@@ -4,6 +4,7 @@
 class DbFile < ActiveRecord::Base
   belongs_to :db_folder
   has_many :db_streams, dependent: :destroy
+  accepts_nested_attributes_for :db_streams
 
   def remove(db_service:)
     db_service.remove_file(path)

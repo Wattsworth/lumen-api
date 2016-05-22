@@ -13,8 +13,10 @@ helper = DbSchemaHelper.new
 #  `- file2_2
 
 simple_db = [
-  helper.entry('/folder1/f1_1', metadata: { name: 'file1_1' }),
-  helper.entry('/folder1/f1_2', metadata: { name: 'file1_2' }),
+  helper.entry('/folder1/f1_1',
+               metadata: { name: 'file1_1' }, stream_count: 4),
+  helper.entry('/folder1/f1_2',
+               metadata: { name: 'file1_2' }, stream_count: 5),
   helper.entry('/folder2/f2_1', metadata: { name: 'file2_1' }),
   helper.entry('/folder2/f2_2', metadata: { name: 'file2_2' })
 ]
@@ -24,7 +26,7 @@ describe DbBuilder do
     def update_with_schema(schema)
       @db = Db.new
       @db_builder = DbBuilder.new(db: @db)
-      @db_builder.update_db(schema: schema)
+      @db_builder.update_db(schema: Array.new(schema))
       @root = @db.root_folder
     end
     describe 'given the simple_db schema' do
@@ -38,10 +40,19 @@ describe DbBuilder do
         update_with_schema(simple_db)
         folder1 = @root.subfolders[0]
         expect(folder1.name).to eq('folder1')
-        expect(folder1.db_files.count).to eq(2)
         expect(folder1.db_files[0].name).to eq('file1_1')
         expect(folder1.db_files[1].name).to eq('file1_2')
       end
+      it 'builds files in sub-folder1' do
+        update_with_schema(simple_db)
+        folder1 = @root.subfolders[0]
+        expect(folder1.db_files.count).to eq(2)
+        file1 = folder1.db_files[0]
+        file2 = folder1.db_files[1]
+        expect(file1.db_streams.count).to eq(4)
+        expect(file2.db_streams.count).to eq(5)
+      end
+
       it 'builds sub-folder2' do
         update_with_schema(simple_db)
         folder2 = @root.subfolders[1]
