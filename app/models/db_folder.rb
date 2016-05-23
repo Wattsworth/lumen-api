@@ -14,4 +14,11 @@ class DbFolder < ActiveRecord::Base
     return false unless file.valid?
     true
   end
+
+  def as_json(_options = {})
+    folder = super(except: [:created_at, :updated_at])
+    folder[:subfolders] = subfolders.map(&:as_json)
+    folder[:files] = db_files.map(&:as_json)
+    folder
+  end
 end

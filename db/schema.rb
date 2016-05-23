@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160520145007) do
+ActiveRecord::Schema.define(version: 20160522180603) do
 
   create_table "db_files", force: :cascade do |t|
     t.string   "name"
@@ -49,6 +49,15 @@ ActiveRecord::Schema.define(version: 20160520145007) do
     t.integer  "db_folder_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.integer  "nilm_id"
+  end
+
+  create_table "nilms", force: :cascade do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "url"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
 end

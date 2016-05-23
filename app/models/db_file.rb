@@ -10,4 +10,8 @@ class DbFile < ActiveRecord::Base
     db_service.remove_file(path)
     destroy
   end
+
+  def as_json(_options = {})
+    super(except: [:created_at, :updated_at])
+  end
 end

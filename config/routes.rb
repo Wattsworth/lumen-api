@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :nilms
   resources :dbs
   resources :db_streams
   resources :db_files

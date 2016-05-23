@@ -18,6 +18,7 @@ class DbBuilder
     # Note: @root_folder gets linked in on
     #       the first call to __build_folder
     __parse_folder_entries(parent: nil, entries: entries)
+    @db.save
   end
 
   protected
