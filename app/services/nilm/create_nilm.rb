@@ -10,12 +10,14 @@ class CreateNilm
   end
 
   def build(name:, url:, description: '')
+    # create the NILM object
     @nilm = Nilm.new(name: name, url: url,
                      description: description)
     @nilm.save
+    # create the database object and update it
     db = Db.create(nilm: @nilm)
-    builder = DbBuilder.new(db: db)
+    service = UpdateDb.new(db: db)
     adapter = DbAdapter.new(db.url)
-    builder.update_db(schema: adapter.schema)
+    service.run(db_adapter: adapter)
   end
 end

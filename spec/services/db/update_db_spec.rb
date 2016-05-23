@@ -21,12 +21,16 @@ simple_db = [
   helper.entry('/folder2/f2_2', metadata: { name: 'file2_2' })
 ]
 
-describe DbBuilder do
-  describe '*update_db*' do
+describe 'UpdateDb' do
+  describe '*run*' do
     def update_with_schema(schema)
+      # stub the database adapter
+      adapter = instance_double(DbAdapter)
+      allow(adapter).to receive(:schema).and_return(Array.new(schema))
+      # run the update
       @db = Db.new
-      @db_builder = DbBuilder.new(db: @db)
-      @db_builder.update_db(schema: Array.new(schema))
+      @service = UpdateDb.new(db: @db)
+      @service.run(db_adapter: adapter)
       @root = @db.root_folder
     end
     describe 'given the simple_db schema' do
