@@ -75,9 +75,14 @@ describe 'UpdateDb' do
       expect(folder1.name).to eq('first')
     end
 
-    it 'builds file streams' do
+    it 'adds decimations to files' do
       schema = Array.new(simple_db)
-      schema << helper.entry('/folder1/info', metadata: { name: 'first' })
+      schema << helper.entry('/folder1/f1_1~decim4')
+      schema << helper.entry('/folder1/f1_1~decim16')
+      update_with_schema(schema)
+      folder1 = @root.subfolders[0]
+      file1 = folder1.db_files[0]
+      expect(file1.db_decimations.count).to eq(2)
     end
   end
 end

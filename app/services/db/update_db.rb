@@ -89,7 +89,10 @@ class UpdateDb
   def __group_entries(entries)
     entry_groups = {}
     entries.map do |entry|
-      __add_to_group(entry_groups, entry[:chunks].pop, entry)
+      # remove the ~decimXX ending so decimations are grouped
+      # with their base stream
+      group_name = entry[:chunks].pop.gsub(/~decim[\d]+$/, '')
+      __add_to_group(entry_groups, group_name, entry)
     end
     entry_groups
   end
@@ -108,6 +111,9 @@ class UpdateDb
   # convert the groups into subfolders and files
   def __process_folder_contents(folder, groups)
     groups.each do |name, entry_group|
+      # TODO
+      # if all paths in the entry group are the same up to a ~decim
+      # then this is a file, otherwise this is a subfolder
       if entry_group.length == 1
         __build_file(folder: folder, entry: entry_group[0], default_name: name)
       elsif entry_group.length > 1
