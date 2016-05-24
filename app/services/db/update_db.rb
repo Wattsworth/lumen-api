@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Handles construction of database objects
-class UpdateDb
+class UpdateDb # rubocop:disable Metrics/ClassLength
   attr_accessor :warnings, :errors
 
   def initialize(db:)
@@ -30,6 +30,10 @@ class UpdateDb
   # Adds :chunks to each schema element
   # :chunks is an array of the entry's path elements
   # this makes it easier to traverse the database structure.
+  # The array is reversed so the chunks can be popped off in order
+  #   path: '/data/meter/prep-a'
+  #   chunks: ['prep-a','meter','data']
+  #
   def __create_entries(schema)
     schema.map do |entry|
       entry[:chunks] = entry[:path][1..-1].split('/').reverse
@@ -50,7 +54,7 @@ class UpdateDb
     groups = __group_entries(entries)
     # process the groups as subfolders or files
     __process_folder_contents(folder, groups)
-
+    # return the updated folder
     folder
   end
 
@@ -58,6 +62,8 @@ class UpdateDb
   # use its metadata to update the folder's attributes
   def  __read_info_entry(entries)
     if entries[0][:chunks] == ['info']
+      # if there is an info entry, remove it from the array
+      # so we don't process it as a seperate file
       info_entry = entries.slice!(0)
       info_entry[:metadata]
     end
@@ -85,7 +91,7 @@ class UpdateDb
     folder
   end
 
-  # collect the folder's entries into a set groups
+  # collect the folder's entries into a set of groups
   # based off the next item in their :chunk array
   # returns entry_groups which is a Hash with
   # :key = name of the common chunk
@@ -93,7 +99,7 @@ class UpdateDb
   def __group_entries(entries)
     entry_groups = {}
     entries.map do |entry|
-      # group streams by their base paths
+      # group streams by their base paths (ignore ~decim endings)
       group_name = entry[:chunks].pop.gsub(decimation_tag, '')
       __add_to_group(entry_groups, group_name, entry)
     end
