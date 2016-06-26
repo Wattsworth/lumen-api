@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
 # Handles construction of database objects
-class UpdateDb
+class UpdateDb # rubocop:disable Metrics/ClassLength
+  attr_accessor :warnings, :errors
+
   def initialize(db:)
     @db = db
+    @warnings = []
+    @errors = []
   end
 
   def run(db_adapter:)
@@ -26,6 +30,10 @@ class UpdateDb
   # Adds :chunks to each schema element
   # :chunks is an array of the entry's path elements
   # this makes it easier to traverse the database structure.
+  # The array is reversed so the chunks can be popped off in order
+  #   path: '/data/meter/prep-a'
+  #   chunks: ['prep-a','meter','data']
+  #
   def __create_entries(schema)
     schema.map do |entry|
       entry[:chunks] = entry[:path][1..-1].split('/').reverse
@@ -46,7 +54,7 @@ class UpdateDb
     groups = __group_entries(entries)
     # process the groups as subfolders or files
     __process_folder_contents(folder, groups)
-
+    # return the updated folder
     folder
   end
 
@@ -54,6 +62,8 @@ class UpdateDb
   # use its metadata to update the folder's attributes
   def  __read_info_entry(entries)
     if entries[0][:chunks] == ['info']
+      # if there is an info entry, remove it from the array
+      # so we don't process it as a seperate file
       info_entry = entries.slice!(0)
       info_entry[:metadata]
     end
@@ -89,12 +99,16 @@ class UpdateDb
   def __group_entries(entries)
     entry_groups = {}
     entries.map do |entry|
-      # remove the ~decimXX ending so decimations are grouped
-      # with their base stream
-      group_name = entry[:chunks].pop.gsub(/~decim[\d]+$/, '')
+      # group streams by their base paths (ignore ~decim endings)
+      group_name = entry[:chunks].pop.gsub(decimation_tag, '')
       __add_to_group(entry_groups, group_name, entry)
     end
     entry_groups
+  end
+
+  # regex matching the ~decimXX ending on a stream path
+  def decimation_tag
+    /~decim([\d]+)$/
   end
 
   # helper function to __group_entries that handles
@@ -126,7 +140,7 @@ class UpdateDb
     # if the path's are the same up to a ~decimXX suffix
     # this is a file, otherwise return false
     num_files = entry_group.map { |entry|
-      entry[:path].gsub(/~decim[\d]+$/, '')
+      entry[:path].gsub(decimation_tag, '')
     }.uniq.count
     num_files == 1
   end
@@ -136,6 +150,7 @@ class UpdateDb
   def __build_file(folder:, entry_group:,
                    default_name:)
     base = __base_entry(entry_group)
+    return unless base # corrupt file, don't process
     # find or create the file
     file = folder.db_files.find_by_path(base[:path])
     file ||= DbFile.new(db_folder: folder, path: base[:path])
@@ -148,17 +163,23 @@ class UpdateDb
 
   # find the base stream in this entry_group
   # this is the stream that doesn't have a decimXX tag
+  # adds a warning and returns nil if base entry is missing
   def __base_entry(entry_group)
-    entry_group.select { |entry|
-      entry[:path].match(/~decim[\d]+$/).nil?
+    base_entry = entry_group.select { |entry|
+      entry[:path].match(decimation_tag).nil?
     }.first
+    unless base_entry
+      warnings << "Missing base stream for #{default_name} in #{folder.name}"
+      return nil
+    end
+    base_entry
   end
 
   # create or update DbDecimations for the
   # specified DbFile
   def __build_decimations(file:, entry_group:)
     entry_group.each do |entry|
-      level = entry[:path].match(/~decim([\d]+)$/)[1].to_i
+      level = entry[:path].match(decimation_tag)[1].to_i
       decim = file.db_decimations.find_by_level(level)
       decim ||= DbDecimation.new(db_file: file, level: level)
       decim.update_attributes(entry[:metadata])

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160524023832) do
+ActiveRecord::Schema.define(version: 20160524161816) do
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time", limit: 8
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20160524023832) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.integer  "level"
+    t.string   "data_type"
   end
 
   create_table "db_files", force: :cascade do |t|
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(version: 20160524023832) do
     t.integer  "end_time",     limit: 8
     t.integer  "total_rows",   limit: 8
     t.integer  "total_time",   limit: 8
+    t.string   "data_type"
   end
 
   create_table "db_folders", force: :cascade do |t|
