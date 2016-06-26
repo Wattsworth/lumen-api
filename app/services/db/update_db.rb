@@ -81,7 +81,7 @@ class UpdateDb
     folder
   end
 
-  # collect the folder's entries into a set groups
+  # collect the folder's entries into a set of groups
   # based off the next item in their :chunk array
   # returns entry_groups which is a Hash with
   # :key = name of the common chunk
@@ -111,26 +111,58 @@ class UpdateDb
   # convert the groups into subfolders and files
   def __process_folder_contents(folder, groups)
     groups.each do |name, entry_group|
-      # TODO
-      # if all paths in the entry group are the same up to a ~decim
-      # then this is a file, otherwise this is a subfolder
-      if entry_group.length == 1
-        __build_file(folder: folder, entry: entry_group[0], default_name: name)
-      elsif entry_group.length > 1
+      if file?(entry_group)
+        __build_file(folder: folder, entry_group: entry_group,
+                     default_name: name)
+      else # its a folder
         __parse_folder_entries(parent: folder, entries: entry_group,
                                default_name: name)
       end
     end
   end
 
+  # determine if the entry groups constitute a single file
+  def file?(entry_group)
+    # if the path's are the same up to a ~decimXX suffix
+    # this is a file, otherwise return false
+    num_files = entry_group.map { |entry|
+      entry[:path].gsub(/~decim[\d]+$/, '')
+    }.uniq.count
+    num_files == 1
+  end
+
   # create or update a DbFile object at the
   # specified path.
-  def __build_file(folder:, entry:, default_name:)
-    file = folder.db_files.find_by_path(entry[:path])
-    file ||= DbFile.new(db_folder: folder, path: entry[:path])
-    info = { name: default_name }.merge(entry[:metadata])
+  def __build_file(folder:, entry_group:,
+                   default_name:)
+    base = __base_entry(entry_group)
+    # find or create the file
+    file = folder.db_files.find_by_path(base[:path])
+    file ||= DbFile.new(db_folder: folder, path: base[:path])
+    info = { name: default_name }.merge(base[:metadata])
     file.update_attributes(info)
     file.save!
-    file
+    __build_decimations(file: file,
+                        entry_group: entry_group - [base])
+  end
+
+  # find the base stream in this entry_group
+  # this is the stream that doesn't have a decimXX tag
+  def __base_entry(entry_group)
+    entry_group.select { |entry|
+      entry[:path].match(/~decim[\d]+$/).nil?
+    }.first
+  end
+
+  # create or update DbDecimations for the
+  # specified DbFile
+  def __build_decimations(file:, entry_group:)
+    entry_group.each do |entry|
+      level = entry[:path].match(/~decim([\d]+)$/)[1].to_i
+      decim = file.db_decimations.find_by_level(level)
+      decim ||= DbDecimation.new(db_file: file, level: level)
+      decim.update_attributes(entry[:metadata])
+      decim.save!
+    end
   end
 end

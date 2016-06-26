@@ -13,3 +13,5 @@ AllCops:
     - 'spec/rails_helper.rb'
     - 'test/test_helper.rb'
     - 'features/support/env.rb'
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining
