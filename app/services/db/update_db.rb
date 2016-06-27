@@ -150,11 +150,15 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
   def __build_file(folder:, entry_group:,
                    default_name:)
     base = __base_entry(entry_group)
-    return unless base # corrupt file, don't process
+    unless base # corrupt file, don't process
+      @warnings << "#{entry_group.count} orphan decimations in #{folder.name}"
+      return
+    end
     # find or create the file
     file = folder.db_files.find_by_path(base[:path])
     file ||= DbFile.new(db_folder: folder, path: base[:path])
     info = { name: default_name }.merge(base[:metadata])
+    # automatically updates the streams for this file
     file.update_attributes(info)
     file.save!
     __build_decimations(file: file,
@@ -168,10 +172,7 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     base_entry = entry_group.select { |entry|
       entry[:path].match(decimation_tag).nil?
     }.first
-    unless base_entry
-      warnings << "Missing base stream for #{default_name} in #{folder.name}"
-      return nil
-    end
+    return nil unless base_entry
     base_entry
   end
 

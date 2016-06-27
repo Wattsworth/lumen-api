@@ -6,19 +6,21 @@ helper = DbSchemaHelper.new
 # a simple schema that could be returned
 # from DbAdapater.schema
 # folder1
-#  `- file1_1
-#   - file1_2
+#  `- file1_1: 4 streams
+#   - file1_2: 5 streams
 # folder2
-#  '- file2_1
-#  `- file2_2
+#  '- file2_1: 1 stream
+#  `- file2_2: 3 streams
 
 simple_db = [
   helper.entry('/folder1/f1_1',
-               metadata: { name: 'file1_1' }, stream_count: 4),
+               metadata: { name: 'file1_1' }, stream_count: 3),
   helper.entry('/folder1/f1_2',
                metadata: { name: 'file1_2' }, stream_count: 5),
-  helper.entry('/folder2/f2_1', metadata: { name: 'file2_1' }),
-  helper.entry('/folder2/f2_2', metadata: { name: 'file2_2' })
+  helper.entry('/folder2/f2_1',
+               metadata: { name: 'file2_1' }, stream_count: 1),
+  helper.entry('/folder2/f2_2', 
+               metadata: { name: 'file2_2' }, stream_count: 3)
 ]
 
 describe 'UpdateDb' do
@@ -33,6 +35,7 @@ describe 'UpdateDb' do
       @service.run(db_adapter: adapter)
       @root = @db.root_folder
     end
+    # simple schema parsing
     describe 'given the simple_db schema' do
       it 'builds a root folder' do
         update_with_schema(simple_db)
@@ -56,7 +59,6 @@ describe 'UpdateDb' do
         expect(file1.db_streams.count).to eq(4)
         expect(file2.db_streams.count).to eq(5)
       end
-
       it 'builds sub-folder2' do
         update_with_schema(simple_db)
         folder2 = @root.subfolders[1]
@@ -67,22 +69,41 @@ describe 'UpdateDb' do
       end
     end
 
-    it 'uses folder info streams if available' do
-      schema = Array.new(simple_db)
-      schema << helper.entry('/folder1/info', metadata: { name: 'first' })
-      update_with_schema(schema)
-      folder1 = @root.subfolders[0]
-      expect(folder1.name).to eq('first')
+    # decimation handling
+    describe 'given decimations' do
+      it 'adds decimations to files' do
+        schema = Array.new(simple_db)
+        schema << helper.entry('/folder1/f1_1~decim4')
+        schema << helper.entry('/folder1/f1_1~decim16')
+        update_with_schema(schema)
+        folder1 = @root.subfolders[0]
+        file1 = folder1.db_files[0]
+        expect(file1.db_decimations.count).to eq(2)
+      end
+      it 'ignores orphaned decimations' do
+        schema = Array.new(simple_db)
+        # no /folder1/f1_3 so this is an orphan decimation
+        schema << helper.entry('/folder1/f1_3~decim4')
+        update_with_schema(schema)
+        folder1 = @root.subfolders[0]
+        # expect just 2 files in this folder
+        expect(folder1.db_files.count).to eq(2)
+        # and a warning about orphaned decimations
+        expect(@service.warnings.count).to eq(1)
+      end
     end
 
-    it 'adds decimations to files' do
-      schema = Array.new(simple_db)
-      schema << helper.entry('/folder1/f1_1~decim4')
-      schema << helper.entry('/folder1/f1_1~decim16')
-      update_with_schema(schema)
-      folder1 = @root.subfolders[0]
-      file1 = folder1.db_files[0]
-      expect(file1.db_decimations.count).to eq(2)
+    # info streams and metadata
+    describe 'given info streams' do
+      it 'uses info stream to set folder data' do
+        schema = Array.new(simple_db)
+        schema << helper.entry('/folder1/info', metadata: { name: 'first' })
+        update_with_schema(schema)
+        folder1 = @root.subfolders[0]
+        expect(folder1.name).to eq('first')
+      end
+      it 'reads metadata from base file'
+      it 'reads metadata from decimations'
     end
   end
 end
