@@ -14,12 +14,12 @@ helper = DbSchemaHelper.new
 
 simple_db = [
   helper.entry('/folder1/f1_1',
-               metadata: { name: 'file1_1' }, stream_count: 3),
+               metadata: { name: 'file1_1' }, stream_count: 4),
   helper.entry('/folder1/f1_2',
                metadata: { name: 'file1_2' }, stream_count: 5),
   helper.entry('/folder2/f2_1',
                metadata: { name: 'file2_1' }, stream_count: 1),
-  helper.entry('/folder2/f2_2', 
+  helper.entry('/folder2/f2_2',
                metadata: { name: 'file2_2' }, stream_count: 3)
 ]
 
@@ -73,8 +73,8 @@ describe 'UpdateDb' do
     describe 'given decimations' do
       it 'adds decimations to files' do
         schema = Array.new(simple_db)
-        schema << helper.entry('/folder1/f1_1~decim4')
-        schema << helper.entry('/folder1/f1_1~decim16')
+        schema << helper.entry('/folder1/f1_1~decim-4')
+        schema << helper.entry('/folder1/f1_1~decim-16')
         update_with_schema(schema)
         folder1 = @root.subfolders[0]
         file1 = folder1.db_files[0]
@@ -83,7 +83,7 @@ describe 'UpdateDb' do
       it 'ignores orphaned decimations' do
         schema = Array.new(simple_db)
         # no /folder1/f1_3 so this is an orphan decimation
-        schema << helper.entry('/folder1/f1_3~decim4')
+        schema << helper.entry('/folder1/f1_3~decim-4')
         update_with_schema(schema)
         folder1 = @root.subfolders[0]
         # expect just 2 files in this folder

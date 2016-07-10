@@ -65,7 +65,7 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
       # if there is an info entry, remove it from the array
       # so we don't process it as a seperate file
       info_entry = entries.slice!(0)
-      info_entry[:metadata]
+      info_entry[:attributes]
     end
   end
 
@@ -86,7 +86,7 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     return @root_folder if parent.nil?
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path)
-    folder.update_attributes(info)
+    folder.update_attributes(info.slice(:name))
     folder.save!
     folder
   end
@@ -108,7 +108,7 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
 
   # regex matching the ~decimXX ending on a stream path
   def decimation_tag
-    /~decim([\d]+)$/
+    /~decim-([\d]+)$/
   end
 
   # helper function to __group_entries that handles
@@ -157,12 +157,15 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     # find or create the file
     file = folder.db_files.find_by_path(base[:path])
     file ||= DbFile.new(db_folder: folder, path: base[:path])
-    info = { name: default_name }.merge(base[:metadata])
+    # if the file doesn't have a name, use the default
+    base[:attributes][:name] ||= default_name
     # automatically updates the streams for this file
-    file.update_attributes(info)
+    byebug if base[:attributes][:streams] != nil
+    file.update_attributes(base[:attributes])
     file.save!
     __build_decimations(file: file,
                         entry_group: entry_group - [base])
+    __build_streams(file: file, stream_data: base[:streams])
   end
 
   # find the base stream in this entry_group
@@ -183,8 +186,20 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
       level = entry[:path].match(decimation_tag)[1].to_i
       decim = file.db_decimations.find_by_level(level)
       decim ||= DbDecimation.new(db_file: file, level: level)
-      decim.update_attributes(entry[:metadata])
+      decim.update_attributes(entry[:attributes])
       decim.save!
+    end
+  end
+
+  # create or update DbStreams for the
+  # specified DbFile
+  def __build_streams(file:, stream_data:)
+    return if stream_data.empty?
+    stream_data.each do |entry|
+      stream = file.db_streams.find_by_column(entry[:column])
+      stream ||= DbStream.new(db_file: file)
+      stream.update_attributes(entry)
+      stream.save!
     end
   end
 end

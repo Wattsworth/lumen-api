@@ -9,7 +9,10 @@ RSpec.describe 'DbStream' do
     specify { expect(db_stream).to respond_to(:column) }
     specify { expect(db_stream).to respond_to(:default_max) }
     specify { expect(db_stream).to respond_to(:default_min) }
-    specify { expect(db_stream).to respond_to(:scale) }
+    specify { expect(db_stream).to respond_to(:scale_factor) }
     specify { expect(db_stream).to respond_to(:offset) }
+    specify { expect(db_stream).to respond_to(:plottable) }
+    specify { expect(db_stream).to respond_to(:discrete) }
+
   end
 end

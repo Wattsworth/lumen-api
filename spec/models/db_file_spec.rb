@@ -5,8 +5,11 @@ RSpec.describe 'DbFile' do
   describe 'object' do
     let(:db_file) { DbFile.new }
     specify { expect(db_file).to respond_to(:name) }
+    specify { expect(db_file).to respond_to(:name_abbrev) }
     specify { expect(db_file).to respond_to(:description) }
     specify { expect(db_file).to respond_to(:db_streams) }
+    specify { expect(db_file).to respond_to(:hidden) }
+
   end
 
   describe 'remove' do

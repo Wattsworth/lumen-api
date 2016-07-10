@@ -5,7 +5,7 @@ class DbFile < ActiveRecord::Base
   belongs_to :db_folder
   has_many :db_streams, dependent: :destroy
   has_many :db_decimations, dependent: :destroy
-  accepts_nested_attributes_for :db_streams
+
 
   def remove(db_service:)
     db_service.remove_file(path)
@@ -13,6 +13,9 @@ class DbFile < ActiveRecord::Base
   end
 
   def as_json(_options = {})
-    super(except: [:created_at, :updated_at])
+    file = super(except: [:created_at, :updated_at])
+    file[:streams] = db_streams.map(&:as_json)
+    file[:decimations] = db_decimations.map(&:as_json)
+    file
   end
 end
