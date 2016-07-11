@@ -126,5 +126,19 @@ describe 'UpdateDb' do
         expect(file.db_folder.parent.parent).to eq(@root)
       end
     end
+
+    # updates to remote db
+    describe 'given changes to remote db' do
+      it 'removes missing files'
+      it 'removes missing folders'
+      it 'adds new files'
+      it 'adds new folders'
+    end
+    describe 'given changes to remote metadata' do
+      it 'updates file info'
+      it 'updates folder info'
+      it 'adds new streams'
+      it 'removes missing streams'
+    end
   end
 end

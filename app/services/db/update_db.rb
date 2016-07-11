@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Handles construction of database objects
-class UpdateDb # rubocop:disable Metrics/ClassLength
+class UpdateDb
   attr_accessor :warnings, :errors
 
   def initialize(db:)
@@ -18,10 +18,18 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     # create the entry array from the schema
     entries = __create_entries(db_adapter.schema)
 
+    updater = UpdateFolder.new(@root_folder, entries)
+    updater.run()
+    @errors << updater.errors
+    @warnings << updater.warnings
+
     # parse the entries array
     # Note: @root_folder gets linked in on
     #       the first call to __build_folder
-    __parse_folder_entries(parent: nil, entries: entries)
+    # Don't save the result if there were errors
+    if !@errors.empty?
+      return false
+    end
     @db.save
   end
 
@@ -41,166 +49,4 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # Creates or updates the folder defined by these entries.
-  # Then adds in any subfolders or subfiles
-  def __parse_folder_entries(parent:, entries:, default_name: '')
-    # generate the folder path
-    path = __build_path(entries)
-    # find the info stream entry if it exists
-    info = __read_info_entry(entries) || { name: default_name }
-    # create or update the folder
-    folder = __build_folder(parent: parent, path: path, info: info)
-    # group the folder entries
-    groups = __group_entries(entries)
-    # process the groups as subfolders or files
-    __process_folder_contents(folder, groups)
-    # return the updated folder
-    folder
-  end
-
-  # if this folder has an info stream, find that entry and
-  # use its metadata to update the folder's attributes
-  def __read_info_entry(entries)
-    info_entry = entries.detect do |entry|
-      entry[:chunks] == ['info']
-    end
-    info_entry ||= {}
-    # if there is an info entry, remove it from the array
-    # so we don't process it as a seperate file
-    entries.delete(info_entry)
-    # return the attributes
-    info_entry[:attributes]
-  end
-
-  # all entries agree on a common path
-  # up to the point where they still have
-  # chunks. Get this common path by popping
-  # the chunks off the first entry's path
-  def __build_path(entries)
-    parts = entries[0][:path].split('/')
-    parts.pop(entries[0][:chunks].length)
-    parts.join('/') # stitch parts together to form a path
-  end
-
-  # create or update a DbFolder object at the
-  # specified path. If the parent parameter is nil
-  # then the folder must be the Db's root folder
-  def __build_folder(parent:, path:, info:)
-    return @root_folder if parent.nil?
-    folder = parent.subfolders.find_by_path(path)
-    folder ||= DbFolder.new(parent: parent, path: path)
-    folder.update_attributes(
-      info.slice(*folder.defined_attributes))
-    folder.save!
-    folder
-  end
-
-  # collect the folder's entries into a set of groups
-  # based off the next item in their :chunk array
-  # returns entry_groups which is a Hash with
-  # :key = name of the common chunk
-  # :value = the entry, less the common chunk
-  def __group_entries(entries)
-    entry_groups = {}
-    entries.map do |entry|
-      # group streams by their base paths (ignore ~decim endings)
-      group_name = entry[:chunks].pop.gsub(decimation_tag, '')
-      __add_to_group(entry_groups, group_name, entry)
-    end
-    entry_groups
-  end
-
-  # regex matching the ~decimXX ending on a stream path
-  def decimation_tag
-    /~decim-([\d]+)$/
-  end
-
-  # helper function to __group_entries that handles
-  # sorting entries into the entry_groups Hash
-  def __add_to_group(entry_groups, group_name, entry)
-    entry_groups[group_name] ||= []
-    if entry[:chunks] == ['info'] # put the info stream in front
-      entry_groups[group_name].prepend(entry)
-    else
-      entry_groups[group_name].append(entry)
-    end
-  end
-
-  # convert the groups into subfolders and files
-  def __process_folder_contents(folder, groups)
-    groups.each do |name, entry_group|
-      if file?(entry_group)
-        __build_file(folder: folder, entry_group: entry_group,
-                     default_name: name)
-      else # its a folder
-        __parse_folder_entries(parent: folder, entries: entry_group,
-                               default_name: name)
-      end
-    end
-  end
-
-  # determine if the entry groups constitute a single file
-  def file?(entry_group)
-    # if any entry_group has chunks left, this is a folder
-    entry_group.select { |entry|
-      !entry[:chunks].empty?
-    }.count == 0
-  end
-
-  # create or update a DbFile object at the
-  # specified path.
-  def __build_file(folder:, entry_group:,
-                   default_name:)
-    base = __base_entry(entry_group)
-    unless base # corrupt file, don't process
-      @warnings << "#{entry_group.count} orphan decimations in #{folder.name}"
-      return
-    end
-    # find or create the file
-    file = folder.db_files.find_by_path(base[:path])
-    file ||= DbFile.new(db_folder: folder, path: base[:path])
-    # if the file doesn't have a name, use the default
-    base[:attributes][:name] ||= default_name
-    # automatically updates the streams for this file
-    file.update_attributes(base[:attributes])
-    file.save!
-    __build_decimations(file: file,
-                        entry_group: entry_group - [base])
-    __build_streams(file: file, stream_data: base[:streams])
-  end
-
-  # find the base stream in this entry_group
-  # this is the stream that doesn't have a decimXX tag
-  # adds a warning and returns nil if base entry is missing
-  def __base_entry(entry_group)
-    base_entry = entry_group.select { |entry|
-      entry[:path].match(decimation_tag).nil?
-    }.first
-    return nil unless base_entry
-    base_entry
-  end
-
-  # create or update DbDecimations for the
-  # specified DbFile
-  def __build_decimations(file:, entry_group:)
-    entry_group.each do |entry|
-      level = entry[:path].match(decimation_tag)[1].to_i
-      decim = file.db_decimations.find_by_level(level)
-      decim ||= DbDecimation.new(db_file: file, level: level)
-      decim.update_attributes(entry[:attributes])
-      decim.save!
-    end
-  end
-
-  # create or update DbStreams for the
-  # specified DbFile
-  def __build_streams(file:, stream_data:)
-    return if stream_data.empty?
-    stream_data.each do |entry|
-      stream = file.db_streams.find_by_column(entry[:column])
-      stream ||= DbStream.new(db_file: file)
-      stream.update_attributes(entry)
-      stream.save!
-    end
-  end
 end
