@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Agent class for DbFolders
-class DbFolderAgent
+class InsertFile
   attr_accessor :error_msg
 
   def initialize(db_service:, db_builder:)

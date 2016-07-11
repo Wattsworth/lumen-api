@@ -12,13 +12,18 @@ class UpdateFile
     @errors = []
   end
 
-  def run()
-    return __update_file(@file, @base_entry, @decimation_entries)
+  def run
+    __update_file(@file, @base_entry, @decimation_entries)
+  end
+
+  # regex matching the ~decimXX ending on a stream path
+  def self.decimation_tag
+    /~decim-([\d]+)$/
   end
 
   # create or update a DbFile object at the
   # specified path.
-  def __update_file(file, base_entry, decimation_entries:)
+  def __update_file(file, base_entry, decimation_entries)
     file.update_attributes(base_entry[:attributes])
     file.save!
     __build_decimations(file: file,
@@ -26,12 +31,11 @@ class UpdateFile
     __build_streams(file: file, stream_data: base_entry[:streams])
   end
 
-
   # create or update DbDecimations for the
   # specified DbFile
   def __build_decimations(file:, entry_group:)
     entry_group.each do |entry|
-      level = entry[:path].match(decimation_tag)[1].to_i
+      level = entry[:path].match(UpdateFile.decimation_tag)[1].to_i
       decim = file.db_decimations.find_by_level(level)
       decim ||= DbDecimation.new(db_file: file, level: level)
       decim.update_attributes(entry[:attributes])

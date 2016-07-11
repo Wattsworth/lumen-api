@@ -19,7 +19,7 @@ class UpdateDb
     entries = __create_entries(db_adapter.schema)
 
     updater = UpdateFolder.new(@root_folder, entries)
-    updater.run()
+    updater.run
     @errors << updater.errors
     @warnings << updater.warnings
 
@@ -27,9 +27,7 @@ class UpdateDb
     # Note: @root_folder gets linked in on
     #       the first call to __build_folder
     # Don't save the result if there were errors
-    if !@errors.empty?
-      return false
-    end
+    return false unless @errors.empty?
     @db.save
   end
 
@@ -48,5 +46,4 @@ class UpdateDb
       entry
     end
   end
-
 end

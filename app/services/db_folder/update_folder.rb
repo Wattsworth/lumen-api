@@ -4,7 +4,6 @@
 class UpdateFolder
   attr_accessor :warnings, :errors
 
-
   def initialize(folder, entries)
     @folder = folder
     @entries = entries
@@ -13,7 +12,7 @@ class UpdateFolder
   end
 
   # returns the updated DbFolder object
-  def run()
+  def run
     # update the folder attributes from metadata
     info = __read_info_entry(@entries) || {}
     @folder.update_attributes(
@@ -51,8 +50,6 @@ class UpdateFolder
     folder
   end
 
-
-
   # collect the folder's entries into a set of groups
   # based off the next item in their :chunk array
   # returns entry_groups which is a Hash with
@@ -62,15 +59,10 @@ class UpdateFolder
     entry_groups = {}
     entries.map do |entry|
       # group streams by their base paths (ignore ~decim endings)
-      group_name = entry[:chunks].pop.gsub(decimation_tag, '')
+      group_name = entry[:chunks].pop.gsub(UpdateFile.decimation_tag, '')
       __add_to_group(entry_groups, group_name, entry)
     end
     entry_groups
-  end
-
-  # regex matching the ~decimXX ending on a stream path
-  def decimation_tag
-    /~decim-([\d]+)$/
   end
 
   # helper function to __group_entries that handles
@@ -88,14 +80,12 @@ class UpdateFolder
   def __process_folder_contents(folder, groups)
     groups.each do |name, entry_group|
       if file?(entry_group)
-        file = __build_file(folder, entry_group, name)
-        base = __base_entry(entry_group)
-        updater = UpdateFile.new(file, base, entry_group-[base])
+        updater = __build_file(folder, entry_group, name)
+        next if updater.nil? # ignore orphaned decimations
       else # its a folder
-        subfolder = __build_folder(folder, entry_group, name)
-        updater = UpdateFolder.new(subfolder, entry_group)
+        updater = __build_folder(folder, entry_group, name)
       end
-      updater.run()
+      updater.run
       @warnings << updater.warnings
       @errors << updater.errors
     end
@@ -120,8 +110,10 @@ class UpdateFolder
     end
     # find or create the file
     file = folder.db_files.find_by_path(base[:path])
-    file ||= DbFile.new(db_folder: folder, path: base[:path], name: default_name)
-    file
+    file ||= DbFile.new(db_folder: folder,
+                        path: base[:path], name: default_name)
+
+    UpdateFile.new(file, base, entry_group - [base])
   end
 
   # find the base stream in this entry_group
@@ -129,7 +121,7 @@ class UpdateFolder
   # adds a warning and returns nil if base entry is missing
   def __base_entry(entry_group)
     base_entry = entry_group.select { |entry|
-      entry[:path].match(decimation_tag).nil?
+      entry[:path].match(UpdateFile.decimation_tag).nil?
     }.first
     return nil unless base_entry
     base_entry
@@ -141,7 +133,7 @@ class UpdateFolder
     path = __build_path(entries)
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path, name: default_name)
-    folder
+    UpdateFolder.new(folder, entries)
   end
 
   # all entries agree on a common path
@@ -153,6 +145,4 @@ class UpdateFolder
     parts.pop(entries[0][:chunks].length)
     parts.join('/') # stitch parts together to form a path
   end
-
-
 end
