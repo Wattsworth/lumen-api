@@ -24,6 +24,7 @@ class DbAdapter
                                                 "description",
                                                 "hidden",
                                                 "name"))
+      metadata.symbolize_keys!
       # Create the schema:
       # 3 elements: path, attributes, streams
       { path:       entry[0],
@@ -33,7 +34,7 @@ class DbAdapter
           end_time:   entry[3] || 0,
           total_rows: entry[4],
           total_time: entry[5]
-        }.merge(metadata.except("streams")),
+        }.merge(metadata.except(:streams)),
         streams: streams
       }
     end

@@ -61,12 +61,13 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
   # if this folder has an info stream, find that entry and
   # use its metadata to update the folder's attributes
   def  __read_info_entry(entries)
-    if entries[0][:chunks] == ['info']
-      # if there is an info entry, remove it from the array
-      # so we don't process it as a seperate file
-      info_entry = entries.slice!(0)
-      info_entry[:attributes]
-    end
+    info_entry = entries.detect{ |entry|
+      entry[:chunks] == ['info']} || {}
+    # if there is an info entry, remove it from the array
+    # so we don't process it as a seperate file
+    entries.delete(info_entry)
+    # return the attributes
+    info_entry[:attributes]
   end
 
   # all entries agree on a common path
@@ -86,7 +87,9 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     return @root_folder if parent.nil?
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path)
-    folder.update_attributes(info.slice(:name))
+    byebug
+    folder.update_attributes(info.slice(
+      *folder.defined_attributes))
     folder.save!
     folder
   end
@@ -160,7 +163,6 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     # if the file doesn't have a name, use the default
     base[:attributes][:name] ||= default_name
     # automatically updates the streams for this file
-    byebug if base[:attributes][:streams] != nil
     file.update_attributes(base[:attributes])
     file.save!
     __build_decimations(file: file,

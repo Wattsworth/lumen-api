@@ -94,16 +94,16 @@ describe 'UpdateDb' do
     end
 
     # info streams and metadata
-    describe 'given info streams' do
-      it 'uses info stream to set folder data' do
+    describe 'uses metadata' do
+      it 'from folder info stream' do
         schema = Array.new(simple_db)
         schema << helper.entry('/folder1/info', metadata: { name: 'first' })
         update_with_schema(schema)
         folder1 = @root.subfolders[0]
         expect(folder1.name).to eq('first')
       end
-      it 'reads metadata from base file'
-      it 'reads metadata from decimations'
+      it 'from base file'
+      it 'from decimations'
     end
   end
 end

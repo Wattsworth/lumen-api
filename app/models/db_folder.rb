@@ -7,6 +7,10 @@ class DbFolder < ActiveRecord::Base
   has_many :subfolders, class_name: 'DbFolder', foreign_key: 'parent_id'
   has_many :db_files
 
+  def defined_attributes
+    [:name, :description, :hidden]
+  end
+
   def insert_file(file:)
     # add the file to this folder
     file.db_folder = self

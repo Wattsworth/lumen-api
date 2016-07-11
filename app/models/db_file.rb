@@ -7,6 +7,10 @@ class DbFile < ActiveRecord::Base
   has_many :db_decimations, dependent: :destroy
 
 
+  def defined_attributes
+    [:name, :name_abbrev, :description, :hidden]
+  end
+
   def remove(db_service:)
     db_service.remove_file(path)
     destroy
