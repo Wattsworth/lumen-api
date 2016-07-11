@@ -12,19 +12,11 @@ class DbAdapter
     # GET extended info stream list
     dump = self.class.get("#{@url}/stream/list?extended=1")
     dump.parsed_response.map do |entry|
-      # TODO: implement global metadata dump, because this is sloooow
-      # GET metadata for the stream
-      dump = self.class.get("#{@url}/stream/get_metadata?path=#{entry[0]}")
-      metadata = JSON.parse(dump.parsed_response['config_key__'] || '{}')
+      metadata = __get_metadata(entry[0])
+
       # The streams are not pure attributes, pull them out
-      streams = metadata["streams"] || {}
-      # Add plain-text metadata keys (retrofit for *info streams which keep
-      # attributes in seperate metadata tags
-      metadata.merge!(dump.parsed_response.slice("delete_locked",
-                                                "description",
-                                                "hidden",
-                                                "name"))
-      metadata.symbolize_keys!
+      streams = metadata.delete(:streams) || {}
+
       # Create the schema:
       # 3 elements: path, attributes, streams
       { path:       entry[0],
@@ -34,9 +26,22 @@ class DbAdapter
           end_time:   entry[3] || 0,
           total_rows: entry[4],
           total_time: entry[5]
-        }.merge(metadata.except(:streams)),
+        }.merge(metadata),
         streams: streams
       }
     end
+  end
+
+  # retrieve metadata for a particular stream
+  def __get_metadata(path)
+    dump = self.class.get("#{@url}/stream/get_metadata?path=#{path}")
+    metadata = JSON.parse(dump.parsed_response['config_key__'] || '{}')
+    # Add plain-text metadata keys (retrofit for *info streams which keep
+    # attributes in seperate metadata tags
+    metadata.merge!(dump.parsed_response.slice('delete_locked',
+                                               'description',
+                                               'hidden',
+                                               'name'))
+    metadata.symbolize_keys
   end
 end

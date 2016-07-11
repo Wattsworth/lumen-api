@@ -13,6 +13,5 @@ RSpec.describe 'DbStream' do
     specify { expect(db_stream).to respond_to(:offset) }
     specify { expect(db_stream).to respond_to(:plottable) }
     specify { expect(db_stream).to respond_to(:discrete) }
-
   end
 end

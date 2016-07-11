@@ -4,9 +4,8 @@
 # are usually returned by DbAdapter.schema
 class DbSchemaHelper
   # schema data
-  # rubocop:disable Metrics/MethodLength
   def entry(path, type: 'uint8_1', metadata: {}, stream_count: 0)
-    data = {
+    {
       path: path,
       attributes: {
         data_type: type,
@@ -16,7 +15,6 @@ class DbSchemaHelper
         total_time: 0 }.merge(metadata),
       streams: __build_streams(stream_count)
     }
-
   end
   # rubocop:enable Metrics/MethodLength
 

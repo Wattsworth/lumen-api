@@ -114,9 +114,16 @@ describe 'UpdateDb' do
     # corner cases
     describe 'cornercases:' do
       it 'handles empty folders' do
-        schema = [helper.entry('/folder_lonley/info', metadata: { name: 'lonely'})]
+        schema = [helper.entry('/folder_lonley/info',
+                               metadata: { name: 'lonely' })]
         update_with_schema(schema)
         expect(@root.subfolders.find_by_name('lonely')).to be_present
+      end
+      it 'handles chains of folders' do
+        schema = [helper.entry('/fa/fb/data', metadata: { name: 'the_file' })]
+        update_with_schema(schema)
+        file = DbFile.find_by_name('the_file')
+        expect(file.db_folder.parent.parent).to eq(@root)
       end
     end
   end

@@ -60,9 +60,11 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
 
   # if this folder has an info stream, find that entry and
   # use its metadata to update the folder's attributes
-  def  __read_info_entry(entries)
-    info_entry = entries.detect{ |entry|
-      entry[:chunks] == ['info']} || {}
+  def __read_info_entry(entries)
+    info_entry = entries.detect do |entry|
+      entry[:chunks] == ['info']
+    end
+    info_entry ||= {}
     # if there is an info entry, remove it from the array
     # so we don't process it as a seperate file
     entries.delete(info_entry)
@@ -87,8 +89,8 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     return @root_folder if parent.nil?
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path)
-    folder.update_attributes(info.slice(
-      *folder.defined_attributes))
+    folder.update_attributes(
+      info.slice(*folder.defined_attributes))
     folder.save!
     folder
   end
@@ -139,20 +141,10 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
 
   # determine if the entry groups constitute a single file
   def file?(entry_group)
-    # if any entry_group has multiple chunks left or if the
-    # last chunk is 'info', this is a folder
-    folder_entries = entry_group.select { |entry|
-      entry[:chunks].length > 1 ||
-      entry[:chunks][0] == 'info' }.count
-    if(folder_entries > 0)
-      return false
-    end
-    # if the path's are the same up to a ~decimXX suffix
-    # this is a file, otherwise return false
-    num_files = entry_group.map { |entry|
-      entry[:path].gsub(decimation_tag, '')
-    }.uniq.count
-    num_files == 1
+    # if any entry_group has chunks left, this is a folder
+    entry_group.select { |entry|
+      !entry[:chunks].empty?
+    }.count == 0
   end
 
   # create or update a DbFile object at the

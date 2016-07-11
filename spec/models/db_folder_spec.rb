@@ -10,7 +10,6 @@ RSpec.describe 'DbFolder' do
     specify { expect(db_folder).to respond_to(:subfolders) }
     specify { expect(db_folder).to respond_to(:db_files) }
     specify { expect(db_folder).to respond_to(:hidden) }
-
   end
 
   describe 'insert_file' do

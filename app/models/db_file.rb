@@ -6,7 +6,6 @@ class DbFile < ActiveRecord::Base
   has_many :db_streams, dependent: :destroy
   has_many :db_decimations, dependent: :destroy
 
-
   def defined_attributes
     [:name, :name_abbrev, :description, :hidden]
   end

@@ -9,7 +9,6 @@ RSpec.describe 'DbFile' do
     specify { expect(db_file).to respond_to(:description) }
     specify { expect(db_file).to respond_to(:db_streams) }
     specify { expect(db_file).to respond_to(:hidden) }
-
   end
 
   describe 'remove' do
