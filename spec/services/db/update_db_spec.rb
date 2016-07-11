@@ -102,8 +102,22 @@ describe 'UpdateDb' do
         folder1 = @root.subfolders[0]
         expect(folder1.name).to eq('first')
       end
-      it 'from base file'
-      it 'from decimations'
+      it 'from base file' do
+        schema = Array.new(simple_db)
+        schema << helper.entry('/folder1/f1_meta', metadata: { name: 'custom' })
+        update_with_schema(schema)
+        folder1 = @root.subfolders[0]
+        expect(folder1.db_files.find_by_name('custom')).to be_present
+      end
+    end
+
+    # corner cases
+    describe 'cornercases:' do
+      it 'handles empty folders' do
+        schema = [helper.entry('/folder_lonley/info', metadata: { name: 'lonely'})]
+        update_with_schema(schema)
+        expect(@root.subfolders.find_by_name('lonely')).to be_present
+      end
     end
   end
 end

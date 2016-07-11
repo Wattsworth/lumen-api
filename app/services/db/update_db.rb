@@ -44,10 +44,10 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
   # Creates or updates the folder defined by these entries.
   # Then adds in any subfolders or subfiles
   def __parse_folder_entries(parent:, entries:, default_name: '')
-    # find the info stream entry if it exists
-    info = __read_info_entry(entries) || { name: default_name }
     # generate the folder path
     path = __build_path(entries)
+    # find the info stream entry if it exists
+    info = __read_info_entry(entries) || { name: default_name }
     # create or update the folder
     folder = __build_folder(parent: parent, path: path, info: info)
     # group the folder entries
@@ -87,7 +87,6 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
     return @root_folder if parent.nil?
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path)
-    byebug
     folder.update_attributes(info.slice(
       *folder.defined_attributes))
     folder.save!
@@ -140,6 +139,14 @@ class UpdateDb # rubocop:disable Metrics/ClassLength
 
   # determine if the entry groups constitute a single file
   def file?(entry_group)
+    # if any entry_group has multiple chunks left or if the
+    # last chunk is 'info', this is a folder
+    folder_entries = entry_group.select { |entry|
+      entry[:chunks].length > 1 ||
+      entry[:chunks][0] == 'info' }.count
+    if(folder_entries > 0)
+      return false
+    end
     # if the path's are the same up to a ~decimXX suffix
     # this is a file, otherwise return false
     num_files = entry_group.map { |entry|
