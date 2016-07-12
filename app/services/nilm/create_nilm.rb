@@ -9,7 +9,7 @@ class CreateNilm
     @warnings = []
   end
 
-  def build(name:, url:, description: '')
+  def run(name:, url:, description: '')
     # create the NILM object
     @nilm = Nilm.new(name: name, url: url,
                      description: description)

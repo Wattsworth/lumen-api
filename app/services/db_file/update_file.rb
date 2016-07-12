@@ -2,18 +2,18 @@
 
 # Handles construction of DbFolder objects
 class UpdateFile
-  attr_accessor :warnings, :errors
+  include ServiceStatus
 
   def initialize(file, base_entry, decimation_entries)
     @file = file
     @base_entry = base_entry
     @decimation_entries = decimation_entries
-    @warnings = []
-    @errors = []
+    super()
   end
 
   def run
     __update_file(@file, @base_entry, @decimation_entries)
+    self
   end
 
   # regex matching the ~decimXX ending on a stream path

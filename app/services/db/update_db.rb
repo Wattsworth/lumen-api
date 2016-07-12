@@ -2,12 +2,11 @@
 
 # Handles construction of database objects
 class UpdateDb
-  attr_accessor :warnings, :errors
+  include ServiceStatus
 
   def initialize(db:)
     @db = db
-    @warnings = []
-    @errors = []
+    super()
   end
 
   def run(db_adapter:)
@@ -19,16 +18,10 @@ class UpdateDb
     entries = __create_entries(db_adapter.schema)
 
     updater = UpdateFolder.new(@root_folder, entries)
-    updater.run
-    @errors << updater.errors
-    @warnings << updater.warnings
+    absorb_status(updater.run)
 
-    # parse the entries array
-    # Note: @root_folder gets linked in on
-    #       the first call to __build_folder
-    # Don't save the result if there were errors
-    return false unless @errors.empty?
     @db.save
+    self
   end
 
   protected

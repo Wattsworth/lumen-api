@@ -11,7 +11,7 @@ RSpec.describe 'CreateNilm' do
       allow(UpdateDb).to receive(:new).and_return(service)
       # run the NILM creation
       nilm_creator = CreateNilm.new
-      nilm_creator.build(name: 'test', url: test_nilm_url)
+      nilm_creator.run(name: 'test', url: test_nilm_url)
       # verify NILM components are present
       expect(nilm_creator.nilm).to be_present
       expect(nilm_creator.nilm.db).to be_present

@@ -2,13 +2,12 @@
 
 # Handles construction of DbFolder objects
 class UpdateFolder
-  attr_accessor :warnings, :errors
+  include ServiceStatus
 
   def initialize(folder, entries)
     @folder = folder
     @entries = entries
-    @warnings = []
-    @errors = []
+    super()
   end
 
   # returns the updated DbFolder object
@@ -21,6 +20,7 @@ class UpdateFolder
     __parse_folder_entries(@folder, @entries)
     # save the result
     @folder.save!
+    self
   end
 
   protected
@@ -85,9 +85,7 @@ class UpdateFolder
       else # its a folder
         updater = __build_folder(folder, entry_group, name)
       end
-      updater.run
-      @warnings << updater.warnings
-      @errors << updater.errors
+      absorb_status(updater.run)
     end
   end
 
