@@ -39,5 +39,4 @@ RSpec.describe 'DbFile' do
       expect(db_service).to have_received(:remove_file)
     end
   end
-
 end

@@ -164,12 +164,57 @@ describe 'UpdateDb' do
         # ...and the service should have a warning
         expect(@service.warnings?).to be true
       end
-      it 'adds new files'
-      it 'adds new folders'
+      it 'adds new files' do
+        # create Db with 1 folder and file
+        update_with_schema([helper.entry('/folder1/old_file')])
+        @folder = @root.subfolders.first
+        expect(@folder.db_files.count).to eq(1)
+        # run update again with a new file added
+        update_with_schema([helper.entry('/folder1/old_file'),
+                            helper.entry('/folder1/new_file')],
+                           db: @db)
+        expect(@folder.db_files.count).to eq(2)
+      end
+      it 'adds new folders' do
+        # create Db with 1 folder and file
+        update_with_schema([helper.entry('/folder1/old_file')])
+        @folder = @root.subfolders.first
+        expect(@folder.subfolders.count).to eq(0)
+        # run update again with a new file added
+        update_with_schema([helper.entry('/folder1/old_file'),
+                            helper.entry('/folder1/new_folder/info')],
+                           db: @db)
+        expect(@folder.subfolders.count).to eq(1)
+      end
     end
     describe 'given changes to remote metadata' do
-      it 'updates file info'
-      it 'updates folder info'
+      it 'updates file info' do
+        # create Db with 1 folder and file
+        update_with_schema([helper.entry('/folder1/file1',
+                            metadata: { name: 'old_name' })])
+        file = DbFile.find_by_name('old_name')
+        expect(file).to be_present
+        # run update again with new metadata
+        update_with_schema([helper.entry('/folder1/file1',
+                            metadata: { name: 'new_name' })],
+                           db: @db)
+        file.reload
+        expect(file.name).to eq('new_name')
+      end
+
+      it 'updates folder info' do
+        # create Db with folder and subfolder
+        update_with_schema([helper.entry('/folder1/subfolder/info',
+                            metadata: { name: 'old_name' })])
+        folder = DbFolder.find_by_name('old_name')
+        expect(folder).to be_present
+        # run update again with new metadata
+        update_with_schema([helper.entry('/folder1/subfolder/info',
+                            metadata: { name: 'new_name' })],
+                           db: @db)
+        folder.reload
+        expect(folder.name).to eq('new_name')
+      end
       it 'adds new streams'
       it 'removes missing streams'
     end
