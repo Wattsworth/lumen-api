@@ -7,6 +7,12 @@ class UpdateFolder
   def initialize(folder, entries)
     @folder = folder
     @entries = entries
+    # initialiaze array of current entries, ids are removed
+    # as they are updated, so any id's left in this
+    # array are no longer present on the remote db
+    # and will be destroyed
+    @subfolder_ids = folder.subfolders.ids
+    @file_ids = folder.db_files.ids
     super()
   end
 
@@ -18,6 +24,20 @@ class UpdateFolder
       info.slice(*DbFolder.defined_attributes))
     # process the contents of the folder
     __parse_folder_entries(@folder, @entries)
+    # delete any files or folders still in the
+    # tracked ID arrays, they haven't been touched
+    # so they must have been removed from the remote
+    # db some other way (eg nilmtool)
+    unless @file_ids.empty?
+      @folder.db_files.destroy(*@file_ids)
+      add_warning('Removed files no longer in the remote database')
+    end
+
+    unless @subfolder_ids.empty?
+      @folder.subfolders.destroy(*@subfolder_ids)
+      add_warning('Removed folders no longer in the remote database')
+    end
+
     # save the result
     @folder.save!
     self
@@ -103,14 +123,16 @@ class UpdateFolder
                    default_name)
     base = __base_entry(entry_group)
     unless base # corrupt file, don't process
-      @warnings << "#{entry_group.count} orphan decimations in #{folder.name}"
+      add_warning("#{entry_group.count} orphan decimations in #{folder.name}")
       return
     end
     # find or create the file
     file = folder.db_files.find_by_path(base[:path])
     file ||= DbFile.new(db_folder: folder,
                         path: base[:path], name: default_name)
-
+    # remove the id (if present) to mark this file as updated
+    @file_ids -= [file.id]
+    # return the Updater, don't run it
     UpdateFile.new(file, base, entry_group - [base])
   end
 
@@ -131,6 +153,9 @@ class UpdateFolder
     path = __build_path(entries)
     folder = parent.subfolders.find_by_path(path)
     folder ||= DbFolder.new(parent: parent, path: path, name: default_name)
+    # remove the id (if present) to mark this folder as updated
+    @subfolder_ids -= [folder.id]
+    # return the Updater, don't run it
     UpdateFolder.new(folder, entries)
   end
 

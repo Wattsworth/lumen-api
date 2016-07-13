@@ -25,12 +25,12 @@ simple_db = [
 
 describe 'UpdateDb' do
   describe '*run*' do
-    def update_with_schema(schema)
+    def update_with_schema(schema, db: nil)
       # stub the database adapter
       adapter = instance_double(DbAdapter)
       allow(adapter).to receive(:schema).and_return(Array.new(schema))
       # run the update
-      @db = Db.new
+      @db = db || Db.new
       @service = UpdateDb.new(db: @db)
       @service.run(db_adapter: adapter)
       @root = @db.root_folder
@@ -129,8 +129,41 @@ describe 'UpdateDb' do
 
     # updates to remote db
     describe 'given changes to remote db' do
-      it 'removes missing files'
-      it 'removes missing folders'
+      it 'removes missing files' do
+        # create Db with a file 'temp'
+        update_with_schema([helper.entry('/folder1/temp'),
+                            helper.entry('/folder1/info',
+                                         metadata: { name: 'f1' })
+                            ])
+        temp = DbFile.find_by_name('temp')
+        # the file 'temp' should be here
+        expect(temp).to be_present
+        # update Db without 'temp'
+        update_with_schema([helper.entry('/folder1/info',
+                                         metadata: { name: 'f1' })
+                            ], db: @db)
+        # it should be gone
+        expect(DbFile.find_by_name('temp')).to be nil
+        # ...and the service should have a warning
+        expect(@service.warnings?).to be true
+      end
+      it 'removes missing folders' do
+        # create Db with a folder 'temp'
+        update_with_schema([helper.entry('/folder1/stub'),
+                            helper.entry('/folder1/temp/info',
+                                         metadata: { name: 'temp' })
+                            ])
+        temp = DbFolder.find_by_name('temp')
+        # the file 'temp' should be here
+        expect(temp).to be_present
+        # update Db without 'temp'
+        update_with_schema([helper.entry('/folder1/stub')],
+                           db: @db)
+        # it should be gone
+        expect(DbFolder.find_by_name('temp')).to be nil
+        # ...and the service should have a warning
+        expect(@service.warnings?).to be true
+      end
       it 'adds new files'
       it 'adds new folders'
     end

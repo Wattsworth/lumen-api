@@ -26,6 +26,13 @@ describe 'ServiceStatus' do
     expect(x.warnings.length).to eq(1)
   end
 
+  it 'ignores duplicate messages' do
+    x = ModuleTester.new
+    x.add_error('the same thing')
+    x.add_error('the same thing')
+    expect(x.errors.length).to eq(1)
+  end
+
   it 'raises error if *run* is not implemented' do
     x = ModuleTester.new
     expect { x.run }.to raise_error(RuntimeError)

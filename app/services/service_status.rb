@@ -22,6 +22,8 @@ module ServiceStatus
   end
 
   def add_error(message)
+    # ignore duplicates
+    return if @errors.include?(message)
     @errors << String(message)
   end
 
@@ -30,6 +32,8 @@ module ServiceStatus
   end
 
   def add_warning(message)
+    # ignore duplicates
+    return if @warnings.include?(message)
     @warnings << String(message)
   end
 
