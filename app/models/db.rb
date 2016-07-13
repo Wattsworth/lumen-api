@@ -2,7 +2,10 @@
 
 # Database object
 class Db < ActiveRecord::Base
-  belongs_to :root_folder, foreign_key: 'db_folder_id', class_name: 'DbFolder'
+  belongs_to :root_folder,
+             foreign_key: 'db_folder_id',
+             class_name: 'DbFolder',
+             dependent: :destroy
   belongs_to :nilm
 
   def url

@@ -12,6 +12,23 @@ RSpec.describe 'DbFolder' do
     specify { expect(db_folder).to respond_to(:hidden) }
   end
 
+  describe 'when destroyed' do
+    before(:all) do
+      @folder = DbFolder.create
+      @subfolder = DbFolder.create
+      @file = DbFile.create
+      @folder.subfolders << @subfolder
+      @folder.db_files << @file
+      @folder.destroy
+    end
+    it 'removes subfolders' do
+      expect(DbFolder.find_by_id(@subfolder.id)).to be_nil
+    end
+    it 'removes subfiles' do
+      expect(DbFile.find_by_id(@file.id)).to be_nil
+    end
+  end
+
   describe 'insert_file' do
     let(:db_folder) { FactoryGirl.create(:db_folder) }
     let(:new_file) { FactoryGirl.create(:db_file) }

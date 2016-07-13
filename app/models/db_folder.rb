@@ -4,8 +4,13 @@
 # and one or more DbFolders as subfolders
 class DbFolder < ActiveRecord::Base
   belongs_to :parent, class_name: 'DbFolder'
-  has_many :subfolders, class_name: 'DbFolder', foreign_key: 'parent_id'
-  has_many :db_files
+  has_many :subfolders,
+           class_name: 'DbFolder',
+           foreign_key: 'parent_id',
+           dependent: :destroy
+
+  has_many :db_files,
+           dependent: :destroy
 
   def self.defined_attributes
     [:name, :description, :hidden]

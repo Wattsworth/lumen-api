@@ -11,6 +11,14 @@ RSpec.describe 'DbFile' do
     specify { expect(db_file).to respond_to(:hidden) }
   end
 
+  it 'removes streams destroyed' do
+    stream = DbStream.create
+    file = DbFile.create
+    file.db_streams << stream
+    file.destroy
+    expect(DbStream.find_by_id(stream.id)).to be nil
+  end
+
   describe 'remove' do
     let(:db_streams) { FactoryGirl.build_list(:db_stream, 5) }
     let(:db_file) { FactoryGirl.create(:db_file) }
@@ -31,4 +39,5 @@ RSpec.describe 'DbFile' do
       expect(db_service).to have_received(:remove_file)
     end
   end
+
 end
