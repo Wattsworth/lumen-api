@@ -9,13 +9,13 @@ class UpdateDb
     super()
   end
 
-  def run(db_adapter:)
+  def run(schema)
     # create the root folder if it doesn't exist
     @db.root_folder ||= DbFolder.create(name: 'root', path: '/')
     @root_folder = @db.root_folder
 
     # create the entry array from the schema
-    entries = __create_entries(db_adapter.schema)
+    entries = __create_entries(schema)
 
     updater = UpdateFolder.new(@root_folder, entries)
     absorb_status(updater.run)
