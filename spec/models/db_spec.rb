@@ -14,4 +14,16 @@ RSpec.describe 'Db' do
     db.destroy
     expect(DbFolder.find_by_id(root_folder.id)).to be nil
   end
+
+  describe 'url' do
+    it 'can be customized' do
+      db_x = Db.create(url: 'custom_string')
+      expect(db_x.url).to eq('custom_string')
+    end
+    it 'can be left as default' do
+      nilm = Nilm.create(url: "base")
+      db_x = Db.new(nilm: nilm, url: '')
+      expect(db_x.url).to eq("base/nilmdb")
+    end
+  end
 end

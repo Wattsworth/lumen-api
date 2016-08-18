@@ -33,6 +33,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'capistrano-rails', group: :development
 
 gem 'httparty'
+gem 'rack-cors'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -46,6 +47,7 @@ group :development, :test do
   gem 'rspec-json_expectations'
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
+  gem 'tzinfo-data'
 end
 
 group :development, :test do

@@ -10,7 +10,7 @@ class Db < ActiveRecord::Base
 
   def url
     # return a custom URL if set
-    return @url unless @url.nil? || @url.empty?
+    return super unless super.nil? || super.empty?
     # no default URL if no parent NILM available
     return '--error, no parent NILM--' if nilm.nil?
     # return the default URL"
