@@ -26,13 +26,9 @@ simple_db = [
 describe 'UpdateDb' do
   describe '*run*' do
     def update_with_schema(schema, db: nil)
-      # stub the database adapter
-      adapter = instance_double(DbAdapter)
-      allow(adapter).to receive(:schema).and_return(Array.new(schema))
-      # run the update
       @db = db || Db.new
       @service = UpdateDb.new(db: @db)
-      @service.run(db_adapter: adapter)
+      @service.run(schema)
       @root = @db.root_folder
     end
     # simple schema parsing
@@ -186,37 +182,6 @@ describe 'UpdateDb' do
                            db: @db)
         expect(@folder.subfolders.count).to eq(1)
       end
-    end
-    describe 'given changes to remote metadata' do
-      it 'updates file info' do
-        # create Db with 1 folder and file
-        update_with_schema([helper.entry('/folder1/file1',
-                            metadata: { name: 'old_name' })])
-        file = DbFile.find_by_name('old_name')
-        expect(file).to be_present
-        # run update again with new metadata
-        update_with_schema([helper.entry('/folder1/file1',
-                            metadata: { name: 'new_name' })],
-                           db: @db)
-        file.reload
-        expect(file.name).to eq('new_name')
-      end
-
-      it 'updates folder info' do
-        # create Db with folder and subfolder
-        update_with_schema([helper.entry('/folder1/subfolder/info',
-                            metadata: { name: 'old_name' })])
-        folder = DbFolder.find_by_name('old_name')
-        expect(folder).to be_present
-        # run update again with new metadata
-        update_with_schema([helper.entry('/folder1/subfolder/info',
-                            metadata: { name: 'new_name' })],
-                           db: @db)
-        folder.reload
-        expect(folder.name).to eq('new_name')
-      end
-      it 'adds new streams'
-      it 'removes missing streams'
     end
   end
 end

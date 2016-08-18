@@ -16,7 +16,6 @@ class DbSchemaHelper
       streams: __build_streams(stream_count)
     }
   end
-  # rubocop:enable Metrics/MethodLength
 
   # build stream hash for a file
   def __build_streams(count)
