@@ -4,11 +4,11 @@
 # are usually returned by DbAdapter.schema
 class DbSchemaHelper
   # schema data
-  def entry(path, type: 'uint8_1', metadata: {}, stream_count: 0)
+  def entry(path, metadata: {}, stream_count: 1)
     {
       path: path,
       attributes: {
-        data_type: type,
+        data_type: "float32_#{stream_count}",
         start_time: 0,
         end_time: 0,
         total_rows: 0,

@@ -11,32 +11,28 @@ RSpec.describe 'DbFile' do
     specify { expect(db_file).to respond_to(:hidden) }
   end
 
-  it 'removes streams destroyed' do
-    stream = DbStream.create
-    file = DbFile.create
-    file.db_streams << stream
-    file.destroy
-    expect(DbStream.find_by_id(stream.id)).to be nil
-  end
+  describe 'child streams' do
+    it 'are destroyed with  parent file' do
+      stream = DbStream.create
+      file = DbFile.create
+      file.db_streams << stream
+      file.destroy
+      expect(DbStream.find_by_id(stream.id)).to be nil
+    end
 
-  describe 'remove' do
-    let(:db_streams) { FactoryGirl.build_list(:db_stream, 5) }
-    let(:db_file) { FactoryGirl.create(:db_file) }
-    let(:db_service) { double(remove_file: true) }
-    it 'destroys itself' do
-      db_file.remove(db_service: db_service)
-      expect(db_file).to be_destroyed
+    it 'exist for every column in file datatype' do
+      file = DbFile.create(data_type: 'float32_3')
+      file.db_streams << DbStream.new
+      # missing 3 streams
+      expect(file.valid?).to be false
     end
-    it 'destroys its db_streams' do
-      db_file.db_streams << db_streams
-      db_file.remove(db_service: db_service)
-      db_streams.each do |stream|
-        expect(stream).to be_destroyed
+
+    it 'do not exist for columns not in file datatype' do
+      file = DbFile.create(data_type: 'float32_1')
+      2.times do |x|
+        file.db_streams << DbStream.new(column: x)
       end
-    end
-    it 'removes itself from the remote system using DbService' do
-      db_file.remove(db_service: db_service)
-      expect(db_service).to have_received(:remove_file)
+      expect(file.valid?).to be false
     end
   end
 end

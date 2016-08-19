@@ -46,11 +46,13 @@ class UpdateFile
   # create or update DbStreams for the
   # specified DbFile
   def __build_streams(file:, stream_data:)
-    return if stream_data.empty?
-    stream_data.each do |entry|
-      stream = file.db_streams.find_by_column(entry[:column])
+    file.column_count.times do |x|
+      stream = file.db_streams.find_by_column(x)
       stream ||= DbStream.new(db_file: file)
-      stream.update_attributes(entry)
+      # check if there is stream metadata for column x
+      entry = stream_data.select { |meta| meta[:column] == x }
+      # use the metadata if present
+      stream.update_attributes(entry[0] || {})
       stream.save!
     end
   end
