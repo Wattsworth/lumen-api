@@ -19,7 +19,8 @@ class DbAdapter
 
       # Create the schema:
       # 3 elements: path, attributes, streams
-      { path:       entry[0],
+      {
+        path:       entry[0],
         attributes: {
           data_type:  entry[1],
           start_time: entry[2] || 0,

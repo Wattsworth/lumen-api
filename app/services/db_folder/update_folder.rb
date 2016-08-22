@@ -21,7 +21,8 @@ class UpdateFolder
     # update the folder attributes from metadata
     info = __read_info_entry(@entries) || {}
     @folder.update_attributes(
-      info.slice(*DbFolder.defined_attributes))
+      info.slice(*DbFolder.defined_attributes)
+    )
     # process the contents of the folder
     __parse_folder_entries(@folder, @entries)
     # delete any files or folders still in the
@@ -114,7 +115,7 @@ class UpdateFolder
     # if any entry_group has chunks left, this is a folder
     entry_group.select { |entry|
       !entry[:chunks].empty?
-    }.count == 0
+    }.count.zero?
   end
 
   # create or update a DbFile object at the

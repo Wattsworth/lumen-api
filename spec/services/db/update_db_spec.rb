@@ -129,15 +129,14 @@ describe 'UpdateDb' do
         # create Db with a file 'temp'
         update_with_schema([helper.entry('/folder1/temp'),
                             helper.entry('/folder1/info',
-                                         metadata: { name: 'f1' })
-                            ])
+                                         metadata: { name: 'f1' })])
         temp = DbFile.find_by_name('temp')
         # the file 'temp' should be here
         expect(temp).to be_present
         # update Db without 'temp'
         update_with_schema([helper.entry('/folder1/info',
-                                         metadata: { name: 'f1' })
-                            ], db: @db)
+                                         metadata: { name: 'f1' })],
+                           db: @db)
         # it should be gone
         expect(DbFile.find_by_name('temp')).to be nil
         # ...and the service should have a warning
@@ -147,8 +146,7 @@ describe 'UpdateDb' do
         # create Db with a folder 'temp'
         update_with_schema([helper.entry('/folder1/stub'),
                             helper.entry('/folder1/temp/info',
-                                         metadata: { name: 'temp' })
-                            ])
+                                         metadata: { name: 'temp' })])
         temp = DbFolder.find_by_name('temp')
         # the file 'temp' should be here
         expect(temp).to be_present

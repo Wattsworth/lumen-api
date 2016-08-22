@@ -21,9 +21,9 @@ RSpec.describe 'Db' do
       expect(db_x.url).to eq('custom_string')
     end
     it 'can be left as default' do
-      nilm = Nilm.create(url: "base")
+      nilm = Nilm.create(url: 'base')
       db_x = Db.new(nilm: nilm, url: '')
-      expect(db_x.url).to eq("base/nilmdb")
+      expect(db_x.url).to eq('base/nilmdb')
     end
   end
 end

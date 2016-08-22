@@ -12,20 +12,23 @@ class DbSchemaHelper
         start_time: 0,
         end_time: 0,
         total_rows: 0,
-        total_time: 0 }.merge(metadata),
+        total_time: 0
+      }.merge(metadata),
       streams: __build_streams(stream_count)
     }
   end
 
   # build stream hash for a file
   def __build_streams(count)
-    return {} unless count > 0
+    return {} unless count.positive?
     streams = []
     (0..(count - 1)).each do |i|
       streams <<
-        { 'name': "stream#{i}",
+        {
+          'name': "stream#{i}",
           'units':  'unit',
-          'column': i }
+          'column': i
+        }
     end
     streams
   end

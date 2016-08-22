@@ -11,7 +11,8 @@ describe DbAdapter do
       expect(entry).to include(:path, :attributes)
       expect(entry[:attributes]).to(
         include(:data_type, :start_time,
-                :end_time, :total_rows, :total_time))
+                :end_time, :total_rows, :total_time)
+      )
     end
   end
 end

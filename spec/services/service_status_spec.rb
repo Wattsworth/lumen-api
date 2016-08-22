@@ -54,16 +54,16 @@ describe 'ServiceStatus' do
       child.add_warning('test')
       expect(
         parent.absorb_status(child,
-                             action: ServiceStatus::NEVER_FAIL))
-        .to be true
+                             action: ServiceStatus::NEVER_FAIL)
+      ).to be true
     end
 
     it 'fails on errors and warnings with FAIL_ON_WARNING' do
       child.add_warning('test')
       expect(
         parent.absorb_status(child,
-                             action: ServiceStatus::FAIL_ON_WARNING))
-        .to be false
+                             action: ServiceStatus::FAIL_ON_WARNING)
+      ).to be false
     end
     it 'fails on errors with FAIL_ON_ERROR' do
       child.add_error('test')
