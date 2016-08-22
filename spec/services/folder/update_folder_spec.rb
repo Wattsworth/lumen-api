@@ -20,7 +20,4 @@ describe 'UpdateFolder service' do
     folder.reload
     expect(folder.name).to eq('new_name')
   end
-
-  # run update again with different streams
-  it 'removes missing streams'
 end
