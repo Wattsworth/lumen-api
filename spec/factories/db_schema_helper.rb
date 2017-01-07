@@ -4,32 +4,32 @@
 # are usually returned by DbAdapter.schema
 class DbSchemaHelper
   # schema data
-  def entry(path, metadata: {}, stream_count: 1)
+  def entry(path, metadata: {}, element_count: 1)
     {
       path: path,
       attributes: {
-        data_type: "float32_#{stream_count}",
+        data_type: "float32_#{element_count}",
         start_time: 0,
         end_time: 0,
         total_rows: 0,
         total_time: 0
       }.merge(metadata),
-      streams: __build_streams(stream_count)
+      elements: __build_elements(element_count)
     }
   end
 
-  # build stream hash for a file
-  def __build_streams(count)
+  # build element hash for a file
+  def __build_elements(count)
     return {} unless count.positive?
-    streams = []
+    elements = []
     (0..(count - 1)).each do |i|
-      streams <<
+      elements <<
         {
-          'name': "stream#{i}",
+          'name': "element#{i}",
           'units':  'unit',
           'column': i
         }
     end
-    streams
+    elements
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -24,7 +25,7 @@ module ControlPanel
     config.active_record.raise_in_transactional_callbacks = true
 
     # Add folders under the services directory
-    ['nilm','db','db_folder','db_file'].each do |service|
+    %w(nilm db db_folder db_stream).each do |service|
       config.autoload_paths << Rails.root.join("app/services/#{service}")
     end
   end

@@ -15,4 +15,5 @@ describe DbAdapter do
       )
     end
   end
+  
 end

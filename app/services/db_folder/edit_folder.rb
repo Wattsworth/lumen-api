@@ -4,31 +4,30 @@
 class EditFolder
   include ServiceStatus
 
- def initialize(db_adapter)
+  def initialize(db_adapter)
     super()
+    @db_adapter = db_adapter
   end
 
-  def run(db_file, *attribs)
+  def run(db_stream, **attribs)
     # only accept valid attributes
     attribs.slice!([:name, :description])
-    # assign the new attributes and check if the 
-    # result is valid (eg file's can't have the same name)
-    db_file.assign_attributes(attribs)
-    unless db_file.valid?
-      add_error(db_file.errors)
+    # assign the new attributes and check if the
+    # result is valid (eg stream's can't have the same name)
+    db_stream.assign_attributes(attribs)
+    unless db_stream.valid?
+      add_error(db_stream.errors)
       return self
     end
     # local model checks out, update the remote NilmDB
-    db_adapter.update_metadata(db_file.path,
-                               attribs.filter { |x| x.in[:name, :description] } )
+    @db_adapter.update_metadata(db_stream.path, attribs)
     # if there was an error don't save the model
-    if db_adapter.status == ERROR:
+    if db_adapter.status == ERROR
       add_error(db_adapter.error_msg)
       return self
     end
     # everything went well, save the model
-    db_file.save!
+    db_stream.save!
     self
   end
-
 end

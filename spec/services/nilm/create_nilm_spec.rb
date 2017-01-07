@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-test_nilm_url = 'http://nilm.secondary'
+test_nilm_url = 'http://192.168.42.17'
 
 RSpec.describe 'CreateNilm' do
   describe 'build' do
-    it 'creates and populates a Db object' do
+    it 'creates and populates a Db object', :vcr do
       # mock the database updater
       service = instance_double(UpdateDb, run: '')
       allow(UpdateDb).to receive(:new).and_return(service)

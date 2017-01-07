@@ -9,25 +9,25 @@ class DbFolder < ActiveRecord::Base
            foreign_key: 'parent_id',
            dependent: :destroy
 
-  has_many :db_files,
+  has_many :db_streams,
            dependent: :destroy
 
   def self.defined_attributes
     [:name, :description, :hidden]
   end
 
-  def insert_file(file:)
-    # add the file to this folder
-    file.db_folder = self
+  def insert_stream(stream:)
+    # add the stream to this folder
+    stream.db_folder = self
     # verify that the file can be here
-    return false unless file.valid?
+    return false unless stream.valid?
     true
   end
 
   def as_json(_options = {})
     folder = super(except: [:created_at, :updated_at])
     folder[:subfolders] = subfolders.map(&:as_json)
-    folder[:files] = db_files.map(&:as_json)
+    folder[:streams] = db_streams.map(&:as_json)
     folder
   end
 end

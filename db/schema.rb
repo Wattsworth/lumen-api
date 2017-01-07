@@ -11,35 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160709235828) do
+ActiveRecord::Schema.define(version: 20170104213820) do
 
   create_table "db_decimations", force: :cascade do |t|
-    t.integer  "start_time", limit: 8
-    t.integer  "end_time",   limit: 8
-    t.integer  "total_rows", limit: 8
-    t.integer  "total_time", limit: 8
-    t.integer  "db_file_id"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "level"
+    t.integer  "start_time",   limit: 8
+    t.integer  "end_time",     limit: 8
+    t.integer  "total_rows",   limit: 8
+    t.integer  "total_time",   limit: 8
+    t.integer  "db_stream_id"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "level",        limit: 8
     t.string   "data_type"
   end
 
-  create_table "db_files", force: :cascade do |t|
+  create_table "db_elements", force: :cascade do |t|
     t.string   "name"
-    t.string   "description"
-    t.integer  "db_folder_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "path"
-    t.integer  "start_time",    limit: 8
-    t.integer  "end_time",      limit: 8
-    t.integer  "total_rows",    limit: 8
-    t.integer  "total_time",    limit: 8
-    t.string   "data_type"
-    t.string   "name_abbrev"
-    t.boolean  "delete_locked"
-    t.boolean  "hidden"
+    t.string   "units"
+    t.integer  "column"
+    t.float    "default_max"
+    t.float    "default_min"
+    t.float    "scale_factor"
+    t.float    "offset"
+    t.integer  "db_stream_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.boolean  "plottable"
+    t.boolean  "discrete"
   end
 
   create_table "db_folders", force: :cascade do |t|
@@ -54,17 +52,19 @@ ActiveRecord::Schema.define(version: 20160709235828) do
 
   create_table "db_streams", force: :cascade do |t|
     t.string   "name"
-    t.string   "units"
-    t.integer  "column"
-    t.float    "default_max"
-    t.float    "default_min"
-    t.float    "scale_factor"
-    t.float    "offset"
-    t.integer  "db_file_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.boolean  "plottable"
-    t.boolean  "discrete"
+    t.string   "description"
+    t.integer  "db_folder_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "path"
+    t.integer  "start_time",    limit: 8
+    t.integer  "end_time",      limit: 8
+    t.integer  "total_rows",    limit: 8
+    t.integer  "total_time",    limit: 8
+    t.string   "data_type"
+    t.string   "name_abbrev"
+    t.boolean  "delete_locked"
+    t.boolean  "hidden"
   end
 
   create_table "dbs", force: :cascade do |t|

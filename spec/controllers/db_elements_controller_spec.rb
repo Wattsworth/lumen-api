@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe DbFilesController, type: :controller do
+RSpec.describe DbElementsController, type: :controller do
 end

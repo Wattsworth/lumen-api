@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-# controller for DbStreams
+# Controller for DbFiles
 class DbStreamsController < ApplicationController
 end

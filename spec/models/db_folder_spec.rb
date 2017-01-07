@@ -8,7 +8,7 @@ RSpec.describe 'DbFolder' do
     specify { expect(db_folder).to respond_to(:description) }
     specify { expect(db_folder).to respond_to(:parent) }
     specify { expect(db_folder).to respond_to(:subfolders) }
-    specify { expect(db_folder).to respond_to(:db_files) }
+    specify { expect(db_folder).to respond_to(:db_streams) }
     specify { expect(db_folder).to respond_to(:hidden) }
   end
 
@@ -16,26 +16,26 @@ RSpec.describe 'DbFolder' do
     before(:all) do
       @folder = DbFolder.create
       @subfolder = DbFolder.create
-      @file = DbFile.create
+      @stream = DbStream.create
       @folder.subfolders << @subfolder
-      @folder.db_files << @file
+      @folder.db_streams << @stream
       @folder.destroy
     end
     it 'removes subfolders' do
       expect(DbFolder.find_by_id(@subfolder.id)).to be_nil
     end
-    it 'removes subfiles' do
-      expect(DbFile.find_by_id(@file.id)).to be_nil
+    it 'removes streams' do
+      expect(DbStream.find_by_id(@stream.id)).to be_nil
     end
   end
 
-  describe 'insert_file' do
+  describe 'insert_stream' do
     let(:db_folder) { FactoryGirl.create(:db_folder) }
-    let(:new_file) { FactoryGirl.create(:db_file) }
+    let(:new_stream) { FactoryGirl.create(:db_stream) }
 
-    it 'adds the file to subfolders' do
-      db_folder.insert_file(file: new_file)
-      expect(new_file.db_folder).to eq(db_folder)
+    it 'adds the stream to the folder' do
+      db_folder.insert_stream(stream: new_stream)
+      expect(new_stream.db_folder).to eq(db_folder)
     end
   end
 end

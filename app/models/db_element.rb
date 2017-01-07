@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Decimation level of a file
-class DbDecimation < ActiveRecord::Base
+# a column in a stream, this is the lowest element
+# in the db hierarchy and contains actual data
+class DbElement < ActiveRecord::Base
   belongs_to :db_stream
 
   def as_json(_options = {})
