@@ -24,10 +24,12 @@ class DbFolder < ActiveRecord::Base
     true
   end
 
-  def as_json(_options = {})
+  def as_json(options = {shallow: true})
     folder = super(except: [:created_at, :updated_at])
-    folder[:subfolders] = subfolders.map(&:as_json)
-    folder[:streams] = db_streams.map(&:as_json)
+    if(options[:shallow]== false)
+      folder[:subfolders] = subfolders.map(&:as_json)
+      folder[:streams] = db_streams.map(&:as_json)
+    end
     folder
   end
 end

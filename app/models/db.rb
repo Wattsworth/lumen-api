@@ -19,7 +19,7 @@ class Db < ActiveRecord::Base
 
   def as_json(options = {})
     db = super(except: [:created_at, :updated_at])
-    db[:contents] = root_folder.as_json(options)
+    db[:contents] = root_folder.as_json({shallow: false})
     db
   end
 end

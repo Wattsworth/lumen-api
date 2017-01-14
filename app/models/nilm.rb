@@ -6,6 +6,7 @@ class Nilm < ActiveRecord::Base
 
   def as_json(_options = {})
     nilm = super(except: [:created_at, :updated_at])
+    nilm[:db] = db.as_json()
     nilm
   end
 end
