@@ -7,4 +7,16 @@ class DbFoldersController < ApplicationController
     render json: folder, shallow: false
   end
 
+  def update
+    folder = DbFolder.find(params[:id])
+    folder.update!(folder_params)
+    render json: folder
+  end
+
+  private
+    def folder_params
+      params.permit(:name, :description,:hidden)
+    end
+
+
 end

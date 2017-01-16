@@ -28,7 +28,7 @@ class DbFolder < ActiveRecord::Base
     folder = super(except: [:created_at, :updated_at])
     if(options[:shallow]== false)
       folder[:subfolders] = subfolders.map(&:as_json)
-      folder[:streams] = db_streams.map(&:as_json)
+      folder[:streams] = db_streams.includes(:db_elements,:db_decimations).map(&:as_json)
     end
     folder
   end
