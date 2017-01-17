@@ -36,26 +36,55 @@ class DbAdapter
     end
   end
 
+  def set_folder_metadata(db_folder)
+    params = { path: "#{db_folder.path}/info",
+               data: __build_folder_metadata(db_folder) }.to_json
+    response = self.class.post("#{@url}/stream/update_metadata",
+                               body: params,
+                               headers: { 'Content-Type' => 'application/json' })
+    if response.code != 200
+      Rails.logger.warn (
+        "#{@url}: update_metadata(#{db_folder.path})"+
+        " => #{response.code}:#{response.body}"
+      )
+      return { error: true, msg: "error updating #{db_folder.path} metadata" }
+    end
+    { error: false, msg: 'success' }
+  end
+
+  # convert folder attributes to __config_key json
+  def __build_folder_metadata(db_folder)
+    attribs = db_folder.attributes
+                       .slice('name', 'description', 'hidden')
+                       .to_json
+    { config_key__: attribs }.to_json
+end
+
   # retrieve metadata for a particular stream
   def __get_metadata(path)
     dump = self.class.get("#{@url}/stream/get_metadata?path=#{path}")
-    metadata = JSON.parse(dump.parsed_response['config_key__'] || '{}')
-    # Add plain-text metadata keys (retrofit for *info streams which keep
-    # attributes in seperate metadata tags
-    metadata.merge!(dump.parsed_response)
+    # find legacy parameters in raw metadata
+    metadata = dump.parsed_response.except('config_key__')
+    # parse values from config_key entry if it exists
+    config_key = JSON.parse(dump.parsed_response['config_key__'] || '{}')
+    # merge legacy data with config_key values
+    metadata.merge!(config_key)
+    # make sure nothing bad got in (eg extraneous metadata keys)
     __sanitize_metadata(metadata)
   end
 
   # make sure all the keys are valid parameters
+  # this function does not know the difference between folders and streams
+  # this *should* be ok as long as nobody tinkers with the config_key__ entries
   def __sanitize_metadata(metadata)
-    metadata.slice!('delete_locked', 'description', 'hidden', 'name',
-                    'streams')
-    if(metadata['streams'] != nil)
+    metadata.slice!('delete_locked', 'description', 'hidden',
+                    'name', 'name_abbrev', 'streams')
+    unless metadata['streams'].nil?
       # sanitize 'streams' (elements) parameters
       element_attrs = DbElement.attribute_names.map(&:to_sym)
       metadata['streams'].map! do |element|
         element.symbolize_keys
-          .slice(*element_attrs)
+               .slice(*element_attrs)
       end
     end
     metadata.symbolize_keys

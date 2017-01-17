@@ -38,4 +38,12 @@ RSpec.describe 'DbFolder' do
       expect(new_stream.db_folder).to eq(db_folder)
     end
   end
+
+  describe 'validation' do
+    let(:db_folder) { FactoryGirl.create(:db_folder) }
+    it 'forbids an empty name' do
+      db_folder.name = ''
+      expect(db_folder.valid?).to be false
+    end
+  end
 end

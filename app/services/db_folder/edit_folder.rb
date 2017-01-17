@@ -9,25 +9,25 @@ class EditFolder
     @db_adapter = db_adapter
   end
 
-  def run(db_stream, **attribs)
+  def run(db_folder, **attribs)
     # only accept valid attributes
-    attribs.slice!([:name, :description])
+    attribs.slice!(:name, :description, :hidden)
     # assign the new attributes and check if the
-    # result is valid (eg stream's can't have the same name)
-    db_stream.assign_attributes(attribs)
-    unless db_stream.valid?
-      add_error(db_stream.errors)
+    # result is valid (eg folder's can't have the same name)
+    db_folder.assign_attributes(attribs)
+    unless db_folder.valid?
+      add_error(db_folder.errors)
       return self
     end
     # local model checks out, update the remote NilmDB
-    @db_adapter.update_metadata(db_stream.path, attribs)
+    status = @db_adapter.set_folder_metadata(db_folder)
     # if there was an error don't save the model
-    if db_adapter.status == ERROR
-      add_error(db_adapter.error_msg)
+    if status[:error]
+      add_error(status[:msg])
       return self
     end
     # everything went well, save the model
-    db_stream.save!
+    db_folder.save!
     self
   end
 end

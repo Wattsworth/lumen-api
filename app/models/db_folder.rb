@@ -12,6 +12,8 @@ class DbFolder < ActiveRecord::Base
   has_many :db_streams,
            dependent: :destroy
 
+  validates_presence_of :name
+  
   def self.defined_attributes
     [:name, :description, :hidden]
   end
