@@ -4,12 +4,21 @@ require 'rails_helper'
 RSpec.describe 'DbFolder' do
   describe 'object' do
     let(:db_folder) { DbFolder.new }
+    # attributes
     specify { expect(db_folder).to respond_to(:name) }
     specify { expect(db_folder).to respond_to(:description) }
+    specify { expect(db_folder).to respond_to(:hidden) }
+    specify { expect(db_folder).to respond_to(:start_time) }
+    specify { expect(db_folder).to respond_to(:end_time) }
+    specify { expect(db_folder).to respond_to(:size_on_disk) }
+    # associations
     specify { expect(db_folder).to respond_to(:parent) }
     specify { expect(db_folder).to respond_to(:subfolders) }
     specify { expect(db_folder).to respond_to(:db_streams) }
-    specify { expect(db_folder).to respond_to(:hidden) }
+    specify { expect(db_folder).to respond_to(:db) }
+
+
+
   end
 
   describe 'when destroyed' do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170104213820) do
+ActiveRecord::Schema.define(version: 20170118013812) do
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time",   limit: 8
@@ -43,11 +43,15 @@ ActiveRecord::Schema.define(version: 20170104213820) do
   create_table "db_folders", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
     t.integer  "parent_id"
     t.string   "path"
     t.boolean  "hidden"
+    t.integer  "db_id"
+    t.integer  "start_time",   limit: 8
+    t.integer  "end_time",     limit: 8
+    t.integer  "size_on_disk"
   end
 
   create_table "db_streams", force: :cascade do |t|
@@ -65,6 +69,8 @@ ActiveRecord::Schema.define(version: 20170104213820) do
     t.string   "name_abbrev"
     t.boolean  "delete_locked"
     t.boolean  "hidden"
+    t.integer  "size_on_disk"
+    t.integer  "db_id"
   end
 
   create_table "dbs", force: :cascade do |t|

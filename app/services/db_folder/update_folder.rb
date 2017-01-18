@@ -3,10 +3,15 @@
 # Handles construction of DbFolder objects
 class UpdateFolder
   include ServiceStatus
+  attr_reader :start_time, :end_time, :size_on_disk
 
   def initialize(folder, entries)
     @folder = folder
     @entries = entries
+    # initialize extents, these are updated as folders/streams are added
+    @start_time = nil
+    @end_time = nil
+    @size_on_disk = 0
     # initialiaze array of current entries, ids are removed
     # as they are updated, so any id's left in this
     # array are no longer present on the remote db
@@ -38,7 +43,10 @@ class UpdateFolder
       @folder.subfolders.destroy(*@subfolder_ids)
       add_warning('Removed folders no longer in the remote database')
     end
-
+    # add the extents computed during updates
+    @folder.start_time = @start_time
+    @folder.end_time = @end_time
+    @folder.size_on_disk = @size_on_disk
     # save the result
     @folder.save!
     self
@@ -107,6 +115,7 @@ class UpdateFolder
         updater = __build_folder(folder, entry_group, name)
       end
       absorb_status(updater.run)
+      absorb_data_extents(updater) # update start, end & size_on_disk
     end
   end
 
@@ -129,7 +138,7 @@ class UpdateFolder
     end
     # find or create the stream
     stream = folder.db_streams.find_by_path(base[:path])
-    stream ||= DbStream.new(db_folder: folder,
+    stream ||= DbStream.new(db: folder.db, db_folder: folder,
                             path: base[:path], name: default_name)
     # remove the id (if present) to mark this stream as updated
     @stream_ids -= [stream.id]
@@ -153,7 +162,8 @@ class UpdateFolder
   def __build_folder(parent, entries, default_name)
     path = __build_path(entries)
     folder = parent.subfolders.find_by_path(path)
-    folder ||= DbFolder.new(parent: parent, path: path, name: default_name)
+    folder ||= DbFolder.new(parent: parent, db: parent.db,
+                            path: path, name: default_name)
     # remove the id (if present) to mark this folder as updated
     @subfolder_ids -= [folder.id]
     # return the Updater, don't run it
@@ -168,5 +178,21 @@ class UpdateFolder
     parts = entries[0][:path].split('/')
     parts.pop(entries[0][:chunks].length)
     parts.join('/') # stitch parts together to form a path
+  end
+
+  # update extents based on result of updater
+  # (either a stream or a subfolder)
+  def absorb_data_extents(updater)
+    @start_time = if @start_time.nil?
+                    updater.start_time
+                  else
+                    [@start_time, updater.start_time].min
+                  end
+    @end_time = if @end_time.nil?
+                    updater.end_time
+                  else
+                    [@start_time, updater.end_time].max
+                  end
+    @size_on_disk += updater.size_on_disk
   end
 end

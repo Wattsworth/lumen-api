@@ -3,11 +3,16 @@
 # Handles construction of DbFolder objects
 class UpdateStream
   include ServiceStatus
+  attr_reader :start_time, :end_time, :size_on_disk
 
   def initialize(stream, base_entry, decimation_entries)
     @stream = stream
     @base_entry = base_entry
     @decimation_entries = decimation_entries
+    # initialize extents, these set during run
+    @start_time = nil
+    @end_time = nil
+    @size_on_disk = 0
     super()
   end
 
@@ -25,7 +30,12 @@ class UpdateStream
   # specified path.
   def __update_stream(stream, base_entry, decimation_entries)
     stream.update_attributes(base_entry[:attributes])
+    __compute_extents([base_entry] + decimation_entries)
+    stream.start_time = @start_time
+    stream.end_time = @end_time
+    stream.size_on_disk = @size_on_disk
     stream.save!
+
     __build_decimations(stream: stream,
                         entry_group: decimation_entries)
     __build_elements(stream: stream, stream_data: base_entry[:elements])
@@ -55,5 +65,31 @@ class UpdateStream
       element.update_attributes(entry[0] || {})
       element.save!
     end
+  end
+
+  # compute the time range and total size of this stream
+  # accepts an array of entries (include base & decim)
+  def __compute_extents(entries)
+    entries.map { |x| x[:attributes] }.each do |attrs|
+      next if (attrs[:total_rows]).zero?
+      if @start_time.nil?
+        @start_time = attrs[:start_time]
+        @end_time = attrs[:end_time]
+      end
+      @start_time = [@start_time, attrs[:start_time]].min
+      @end_time = [@end_time, attrs[:end_time]].max
+      @size_on_disk += attrs[:total_rows] *
+                       __bytes_per_row(attrs[:data_type])
+    end
+  end
+
+  # compute how many bytes are required per row based
+  # on the datatype (float32_8 => 4*8+8)
+  def __bytes_per_row(data_type)
+    regex = /[a-z]*(\d*)_(\d*)/.match(data_type)
+    dtype_bytes = regex[1].to_i / 8
+    num_cols = regex[2].to_i
+    ts_bytes = 8
+    ts_bytes + num_cols * dtype_bytes
   end
 end

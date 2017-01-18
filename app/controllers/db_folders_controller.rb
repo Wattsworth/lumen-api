@@ -7,8 +7,6 @@ class DbFoldersController < ApplicationController
     render json: folder, shallow: false
   end
 
-#TODO: add db attribute to folders and streams
-#TODO: add timespan and disk usage stats to folders
 #TODO: create info stream on folders on edit
   def update
     folder = DbFolder.find(params[:id])

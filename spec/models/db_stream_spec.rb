@@ -4,11 +4,17 @@ require 'rails_helper'
 RSpec.describe 'DbStream' do
   describe 'object' do
     let(:db_stream) { DbStream.new }
+    # attributes
     specify { expect(db_stream).to respond_to(:name) }
     specify { expect(db_stream).to respond_to(:name_abbrev) }
     specify { expect(db_stream).to respond_to(:description) }
-    specify { expect(db_stream).to respond_to(:db_elements) }
     specify { expect(db_stream).to respond_to(:hidden) }
+    specify { expect(db_stream).to respond_to(:size_on_disk) }
+    # associations
+    specify { expect(db_stream).to respond_to(:db_elements) }
+    specify { expect(db_stream).to respond_to(:db) }
+
+
   end
 
   describe 'child elements' do

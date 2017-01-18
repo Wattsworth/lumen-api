@@ -11,7 +11,7 @@ class UpdateDb
 
   def run(schema)
     # create the root folder if it doesn't exist
-    @db.root_folder ||= DbFolder.create(name: 'root', path: '/')
+    @db.root_folder ||= DbFolder.create(db: @db, name: 'root', path: '/')
     @root_folder = @db.root_folder
 
     # create the entry array from the schema

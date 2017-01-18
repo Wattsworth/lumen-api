@@ -17,13 +17,15 @@ end
 # A file in the database, contains one or more Streams
 class DbStream < ActiveRecord::Base
   belongs_to :db_folder
+  belongs_to :db
+
   has_many :db_elements, dependent: :destroy
   has_many :db_decimations, dependent: :destroy
 
   validates_with DbDataTypeValidator
 
   def defined_attributes
-    [:name, :name_abbrev, :description, :hidden]
+     [:name, :name_abbrev, :description, :hidden]
   end
 
   def remove(db_service:)
