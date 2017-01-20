@@ -12,7 +12,12 @@ class DbFoldersController < ApplicationController
     folder = DbFolder.find(params[:id])
     adapter = DbAdapter.new(folder.db.url)
     service = EditFolder.new(adapter)
-    render json: service.run(folder, params)
+    service.run(folder, folder_params.symbolize_keys)
+    if(service.success?)
+      render json: folder, shallow: false
+    else
+      render json: service, status: :unprocessable_entity
+    end
   end
 
   private

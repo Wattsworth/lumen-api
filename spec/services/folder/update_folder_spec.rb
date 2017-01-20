@@ -34,6 +34,7 @@ describe 'UpdateFolder service' do
     service.run([build_entry('/a/path',            1,  90, 20, 8),
                  build_entry('/a/path~decim-4',   10, 110, 25, 24),
                  build_entry('/a/path2',         -10, 100, 28, 24),
+                 #build_entry('/a/path',       nil, nil, 0, 24),
                  build_entry('/a/deep/path',       0, 400, 8, 10)])
     folder = DbFolder.find_by_path('/a')
     expect(folder.start_time).to eq(-10)

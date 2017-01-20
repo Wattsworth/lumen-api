@@ -16,7 +16,9 @@ class EditFolder
     # result is valid (eg folder's can't have the same name)
     db_folder.assign_attributes(attribs)
     unless db_folder.valid?
-      add_error(db_folder.errors)
+      db_folder.errors
+        .full_messages
+        .each{|e| add_error(e)}
       return self
     end
     # local model checks out, update the remote NilmDB

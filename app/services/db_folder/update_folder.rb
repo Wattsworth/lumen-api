@@ -183,16 +183,17 @@ class UpdateFolder
   # update extents based on result of updater
   # (either a stream or a subfolder)
   def absorb_data_extents(updater)
-    @start_time = if @start_time.nil?
-                    updater.start_time
-                  else
-                    [@start_time, updater.start_time].min
-                  end
-    @end_time = if @end_time.nil?
-                    updater.end_time
-                  else
-                    [@start_time, updater.end_time].max
-                  end
+    byebug if(@folder.name=="tutorial")
+    if @start_time.nil?
+      @start_time = updater.start_time
+    elsif !updater.start_time.nil?
+      @start_time = [@start_time, updater.start_time].min
+    end
+    if @end_time.nil?
+      @end_time = updater.end_time
+    elsif !updater.end_time.nil?
+      @end_time = [@end_time, updater.end_time].max
+    end
     @size_on_disk += updater.size_on_disk
   end
 end

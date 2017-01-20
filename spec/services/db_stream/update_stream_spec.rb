@@ -42,7 +42,7 @@ describe 'UpdateStream service' do
     # (4*8+8)*20 + (4*24+8)*25 + (4*24+8)*28 + nothing
     expect(stream.size_on_disk).to eq(6312)
   end
-  
+
   it 'updates element info' do
     # create Db with stream with 1 element
     schema = [helper.entry('/folder1/subfolder/stream',

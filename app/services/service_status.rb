@@ -41,6 +41,10 @@ module ServiceStatus
     !@warnings.empty?
   end
 
+  def success?
+    !self.warnings? && !self.errors?
+  end
+
   def run
     raise 'Implement in client, return service object'
   end
@@ -56,4 +60,11 @@ module ServiceStatus
     end
     true
   end
+
+  def as_json(_options = {})
+    {
+      errors: @errors,
+     warnings: @warnings
+   }
+ end
 end
