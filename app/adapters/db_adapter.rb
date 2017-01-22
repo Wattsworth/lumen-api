@@ -37,17 +37,27 @@ class DbAdapter
   end
 
   def set_folder_metadata(db_folder)
-    params = { path: "#{db_folder.path}/info",
-               data: __build_folder_metadata(db_folder) }.to_json
+    _set_path_metadata("#{db_folder.path}/info",
+                       __build_folder_metadata(db_folder))
+  end
+
+  def set_stream_metadata(db_stream)
+    _set_path_metadata(db_stream.path,
+                       __build_stream_metadata(db_stream))
+  end
+
+  def _set_path_metadata(path, data)
+    params = { path: path,
+               data: data }.to_json
     response = self.class.post("#{@url}/stream/update_metadata",
                                body: params,
                                headers: { 'Content-Type' => 'application/json' })
     if response.code != 200
-      Rails.logger.warn (
-        "#{@url}: update_metadata(#{db_folder.path})"+
-        " => #{response.code}:#{response.body}"
-      )
-      return { error: true, msg: "error updating #{db_folder.path} metadata" }
+      Rails.logger.warn
+      "#{@url}: update_metadata(#{path})"\
+      " => #{response.code}:#{response.body}"
+
+      return { error: true, msg: "error updating #{path} metadata" }
     end
     { error: false, msg: 'success' }
   end
@@ -58,7 +68,18 @@ class DbAdapter
                        .slice('name', 'description', 'hidden')
                        .to_json
     { config_key__: attribs }.to_json
-end
+  end
+
+  # convert folder attributes to __config_key json
+  def __build_stream_metadata(db_stream)
+    attribs = db_stream.attributes
+                       .slice('name', 'name_abbrev', 'description', 'hidden')
+    # elements are called streams in the nilmdb metadata
+    # and they don't have id or timestamp fields
+    attribs[:streams] = db_stream.db_elements.map {|e|
+      e.attributes.except("id","created_at","updated_at","db_stream_id")}
+    { config_key__: attribs.to_json }.to_json
+  end
 
   # retrieve metadata for a particular stream
   def __get_metadata(path)

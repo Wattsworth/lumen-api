@@ -42,7 +42,7 @@ module ServiceStatus
   end
 
   def success?
-    !self.warnings? && !self.errors?
+    !warnings? && !errors?
   end
 
   def run
@@ -64,7 +64,7 @@ module ServiceStatus
   def as_json(_options = {})
     {
       errors: @errors,
-     warnings: @warnings
-   }
+      warnings: @warnings
+    }
  end
 end

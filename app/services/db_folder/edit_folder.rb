@@ -9,7 +9,7 @@ class EditFolder
     @db_adapter = db_adapter
   end
 
-  def run(db_folder, **attribs)
+  def run(db_folder, attribs)
     # only accept valid attributes
     attribs.slice!(:name, :description, :hidden)
     # assign the new attributes and check if the
@@ -17,8 +17,8 @@ class EditFolder
     db_folder.assign_attributes(attribs)
     unless db_folder.valid?
       db_folder.errors
-        .full_messages
-        .each{|e| add_error(e)}
+               .full_messages
+               .each { |e| add_error(e) }
       return self
     end
     # local model checks out, update the remote NilmDB

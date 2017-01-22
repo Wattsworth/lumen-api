@@ -15,12 +15,16 @@ class DbDataTypeValidator < ActiveModel::Validator
 end
 
 # A file in the database, contains one or more Streams
-class DbStream < ActiveRecord::Base
+class DbStream < ApplicationRecord
   belongs_to :db_folder
   belongs_to :db
-
-  has_many :db_elements, dependent: :destroy
+  has_many :db_elements, dependent: :destroy, autosave: true
   has_many :db_decimations, dependent: :destroy
+  accepts_nested_attributes_for :db_elements
+
+  validates :name, presence: true
+  validates :name, uniqueness: { scope: :db_folder_id,
+    message: ' is already used in this folder'}
 
   validates_with DbDataTypeValidator
 

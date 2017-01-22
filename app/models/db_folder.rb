@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+
+
 # a folder in the database, may contain one or more DbFiles as files
 # and one or more DbFolders as subfolders
-class DbFolder < ActiveRecord::Base
+class DbFolder < ApplicationRecord
   belongs_to :parent, class_name: 'DbFolder'
   belongs_to :db
 
@@ -15,18 +17,13 @@ class DbFolder < ActiveRecord::Base
            dependent: :destroy
 
   validates_presence_of :name
-  validate :name_is_unique_in_group
+  # validates_with DbFolderValidator
+  validates :name, uniqueness: { scope: :parent_id,
+    message: ' is already used in this folder'}
 
   #:section: Utility Methods
 
-  #vaildator to ensure the name is unique to the parent.
-  def name_is_unique_in_group
-    self.parent.subfolders.each do |folder|
-      if((folder.name == self.name) and (folder.id != self.id ))
-        self.errors.add(:name, "[#{self.name}] is already used")
-      end
-    end
-  end
+
 
 
   def self.defined_attributes

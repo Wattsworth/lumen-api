@@ -16,9 +16,6 @@ RSpec.describe 'DbFolder' do
     specify { expect(db_folder).to respond_to(:subfolders) }
     specify { expect(db_folder).to respond_to(:db_streams) }
     specify { expect(db_folder).to respond_to(:db) }
-
-
-
   end
 
   describe 'when destroyed' do
@@ -53,6 +50,12 @@ RSpec.describe 'DbFolder' do
     it 'forbids an empty name' do
       db_folder.name = ''
       expect(db_folder.valid?).to be false
+    end
+    it 'name is unique in parent' do
+      parent = DbFolder.create(name: 'parent')
+      child1 = DbFolder.create(name: 'shared', parent: parent)
+      child2 = DbFolder.new(name: 'shared', parent: parent)
+      expect(child2.valid?).to be false
     end
   end
 end

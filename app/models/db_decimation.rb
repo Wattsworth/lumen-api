@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Decimation level of a file
-class DbDecimation < ActiveRecord::Base
+class DbDecimation < ApplicationRecord
   belongs_to :db_stream
 
   def as_json(_options = {})

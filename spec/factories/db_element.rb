@@ -2,7 +2,7 @@
 
 # generic DbStream
 FactoryGirl.define do
-  factory :db_stream do
+  factory :db_element do
     name { Faker::Lorem.word }
   end
 end

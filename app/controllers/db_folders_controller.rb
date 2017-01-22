@@ -12,7 +12,7 @@ class DbFoldersController < ApplicationController
     folder = DbFolder.find(params[:id])
     adapter = DbAdapter.new(folder.db.url)
     service = EditFolder.new(adapter)
-    service.run(folder, folder_params.symbolize_keys)
+    service.run(folder, folder_params)
     if(service.success?)
       render json: folder, shallow: false
     else

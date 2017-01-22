@@ -17,6 +17,30 @@ RSpec.describe 'DbStream' do
 
   end
 
+  describe 'validation' do
+    it 'requires a name' do
+      stream = DbStream.new(name: '')
+      stream.validate
+      expect(stream.errors[:name].any?).to be true
+    end
+    it 'requires a unique name' do
+      folder = DbFolder.create(name: 'parent')
+      DbStream.create(name: 'stream', db_folder: folder)
+      stream2 = DbStream.new(name: 'stream', db_folder: folder)
+      stream2.validate
+      expect(stream2.errors[:name].any?).to be true
+    end
+  end
+  describe 'update' do
+    it 'saves attributes to child elements' do
+      stream = DbStream.create(name: 'stream', hidden: false)
+      element = DbElement.create(name: 'A', db_stream: stream)
+      new_attrs = {db_elements_attributes: [{id: element.id, units: 'new'}]}
+      stream.assign_attributes(new_attrs)
+      expect(stream.db_elements.first.units).to eq('new')
+    end
+  end
+
   describe 'child elements' do
     it 'are destroyed with  parent stream' do
       element = DbElement.create

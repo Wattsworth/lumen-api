@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # NILM object
-class Nilm < ActiveRecord::Base
+class Nilm < ApplicationRecord
   has_one :db
 
   def as_json(_options = {})

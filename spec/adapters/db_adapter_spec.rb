@@ -15,6 +15,25 @@ describe DbAdapter do
       )
     end
   end
+
+  describe 'set_stream_metadata' do
+    it 'updates config_key in metadata', :vcr do
+      adapter = DbAdapter.new(url)
+      stream = DbStream.new(path: '/tutorial/pump-events',
+      name: 'test', description: 'new', db_elements_attributes: [
+        {column: 0, name: 'element1'},{column: 1, name: 'element2'}])
+      result = adapter.set_stream_metadata(stream)
+      expect(result[:error]).to be false
+    end
+    it 'returns error on server failure', :vcr do
+      adapter = DbAdapter.new(url)
+      stream = DbStream.new(path: '/badpath')
+      result = adapter.set_stream_metadata(stream)
+      expect(result[:error]).to be true
+      expect(result[:msg]).to match(/badpath/)
+    end
+  end
+
   describe 'set_folder_metadata' do
     it 'updates config_key in metadata', :vcr do
       adapter = DbAdapter.new(url)
