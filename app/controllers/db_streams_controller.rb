@@ -6,8 +6,8 @@ class DbStreamsController < ApplicationController
     stream = DbStream.find(params[:id])
     adapter = DbAdapter.new(stream.db.url)
     service = EditStream.new(adapter)
-    service.run(stream, stream_params.symbolize_keys)
-    if(service.success?)
+    service.run(stream, stream_params)
+    if service.success?
       render json: stream
     else
       render json: service, status: :unprocessable_entity
@@ -15,8 +15,13 @@ class DbStreamsController < ApplicationController
   end
 
   private
-    def stream_params
-      params.permit(:name, :description, :hidden, :name_abbrev, :elements)
-    end
 
+  def stream_params
+    params.require(:stream)
+          .permit(:name, :description, :name_abbrev, :hidden,
+                  db_elements_attributes:
+                  [:id, :name, :units,
+                   :default_max, :default_min, :scale_factor, :offset,
+                   :plottable, :discrete])
+  end
 end

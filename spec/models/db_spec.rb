@@ -6,6 +6,13 @@ RSpec.describe 'Db' do
     let(:db) { Db.new }
     specify { expect(db).to respond_to(:url) }
     specify { expect(db).to respond_to(:root_folder) }
+    
+    specify { expect(db).to respond_to(:size_db) }
+    specify { expect(db).to respond_to(:size_total) }
+    specify { expect(db).to respond_to(:size_other) }
+    specify { expect(db).to respond_to(:version) }
+    specify { expect(db).to respond_to(:max_points_per_plot) }
+
   end
 
   it 'removes the root folder when destroyed' do

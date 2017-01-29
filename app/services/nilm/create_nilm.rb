@@ -18,6 +18,6 @@ class CreateNilm
     db = Db.create(nilm: @nilm, url: db_url)
     service = UpdateDb.new(db: db)
     adapter = DbAdapter.new(db.url)
-    service.run(adapter.schema)
+    service.run(adapter.dbinfo, adapter.schema)
   end
 end

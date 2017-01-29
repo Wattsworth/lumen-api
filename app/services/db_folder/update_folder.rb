@@ -25,9 +25,12 @@ class UpdateFolder
   def run
     # update the folder attributes from metadata
     info = __read_info_entry(@entries) || {}
-    @folder.update_attributes(
-      info.slice(*DbFolder.defined_attributes)
-    )
+    # if metadata is corrupt, use default values instead
+    unless @folder.update_attributes(
+      info.slice(*DbFolder.defined_attributes))
+      @folder.use_default_attributes
+      Rails.logger.warn("corrupt metadata: #{@folder.path}")
+    end
     # process the contents of the folder
     __parse_folder_entries(@folder, @entries)
     # delete any streams or folders still in the
@@ -48,6 +51,9 @@ class UpdateFolder
     @folder.end_time = @end_time
     @folder.size_on_disk = @size_on_disk
     # save the result
+    unless @folder.valid?
+      byebug
+    end
     @folder.save!
     self
   end
@@ -183,7 +189,6 @@ class UpdateFolder
   # update extents based on result of updater
   # (either a stream or a subfolder)
   def absorb_data_extents(updater)
-    byebug if(@folder.name=="tutorial")
     if @start_time.nil?
       @start_time = updater.start_time
     elsif !updater.start_time.nil?

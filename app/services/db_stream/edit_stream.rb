@@ -11,18 +11,11 @@ class EditStream
 
   def run(db_stream, attribs)
     # only accept valid attributes
-    stream_attribs = attribs.slice(:name, :description,
-                                   :hidden, :name_abbrev)
-    begin
-      stream_attribs[:db_elements_attributes] =
-        __parse_element_attribs(attribs[:elements])
-    rescue TypeError
-      add_error("invalid db_elements_attributes parameter")
-      return self
-    end
+    attribs.slice!(:name, :description, :name_abbrev, :hidden,
+                   :db_elements_attributes)
     # assign the new attributes and check if the
     # result is valid (eg elements can't have the same name)
-    db_stream.assign_attributes(stream_attribs)
+    db_stream.assign_attributes(attribs)
     unless db_stream.valid?
       db_stream.errors
                .full_messages

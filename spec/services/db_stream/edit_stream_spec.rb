@@ -14,7 +14,7 @@ describe 'EditStream service' do
   it 'changes stream and element attributes' do
     attribs = { id: 0, invalid_attrib: 'ignore',
                 name: 'new name', name_abbrev: 'nn',
-              elements: [{id: element.id, name: 'new!'}] }
+              db_elements_attributes: [{id: element.id, name: 'new!'}] }
     allow(db_adapter).to receive(:set_stream_metadata).and_return(success)
     # run the service, it should call the adapter and save the folder
     service.run(stream, attribs)
@@ -34,7 +34,8 @@ describe 'EditStream service' do
   end
 
   it 'does not change stream or elements on a server error' do
-    attribs = { name: 'new', elements: [{id: element.id, name: 'new'}]}
+    attribs = { name: 'new',
+                db_elements_attributes: [{id: element.id, name: 'new'}]}
     allow(db_adapter).to receive(:set_stream_metadata).and_return(error)
     allow(stream).to receive(:save!)
     allow(element).to receive(:save!)
@@ -45,12 +46,4 @@ describe 'EditStream service' do
     expect(element).to_not have_received(:save!)
   end
 
-  it 'produces error for invalid parameter structure' do
-    attribs = {name: 'new', elements: {id: 0, name: 'nice try'}}
-    allow(db_adapter).to receive(:set_stream_metadata).and_return(success)
-    # run the service, it shouldn't call the database adapter
-    service.run(stream, attribs)
-    expect(service.errors?).to be true
-    expect(db_adapter).to_not have_received(:set_stream_metadata)
-  end
 end

@@ -19,11 +19,13 @@ class DbFolder < ApplicationRecord
   validates_presence_of :name
   # validates_with DbFolderValidator
   validates :name, uniqueness: { scope: :parent_id,
-    message: ' is already used in this folder'}
+    message: ' is already used in this folder'}, unless: :root_folder?
 
   #:section: Utility Methods
 
-
+  def root_folder?
+    self.parent == nil
+  end
 
 
   def self.defined_attributes
@@ -36,6 +38,13 @@ class DbFolder < ApplicationRecord
     # verify that the file can be here
     return false unless stream.valid?
     true
+  end
+
+  # force set any validated params to acceptable
+  # default values this allows us to process corrupt databases
+  def use_default_attributes
+    self.name = self.path
+    self.description = ''
   end
 
   def as_json(options = {shallow: true})

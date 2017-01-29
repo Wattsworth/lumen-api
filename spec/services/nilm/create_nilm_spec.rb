@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-test_nilm_url = 'http://192.168.42.17'
+test_nilm_url = 'http://localhost:8080'
 
 RSpec.describe 'CreateNilm' do
   describe 'build' do

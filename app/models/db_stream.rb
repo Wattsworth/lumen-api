@@ -45,6 +45,14 @@ class DbStream < ApplicationRecord
     /^\w*_(\d*)$/.match(data_type)[1].to_i
   end
 
+  # force set any validated params to acceptable
+  # default values this allows us to process corrupt databases
+  def use_default_attributes
+    self.name = self.path
+    self.description = ''
+  end
+
+  
   def as_json(_options = {})
     stream = super(except: [:created_at, :updated_at])
     stream[:elements] = db_elements.map(&:as_json)

@@ -9,7 +9,7 @@ class UpdateDb
     super()
   end
 
-  def run(schema)
+  def run(dbinfo, schema)
     # create the root folder if it doesn't exist
     @db.root_folder ||= DbFolder.create(db: @db, name: 'root', path: '/')
     @root_folder = @db.root_folder
@@ -18,6 +18,11 @@ class UpdateDb
     entries = __create_entries(schema)
 
     updater = UpdateFolder.new(@root_folder, entries)
+    # update db attributes from dbinfo
+    @db.size_total = dbinfo[:size_total]
+    @db.size_db = dbinfo[:size_db]
+    @db.size_other = dbinfo[:size_other]
+    @db.version = dbinfo[:version]
     absorb_status(updater.run)
 
     @db.save

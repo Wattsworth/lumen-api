@@ -24,11 +24,13 @@ simple_db = [
 ]
 
 describe 'UpdateDb' do
+  let(:dbinfo) { double('dbinfo').as_null_object}
   describe '*run*' do
     def update_with_schema(schema, db: nil)
       @db = db || Db.new
       @service = UpdateDb.new(db: @db)
-      @service.run(schema)
+      mock_info =
+      @service.run(dbinfo, schema) #ignore dbinfo
       @root = @db.root_folder
     end
     # simple schema parsing

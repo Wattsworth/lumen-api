@@ -8,6 +8,16 @@ class DbAdapter
     @url = url
   end
 
+  def dbinfo
+    version = self.class.get("#{@url}/version").parsed_response
+    info = self.class.get("#{@url}/dbinfo").parsed_response
+    {
+      version: version,
+      size_db: info['size'],
+      size_other: info['other'],
+      size_total: info["size"]+info["other"]+info["free"]+info["reserved"]
+    }
+  end
   def schema
     # GET extended info stream list
     dump = self.class.get("#{@url}/stream/list?extended=1")

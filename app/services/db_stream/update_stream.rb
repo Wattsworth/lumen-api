@@ -29,7 +29,12 @@ class UpdateStream
   # create or update a DbStream object at the
   # specified path.
   def __update_stream(stream, base_entry, decimation_entries)
-    stream.update_attributes(base_entry[:attributes])
+    # use default attributes if metadata is corrupt
+    unless stream.update_attributes(base_entry[:attributes])
+      stream.use_default_attributes
+      Rails.logger.warn("corrupt metadata: #{stream.path}")
+
+    end
     __compute_extents([base_entry] + decimation_entries)
     stream.start_time = @start_time
     stream.end_time = @end_time
@@ -58,11 +63,16 @@ class UpdateStream
   def __build_elements(stream:, stream_data:)
     stream.column_count.times do |x|
       element = stream.db_elements.find_by_column(x)
-      element ||= DbElement.new(db_stream: stream)
+      element ||= DbElement.new(db_stream: stream, column: x)
       # check if there is stream metadata for column x
       entry = stream_data.select { |meta| meta[:column] == x }
       # use the metadata if present
-      element.update_attributes(entry[0] || {})
+      unless element.update_attributes(entry[0] || {})
+        element.use_default_attributes
+        Rails.logger.warn(stream_data)
+        Rails.logger.warn("corrupt metadata: #{stream.path}:"\
+                          "e#{element.column}")
+      end
       element.save!
     end
   end

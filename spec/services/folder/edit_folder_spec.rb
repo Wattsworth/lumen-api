@@ -40,6 +40,5 @@ describe 'EditFolder service' do
     service.run(folder, attribs)
     expect(service.errors?).to be true
     expect(folder).to_not have_received(:save!)
-
   end
 end

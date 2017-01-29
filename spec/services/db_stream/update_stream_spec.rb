@@ -6,6 +6,8 @@ describe 'UpdateStream service' do
   let(:db) { Db.new }
   let(:service) { UpdateDb.new(db: db) }
   let(:helper) { DbSchemaHelper.new }
+  let(:mock_dbinfo) { double('dbinfo').as_null_object}
+
   def build_entry(path, start, last, rows, width)
     helper.entry(path, start_time: start, end_time: last,
                  element_count: width, total_rows: rows)
@@ -14,13 +16,13 @@ describe 'UpdateStream service' do
 
   it 'updates stream info' do
     # create Db with 1 folder and stream
-    service.run([helper.entry('/folder1/stream1',
+    service.run(mock_dbinfo, [helper.entry('/folder1/stream1',
                               metadata: { name: 'old_name' })])
     stream = DbStream.find_by_name('old_name')
     expect(stream).to be_present
     # run update again with new metadata
     service = UpdateDb.new(db: db)
-    service.run([helper.entry('/folder1/stream1',
+    service.run(mock_dbinfo, [helper.entry('/folder1/stream1',
                               metadata: { name: 'new_name' })])
     stream.reload
     expect(stream.name).to eq('new_name')
@@ -32,7 +34,7 @@ describe 'UpdateStream service' do
     # expect stream to have min_start => max_end duration
     # and size_on_disk to be sum of base+decimations
 
-    service.run([build_entry('/a/path',            1,  90, 20, 8),
+    service.run(mock_dbinfo,[build_entry('/a/path',            1,  90, 20, 8),
                  build_entry('/a/path~decim-4',   10, 110, 25, 24),
                  build_entry('/a/path~decim-16', -10, 100, 28, 24),
                  build_entry('/a/path~decim-64', nil, nil, 0, 24)])
@@ -48,14 +50,26 @@ describe 'UpdateStream service' do
     schema = [helper.entry('/folder1/subfolder/stream',
                            element_count: 1)]
     schema[0][:elements][0][:name] = 'old_name'
-    service.run(schema)
+    service.run(mock_dbinfo, schema)
     element = DbElement.find_by_name('old_name')
     expect(element).to be_present
     # run update again with new metadata
     schema[0][:elements][0][:name] = 'new_name'
     service = UpdateDb.new(db: db)
-    service.run(schema)
+    service.run(mock_dbinfo, schema)
     element.reload
     expect(element.name).to eq('new_name')
+  end
+
+  it 'uses default attributes if metadata is corrupt' do
+    #metadata missing stream name and an element name
+    bad_entry = helper.entry('/a/path',metadata: {name: ''})
+    bad_entry[:elements] = [{column: 0, name: ''}]
+    service.run(mock_dbinfo, [bad_entry])
+    stream = DbStream.find_by_path('/a/path')
+    expect(stream.name).to eq('/a/path')
+    expect(stream.db_elements
+                 .find_by_column(0)
+                 .name).to eq('element0')
   end
 end
