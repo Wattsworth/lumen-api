@@ -30,7 +30,8 @@ class EditStream
       return self
     end
     # everything went well, save the model
-    db_stream.save
+    db_stream.save!
+    set_notice("Stream updated")
     self
   end
 

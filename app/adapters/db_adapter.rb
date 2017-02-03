@@ -9,19 +9,36 @@ class DbAdapter
   end
 
   def dbinfo
-    version = self.class.get("#{@url}/version").parsed_response
-    info = self.class.get("#{@url}/dbinfo").parsed_response
+    begin
+      resp = self.class.get("#{@url}/version")
+      return nil unless resp.success?
+      version = resp.parsed_response
+
+      resp = self.class.get("#{@url}/dbinfo")
+      return nil unless resp.success?
+      info = resp.parsed_response
+    rescue
+      return nil
+    end
+
     {
       version: version,
       size_db: info['size'],
       size_other: info['other'],
-      size_total: info["size"]+info["other"]+info["free"]+info["reserved"]
+      size_total: info['size'] + info['other'] + info['free'] + info['reserved']
     }
   end
+
   def schema
     # GET extended info stream list
-    dump = self.class.get("#{@url}/stream/list?extended=1")
-    dump.parsed_response.map do |entry|
+    begin
+      resp = self.class.get("#{@url}/stream/list?extended=1")
+      return nil unless resp.success?
+    rescue
+      return nil
+    end
+
+    resp.parsed_response.map do |entry|
       metadata = if entry[0].match(UpdateStream.decimation_tag).nil?
                    __get_metadata(entry[0])
                  else
@@ -59,14 +76,16 @@ class DbAdapter
   def _set_path_metadata(path, data)
     params = { path: path,
                data: data }.to_json
-    response = self.class.post("#{@url}/stream/update_metadata",
-                               body: params,
-                               headers: { 'Content-Type' => 'application/json' })
-    if response.code != 200
-      Rails.logger.warn
-      "#{@url}: update_metadata(#{path})"\
-      " => #{response.code}:#{response.body}"
-
+    begin
+      response = self.class.post("#{@url}/stream/update_metadata",
+                                 body: params,
+                                 headers: { 'Content-Type' => 'application/json' })
+    rescue
+      return { error: true, msg: 'cannot contact NilmDB server' }
+    end
+    unless response.success?
+      Rails.logger.warn("#{@url}: update_metadata(#{path})"+
+                        " => #{response.code}:#{response.body}")
       return { error: true, msg: "error updating #{path} metadata" }
     end
     { error: false, msg: 'success' }
@@ -86,8 +105,9 @@ class DbAdapter
                        .slice('name', 'name_abbrev', 'description', 'hidden')
     # elements are called streams in the nilmdb metadata
     # and they don't have id or timestamp fields
-    attribs[:streams] = db_stream.db_elements.map {|e|
-      e.attributes.except("id","created_at","updated_at","db_stream_id")}
+    attribs[:streams] = db_stream.db_elements.map do |e|
+      e.attributes.except('id', 'created_at', 'updated_at', 'db_stream_id')
+    end
     { config_key__: attribs.to_json }.to_json
   end
 

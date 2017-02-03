@@ -30,6 +30,7 @@ class EditFolder
     end
     # everything went well, save the model
     db_folder.save!
+    set_notice("Folder updated")
     self
   end
 end

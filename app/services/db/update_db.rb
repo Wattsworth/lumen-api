@@ -10,6 +10,17 @@ class UpdateDb
   end
 
   def run(dbinfo, schema)
+
+    # check to make sure dbinfo and schema are set
+    # if either is nil, the database is not available
+    if(dbinfo.nil? || schema.nil?)
+      add_error("cannot contact database at #{@db.url}")
+      @db.update_attributes(available: false)
+      return self
+    else
+      @db.available = true
+    end
+
     # create the root folder if it doesn't exist
     @db.root_folder ||= DbFolder.create(db: @db, name: 'root', path: '/')
     @root_folder = @db.root_folder
@@ -26,6 +37,7 @@ class UpdateDb
     absorb_status(updater.run)
 
     @db.save
+    set_notice("Database refreshed")
     self
   end
 

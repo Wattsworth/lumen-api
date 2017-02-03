@@ -14,7 +14,10 @@ class DbsController < ApplicationController
       if(prev_url != db.url || params[:refresh])
         refresh(db) and return
       end
-      render json: db
+      stub = StubService.new()
+      stub.add_notice("database updated")
+      render json: {data: db,
+                    messages: stub}
     else
       render json: "adfs"
     end
@@ -27,9 +30,10 @@ class DbsController < ApplicationController
       service = UpdateDb.new(db: db)
       service.run(adapter.dbinfo, adapter.schema)
       if(service.success?)
-        render json: db
+        render json: {data: db, messages: service}
       else
-        render json: service, status: :unprocessable_entity
+        render json: {data: nil, messages: service},
+          status: :unprocessable_entity
       end
     end
 

@@ -6,7 +6,7 @@ describe 'UpdateStream service' do
   let(:db) { Db.new }
   let(:service) { UpdateDb.new(db: db) }
   let(:helper) { DbSchemaHelper.new }
-  let(:mock_dbinfo) { double('dbinfo').as_null_object}
+  let(:mock_dbinfo) { {} }
 
   def build_entry(path, start, last, rows, width)
     helper.entry(path, start_time: start, end_time: last,
@@ -50,6 +50,10 @@ describe 'UpdateStream service' do
     schema = [helper.entry('/folder1/subfolder/stream',
                            element_count: 1)]
     schema[0][:elements][0][:name] = 'old_name'
+    # add mandatory metadata ow it will be rejected
+    schema[0][:elements][0][:scale_factor] = 1.0
+    schema[0][:elements][0][:offset] = 0.0
+
     service.run(mock_dbinfo, schema)
     element = DbElement.find_by_name('old_name')
     expect(element).to be_present

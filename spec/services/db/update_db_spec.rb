@@ -24,7 +24,7 @@ simple_db = [
 ]
 
 describe 'UpdateDb' do
-  let(:dbinfo) { double('dbinfo').as_null_object}
+  let(:dbinfo) { {} }
   describe '*run*' do
     def update_with_schema(schema, db: nil)
       @db = db || Db.new

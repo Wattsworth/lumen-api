@@ -18,6 +18,7 @@ class UpdateStream
 
   def run
     __update_stream(@stream, @base_entry, @decimation_entries)
+    set_notice("Stream updated")
     self
   end
 

@@ -13,10 +13,11 @@ class DbFoldersController < ApplicationController
     adapter = DbAdapter.new(folder.db.url)
     service = EditFolder.new(adapter)
     service.run(folder, folder_params)
-    if(service.success?)
-      render json: folder, shallow: false
+    if service.success?
+      render json: {data: folder, messages: service}, shallow: false
     else
-      render json: service, status: :unprocessable_entity
+      render json: {data: nil, messages: service},
+             status: :unprocessable_entity
     end
   end
 

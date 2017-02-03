@@ -8,9 +8,10 @@ class DbStreamsController < ApplicationController
     service = EditStream.new(adapter)
     service.run(stream, stream_params)
     if service.success?
-      render json: stream
+      render json: {data: stream, messages: service}
     else
-      render json: service, status: :unprocessable_entity
+      render json: {data: nil, messages: service},
+             status: :unprocessable_entity
     end
   end
 

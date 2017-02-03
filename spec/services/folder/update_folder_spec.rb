@@ -6,7 +6,7 @@ describe 'UpdateFolder service' do
   let(:db) { Db.new }
   let(:service) { UpdateDb.new(db: db) }
   let(:helper) { DbSchemaHelper.new }
-  let(:mock_dbinfo) { double('dbinfo').as_null_object }
+  let(:mock_dbinfo) { {} }
 
   def build_entry(path, start, last, rows, width)
     helper.entry(path, start_time: start, end_time: last,

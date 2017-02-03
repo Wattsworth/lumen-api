@@ -7,7 +7,7 @@ class DbElement < ApplicationRecord
 
   validates :name, presence: true
   validates :name, uniqueness: { scope: :db_stream_id,
-    message: ' is already used in this folder'}
+    message: ' is already used in this stream'}
 
   validates :scale_factor, presence: true, numericality: true
   validates :scale_factor, presence: true, numericality: true

@@ -6,4 +6,9 @@ class NilmsController < ApplicationController
     nilms = Nilm.all
     render json: nilms
   end
+
+  def show
+    nilm = Nilm.find(params[:id])
+    render json: nilm
+  end
 end

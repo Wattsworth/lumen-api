@@ -52,7 +52,7 @@ class DbStream < ApplicationRecord
     self.description = ''
   end
 
-  
+
   def as_json(_options = {})
     stream = super(except: [:created_at, :updated_at])
     stream[:elements] = db_elements.map(&:as_json)

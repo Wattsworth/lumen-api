@@ -6,6 +6,7 @@ class Nilm < ApplicationRecord
 
   def as_json(_options = {})
     nilm = super(except: [:created_at, :updated_at])
+    nilm[:available] = db.available
     nilm[:db] = db.as_json()
     nilm
   end

@@ -55,6 +55,7 @@ class UpdateFolder
       byebug
     end
     @folder.save!
+    set_notice("Folder updated")
     self
   end
 

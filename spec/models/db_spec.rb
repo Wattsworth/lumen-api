@@ -6,7 +6,8 @@ RSpec.describe 'Db' do
     let(:db) { Db.new }
     specify { expect(db).to respond_to(:url) }
     specify { expect(db).to respond_to(:root_folder) }
-    
+
+    specify { expect(db).to respond_to(:available) }
     specify { expect(db).to respond_to(:size_db) }
     specify { expect(db).to respond_to(:size_total) }
     specify { expect(db).to respond_to(:size_other) }

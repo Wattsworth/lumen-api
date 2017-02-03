@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170127033854) do
+ActiveRecord::Schema.define(version: 20170130022828) do
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time",   limit: 8
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 20170127033854) do
     t.integer  "size_other",          limit: 8
     t.string   "version"
     t.integer  "max_points_per_plot",           default: 3600
+    t.boolean  "available"
   end
 
   create_table "nilms", force: :cascade do |t|

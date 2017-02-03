@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Handles service errors and warnings. Design pattern:
+# Handles service notices, errors and warnings. Design pattern:
 # All service action should occur in the run() function
 # Within run, call add_error or add_warning with string
 # messages. At the end of run() return the service object itself
@@ -9,8 +9,11 @@
 # the action parameter to NEVER_FAIL, FAIL_ON_WARNING, or
 # FAIL_ON_ERROR to determine when (if ever), absorb_status
 # returns false
+# Services should set a notice message when run successfully
+# eg "database updated"
+#
 module ServiceStatus
-  attr_reader :errors, :warnings
+  attr_reader :errors, :warnings, :notices
 
   FAIL_ON_ERROR   = 0
   FAIL_ON_WARNING = 1
@@ -19,6 +22,18 @@ module ServiceStatus
   def initialize
     @errors = []
     @warnings = []
+    @notices = []
+  end
+
+  def add_notice(message)
+    # ignore duplicates
+    return if @notices.include?(message)
+    @notices << String(message)
+  end
+
+  # clear out notices, and set to current message
+  def set_notice(message)
+    @notices = [message]
   end
 
   def add_error(message)
@@ -42,7 +57,7 @@ module ServiceStatus
   end
 
   def success?
-    !warnings? && !errors?
+    !errors?
   end
 
   def run
@@ -50,6 +65,7 @@ module ServiceStatus
   end
 
   def absorb_status(service, action: FAIL_ON_ERROR)
+    @notices += service.notices
     @warnings += service.warnings
     @errors += service.errors
     case action
@@ -63,6 +79,7 @@ module ServiceStatus
 
   def as_json(_options = {})
     {
+      notices: @notices,
       errors: @errors,
       warnings: @warnings
     }
