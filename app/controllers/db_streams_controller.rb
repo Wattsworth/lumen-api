@@ -2,6 +2,8 @@
 
 # Controller for DbStreams
 class DbStreamsController < ApplicationController
+  before_action :authenticate_user!
+
   def update
     stream = DbStream.find(params[:id])
     adapter = DbAdapter.new(stream.db.url)

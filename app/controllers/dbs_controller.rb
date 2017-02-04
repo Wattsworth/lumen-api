@@ -2,6 +2,8 @@
 
 # Controller for Database Objects
 class DbsController < ApplicationController
+  before_action :authenticate_user!
+
   def show
     db = Db.find(params[:id])
     render json: db

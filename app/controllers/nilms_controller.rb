@@ -2,6 +2,8 @@
 
 # controller for NILM objects
 class NilmsController < ApplicationController
+  before_action :authenticate_user!
+  
   def index
     nilms = Nilm.all
     render json: nilms

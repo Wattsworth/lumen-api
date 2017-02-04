@@ -26,10 +26,16 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # render json on error since this is an API app
+  config.debug_exception_response_format = :api
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
-
   config.action_mailer.perform_caching = false
+  config.action_mailer.default_url_options = { :host => 'wattsworth.dev' }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings =
+    { :address => "localhost", :port => 1025 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -54,7 +60,10 @@ Rails.application.configure do
   config.middleware.insert_before 0, Rack::Cors do
     allow do
       origins '*'
-      resource '*', headers: :any, methods: [:get, :post, :options, :put]
+      resource '*',
+        :headers => :any,
+        :expose => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+        :methods =>  [:get, :post, :options, :delete, :put]
     end
   end
 end

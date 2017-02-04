@@ -12,6 +12,7 @@ module ControlPanel
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     # Add folders under the services directory
+    config.api_only = true
     %w(nilm db db_folder db_stream).each do |service|
       config.autoload_paths << Rails.root.join("app/services/#{service}")
     end

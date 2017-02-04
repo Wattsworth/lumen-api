@@ -2,6 +2,8 @@
 
 # Controller for DbFolders
 class DbFoldersController < ApplicationController
+  before_action :authenticate_user!
+
   def show
     folder = DbFolder.find(params[:id])
     render json: folder, shallow: false
