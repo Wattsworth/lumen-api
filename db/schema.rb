@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170204010933) do
+ActiveRecord::Schema.define(version: 20170214031515) do
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time",   limit: 8
@@ -92,6 +92,30 @@ ActiveRecord::Schema.define(version: 20170204010933) do
     t.string   "url"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.integer  "nilm_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "user_id"
+    t.integer  "user_group_id"
+    t.string   "role"
+  end
+
+  create_table "user_groups", force: :cascade do |t|
+    t.string   "name"
+    t.string   "description"
+    t.integer  "owner_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "user_groups_users", id: false, force: :cascade do |t|
+    t.integer "user_group_id"
+    t.integer "user_id"
+    t.index ["user_group_id"], name: "index_user_groups_users_on_user_group_id"
+    t.index ["user_id"], name: "index_user_groups_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :user_groups
+  resources :permissions
   mount_devise_token_auth_for 'User', at: 'auth'
   resources :db_decimations
   resources :nilms

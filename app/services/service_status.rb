@@ -14,7 +14,7 @@
 #
 module ServiceStatus
   attr_reader :errors, :warnings, :notices
-
+  attr_writer :errors #errors can be set in bulk
   FAIL_ON_ERROR   = 0
   FAIL_ON_WARNING = 1
   NEVER_FAIL      = 2

@@ -2,11 +2,16 @@
 
 # Database object
 class Db < ApplicationRecord
+
+  #---Associations----
   belongs_to :root_folder,
              foreign_key: 'db_folder_id',
              class_name: 'DbFolder',
              dependent: :destroy
   belongs_to :nilm
+
+  #---Validations
+  validates :max_points_per_plot, numericality: { only_integer: true }
 
   def url
     # return a custom URL if set
@@ -17,9 +22,9 @@ class Db < ApplicationRecord
     "#{nilm.url}/nilmdb"
   end
 
-  def as_json(options = {})
-    db = super(except: [:created_at, :updated_at])
-    db[:contents] = root_folder.as_json({shallow: false})
-    db
-  end
+  # def as_json(options = {})
+  #  db = super(except: [:created_at, :updated_at])
+  #  db[:contents] = root_folder.as_json({shallow: false})
+  #  db
+  # end
 end

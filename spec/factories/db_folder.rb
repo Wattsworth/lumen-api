@@ -2,7 +2,7 @@
 
 # generic DbFolder
 FactoryGirl.define do
-  factory :db_folder do
+  factory :db_folder, aliases: [:root_folder] do
     name { Faker::Lorem.word }
   end
 end
