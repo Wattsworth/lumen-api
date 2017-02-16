@@ -60,6 +60,7 @@ RSpec.describe NilmsController, type: :request do
             params: {id: john_nilm.id, name: ""},
             headers: @auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message(/Name/)
         expect(john_nilm.reload.name).to eq("John's NILM")
       end
     end

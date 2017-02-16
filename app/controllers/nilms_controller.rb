@@ -27,7 +27,7 @@ class NilmsController < ApplicationController
       @service.add_notice('NILM Updated')
       render status: :ok
     else
-      @service.errors = @nilm.errors
+      @service.errors = @nilm.errors.full_messages
       render status: :unprocessable_entity
     end
   end

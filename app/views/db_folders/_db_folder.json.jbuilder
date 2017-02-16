@@ -1,4 +1,3 @@
-
 json.extract! db_folder, :id, :name, :description, :path, :hidden,
                          :start_time, :end_time, :size_on_disk
 json.shallow shallow

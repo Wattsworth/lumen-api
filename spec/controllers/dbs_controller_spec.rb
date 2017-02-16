@@ -57,7 +57,21 @@ RSpec.describe DbsController, type: :request do
     end
     context 'with owner permissions' do
       it 'refreshes db if URL is changed or refresh paramter is set' do
+        # TODO: this is a mess, figure out how instance doubles work
+        mock_adapter = spy #instance_double(DbAdapter)
+        allow(DbAdapter).to receive(:new).and_return(mock_adapter)
+        mock_service =  spy #---_ this line is to provide dummy messages
+        allow(mock_service).to receive(:run).and_return(StubService.new)
+        allow(UpdateDb).to receive(:new).and_return(mock_service)
 
+        @auth_headers = john.create_new_auth_token
+        put "/dbs/#{john_nilm.db.id}.json",
+            params: {url: 'http://new/url'},
+            headers: @auth_headers
+        expect(response.status).to eq(200)
+        expect(mock_service).to have_received(:run)
+        # service is stubbed so message is empty
+        # expect(response).to have_notice_message
       end
       it 'returns 422 on invalid parameters' do
         # max points must be a positive number
