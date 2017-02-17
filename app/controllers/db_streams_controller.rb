@@ -3,28 +3,38 @@
 # Controller for DbStreams
 class DbStreamsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_stream, only: [:update]
+  before_action :authorize_owner, only: [:update]
 
   def update
-    stream = DbStream.find(params[:id])
-    adapter = DbAdapter.new(stream.db.url)
-    service = EditStream.new(adapter)
-    service.run(stream, stream_params)
-    if service.success?
-      render json: {data: stream, messages: service}
-    else
-      render json: {data: nil, messages: service},
-             status: :unprocessable_entity
-    end
+    adapter = DbAdapter.new(@db.url)
+    @service = EditStream.new(adapter)
+    @service.run(@db_stream, stream_params)
+    render status: @service.success? ? :ok : :unprocessable_entity
   end
 
   private
 
   def stream_params
-    params.require(:stream)
-          .permit(:name, :description, :name_abbrev, :hidden,
+    params.permit(:name, :description, :name_abbrev, :hidden,
                   db_elements_attributes:
-                  [:id, :name, :units,
-                   :default_max, :default_min, :scale_factor, :offset,
-                   :plottable, :discrete])
+                    [:id, :name, :units, :default_max,
+                     :default_min, :scale_factor,
+                     :offset, :plottable, :discrete])
+  end
+
+  def set_stream
+    @db_stream = DbStream.find(params[:id])
+    @db = @db_stream.db
+    @nilm = @db.nilm
+  end
+
+  # authorization based on nilms
+  def authorize_owner
+    head :unauthorized  unless current_user.owns_nilm?(@nilm)
+  end
+
+  def authorize_viewer
+    head :unauthorized  unless current_user.views_nilm?(@nilm)
   end
 end

@@ -87,7 +87,7 @@ RSpec.describe DbsController, type: :request do
         # should ignore size and accept max_points
         @auth_headers = john.create_new_auth_token
         size = john_nilm.db.size_db
-        num_points = pete_nilm.db.max_points_per_plot
+        num_points = john_nilm.db.max_points_per_plot
         put "/dbs/#{john_nilm.db.id}.json",
             params: {max_points_per_plot: num_points+10, size_db: size+10},
             headers: @auth_headers

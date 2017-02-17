@@ -5,7 +5,7 @@ require 'rails_helper'
 describe 'EditStream service' do
   let(:db_adapter) { instance_double(DbAdapter) }
   let(:stream) { FactoryGirl.create(:db_stream, path: '/stream/path', name: 'old') }
-  let(:element) { FactoryGirl.create(:db_element, db_stream: stream)}
+  let(:element) { stream.db_elements.first}
   let(:service) { EditStream.new(db_adapter) }
   # db adapter return values
   let(:success) { { error: false, msg: '' } }

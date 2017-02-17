@@ -10,9 +10,6 @@ class DbsController < ApplicationController
   # GET /dbs
   # GET /dbs.json
   def show
-    db = Db.find(params[:id])
-    head(:unauthorized) && return unless current_user.views_nilm?(db.nilm)
-    render json: db
   end
 
   # PATCH/PUT /dbs/1

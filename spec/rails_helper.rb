@@ -8,6 +8,7 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/factory_girl'
 require 'support/api_messages'
+require 'support/mock_service'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

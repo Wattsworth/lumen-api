@@ -1,1 +1,1 @@
-json.partial! "dbs/db", nilm: @db
+json.partial! "dbs/db", db: @db
