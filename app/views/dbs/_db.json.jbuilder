@@ -1,7 +1,18 @@
-json.extract! db, :id, :url, :size_total, :size_db,
-                  :size_other, :version, :max_points_per_plot,
-                  :available
+json.extract! db, *Db.json_keys
+
 json.contents do
-  json.partial! "db_folders/db_folder", db_folder: @db.root_folder,
-                                        shallow: false
+  root = db.root_folder
+  json.extract! root, *DbFolder.json_keys
+
+  json.subfolders(root.subfolders) do |folder|
+    json.extract! folder, *DbFolder.json_keys
+  end
+
+  json.streams(root.db_streams) do |stream|
+    json.extract! stream, *DbStream.json_keys
+    json.elements(stream.db_elements) do |element|
+      json.extract! element, *DbElement.json_keys
+    end
+  end
+
 end

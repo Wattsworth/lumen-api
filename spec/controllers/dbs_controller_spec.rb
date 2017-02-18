@@ -97,7 +97,7 @@ RSpec.describe DbsController, type: :request do
         expect(john_nilm.db.max_points_per_plot).to eq(num_points+10)
       end
     end
-    context 'without admin permissions' do
+    context 'without owner permissions' do
       it 'returns unauthorized' do
         @auth_headers = john.create_new_auth_token
         num_points = pete_nilm.db.max_points_per_plot

@@ -24,7 +24,7 @@ class DbStreamsController < ApplicationController
   end
 
   def set_stream
-    @db_stream = DbStream.find(params[:id])
+    @db_stream = DbStream.includes(:db_elements).find(params[:id])
     @db = @db_stream.db
     @nilm = @db.nilm
   end

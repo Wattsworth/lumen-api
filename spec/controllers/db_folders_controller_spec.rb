@@ -35,8 +35,6 @@ RSpec.describe DbFoldersController, type: :request do
           expect(response.header['Content-Type']).to include('application/json')
           body = JSON.parse(response.body)
           expect(body['name']).to eq(folder.name)
-          # contains rendered streams & subfolders (empty, but present)
-          expect(body['shallow']).to be(false)
         end
       end
     end

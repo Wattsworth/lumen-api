@@ -1,13 +1,12 @@
-json.extract! db_folder, :id, :name, :description, :path, :hidden,
-                         :start_time, :end_time, :size_on_disk
-json.shallow shallow
-unless(shallow)
-  json.subfolders do
-    json.array! db_folder.subfolders, partial: 'db_folders/db_folder',
-                as: :db_folder, shallow: true
-  end
-  json.streams do
-    json.array! db_folder.db_streams, partial: 'db_streams/db_stream',
-                as: :db_stream
+json.extract! db_folder, *DbFolder.json_keys
+
+json.subfolders(db_folder.subfolders) do |folder|
+  json.extract! folder, *DbFolder.json_keys
+end
+
+json.streams(db_folder.db_streams.includes(:db_elements)) do |stream|
+  json.extract! stream, *DbStream.json_keys
+  json.elements(stream.db_elements) do |element|
+    json.extract! element, *DbElement.json_keys
   end
 end

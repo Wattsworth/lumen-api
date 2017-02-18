@@ -22,9 +22,8 @@ class Db < ApplicationRecord
     "#{nilm.url}/nilmdb"
   end
 
-  # def as_json(options = {})
-  #  db = super(except: [:created_at, :updated_at])
-  #  db[:contents] = root_folder.as_json({shallow: false})
-  #  db
-  # end
+  def self.json_keys
+    [:id, :url, :size_total, :size_db, :available,
+     :size_other, :version, :max_points_per_plot]
+  end
 end

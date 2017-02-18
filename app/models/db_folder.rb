@@ -47,12 +47,8 @@ class DbFolder < ApplicationRecord
     self.description = ''
   end
 
-  def as_json(options = {shallow: true})
-    folder = super(except: [:created_at, :updated_at])
-    if(options[:shallow]== false)
-      folder[:subfolders] = subfolders.map(&:as_json)
-      folder[:streams] = db_streams.includes(:db_elements,:db_decimations).map(&:as_json)
-    end
-    folder
+  def self.json_keys
+    [:id, :name, :description, :path, :hidden,
+     :start_time, :end_time, :size_on_disk]
   end
 end

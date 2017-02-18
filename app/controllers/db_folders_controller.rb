@@ -26,7 +26,7 @@ class DbFoldersController < ApplicationController
   end
 
   def set_folder
-    @db_folder = DbFolder.find(params[:id])
+    @db_folder = DbFolder.includes(:db_streams).find(params[:id])
     @db = @db_folder.db
     @nilm = @db.nilm
   end
