@@ -42,6 +42,10 @@ module ServiceStatus
     @errors << String(message)
   end
 
+  def add_errors(messages)
+    messages.each{|m| self.add_error(m)}
+  end
+  
   def errors?
     !@errors.empty?
   end

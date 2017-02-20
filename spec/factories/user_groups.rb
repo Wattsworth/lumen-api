@@ -6,7 +6,7 @@ FactoryGirl.define do
 
     sequence :name do |n| "group#{n}" end
     description { Faker::Lorem.sentence }
-    owner       { users.first }
-    users       { members.empty? ? [User.first] : members }
+    owner       { users.empty? ? create(:user): users.first }
+    users       { members.empty? ? [create(:user)] : members }
   end
 end

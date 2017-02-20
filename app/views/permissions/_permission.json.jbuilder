@@ -1,2 +1,2 @@
-json.extract! permission, :id, :created_at, :updated_at
-json.url permission_url(permission, format: :json)
+json.extract! permission, *Permission.json_keys
+json.name permission.target_name

@@ -1,53 +1,44 @@
+# frozen_string_literal: true
 class PermissionsController < ApplicationController
-  before_action :set_permission, only: [:show, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_nilm
+  before_action :authorize_admin
 
   # GET /permissions
   # GET /permissions.json
   def index
-    @permissions = Permission.all
-  end
-
-  # GET /permissions/1
-  # GET /permissions/1.json
-  def show
+    # return permissions for nilm specified by nilm_id
+    @permissions = Permission.find_by_nilm(@nilm)
   end
 
   # POST /permissions
   # POST /permissions.json
   def create
-    @permission = Permission.new(permission_params)
-
-    if @permission.save
-      render :show, status: :created, location: @permission
-    else
-      render json: @permission.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /permissions/1
-  # PATCH/PUT /permissions/1.json
-  def update
-    if @permission.update(permission_params)
-      render :show, status: :ok, location: @permission
-    else
-      render json: @permission.errors, status: :unprocessable_entity
-    end
+    # create permission for nilm specified by nilm_id
+    @service = PermissionService.new
+    @service.run(@nilm, params[:role], params[:type], params[:target_id])
+    @permission = @service.permission
+    render status: @service.success? ? :ok : :unprocessable_entity
   end
 
   # DELETE /permissions/1
   # DELETE /permissions/1.json
   def destroy
-    @permission.destroy
+    # remove permission from nilm specified by nilm_id
+    @service = ServiceStub.new
+    @service.add_notice("Removed permission")
+    @nilm.permissions.find(params[:id]).destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_permission
-      @permission = Permission.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def permission_params
-      params.fetch(:permission, {})
-    end
+  def set_nilm
+    @nilm = Nilm.find(params[:nilm_id])
+  end
+
+  # authorization based on nilms
+  def authorize_owner
+    head :unauthorized  unless current_user.owns_nilm?(@nilm)
+  end
+
 end

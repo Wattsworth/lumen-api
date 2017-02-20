@@ -15,8 +15,9 @@ describe 'ServiceStatus' do
   it 'tracks errors' do
     x = ModuleTester.new
     x.add_error('message')
+    x.add_errors(['multiple','messages'])
     expect(x.errors?).to be true
-    expect(x.errors.length).to eq(1)
+    expect(x.errors.length).to eq(3)
   end
 
   it 'tracks warnings' do

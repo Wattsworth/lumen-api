@@ -9,6 +9,12 @@ RSpec.describe User, type: :model do
     specify { expect(user).to respond_to(:email) }
   end
 
+  it 'responds to name' do
+    u = build(:user, first_name: 'Bill', last_name: 'Test')
+    expect(u.name).to match('Bill Test')
+  end
+
+  describe
   describe "permission management" do
     context "Given the Donnal's House and the Lab" do
       before(:each) do

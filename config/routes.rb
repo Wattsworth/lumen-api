@@ -7,5 +7,5 @@ Rails.application.routes.draw do
 
   mount_devise_token_auth_for 'User', at: 'auth'
   resources :user_groups
-  resources :permissions
+  resources :permissions, only: [:index, :create, :destroy]
 end

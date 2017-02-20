@@ -13,7 +13,7 @@ module ControlPanel
     # -- all .rb files in that directory are automatically loaded.
     config.api_only = true
     # Add folders under the services and adapters directory
-    %w(nilm db db_folder db_stream).each do |service|
+    %w(nilm db db_folder db_stream permission).each do |service|
       config.autoload_paths << Rails.root.join("app/services/#{service}")
     end
     config.autoload_paths << Rails.root.join("app/adapters")
