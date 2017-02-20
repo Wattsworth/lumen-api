@@ -8,15 +8,15 @@ class PermissionsController < ApplicationController
   # GET /permissions.json
   def index
     # return permissions for nilm specified by nilm_id
-    @permissions = Permission.find_by_nilm(@nilm)
+    @permissions = @nilm.permissions
   end
 
   # POST /permissions
   # POST /permissions.json
   def create
     # create permission for nilm specified by nilm_id
-    @service = PermissionService.new
-    @service.run(@nilm, params[:role], params[:type], params[:target_id])
+    @service = CreatePermission.new
+    @service.run(@nilm, params[:role], params[:target], params[:target_id])
     @permission = @service.permission
     render status: @service.success? ? :ok : :unprocessable_entity
   end
@@ -25,20 +25,21 @@ class PermissionsController < ApplicationController
   # DELETE /permissions/1.json
   def destroy
     # remove permission from nilm specified by nilm_id
-    @service = ServiceStub.new
-    @service.add_notice("Removed permission")
-    @nilm.permissions.find(params[:id]).destroy
+    @service = DestroyPermission.new
+    @service.run(@nilm, current_user, params[:id])
+    render status: @service.success? ? :ok : :unprocessable_entity
   end
 
   private
 
   def set_nilm
-    @nilm = Nilm.find(params[:nilm_id])
+    @nilm = Nilm.find_by_id(params[:nilm_id])
+    head :not_found unless @nilm
   end
 
   # authorization based on nilms
-  def authorize_owner
-    head :unauthorized  unless current_user.owns_nilm?(@nilm)
+  def authorize_admin
+    head :unauthorized  unless current_user.admins_nilm?(@nilm)
   end
 
 end

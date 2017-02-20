@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Handles changing DbStream attributes
+# Handles permission creation
 class CreatePermission
   include ServiceStatus
   attr_reader :permission
