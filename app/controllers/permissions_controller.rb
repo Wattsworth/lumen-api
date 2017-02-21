@@ -8,7 +8,7 @@ class PermissionsController < ApplicationController
   # GET /permissions.json
   def index
     # return permissions for nilm specified by nilm_id
-    @permissions = @nilm.permissions
+    @permissions = @nilm.permissions.includes(:user, :user_group)
   end
 
   # POST /permissions

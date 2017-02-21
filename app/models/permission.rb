@@ -25,6 +25,16 @@ class Permission < ApplicationRecord
     end
   end
 
+  def target_type
+    if self.user_id?
+      return 'user'
+    elsif self.user_group_id?
+      return 'group'
+    else
+      return 'unknown'
+    end
+  end
+
   def self.json_keys
     [:id, :nilm_id, :role]
   end
