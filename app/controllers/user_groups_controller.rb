@@ -1,18 +1,13 @@
 class UserGroupsController < ApplicationController
-  before_action :set_user_group, only: [:show, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_user_group, only: [:update, :destroy]
+  before_action :authentiate_group_admin, only: [:update, :destroy]
 
-  # GET /user_groups
   # GET /user_groups.json
   def index
     @user_groups = UserGroup.all
   end
 
-  # GET /user_groups/1
-  # GET /user_groups/1.json
-  def show
-  end
-
-  # POST /user_groups
   # POST /user_groups.json
   def create
     @user_group = UserGroup.new(user_group_params)
@@ -48,6 +43,10 @@ class UserGroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_group_params
-      params.fetch(:user_group, {})
+      params.permit(:name, :description)
+    end
+
+    def authorize_group_admin
+      head :unauthorized unless @user_group.owner==current_user
     end
 end

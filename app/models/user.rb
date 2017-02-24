@@ -15,6 +15,14 @@ class User < ActiveRecord::Base
   validates :email, :uniqueness => true
   validates :password, :confirmation => true
 
+  #---Scopes----
+  scope :confirmed, -> { where("confirmed_at IS NOT NULL") }
+  # ----------------------------------------
+  # :section: Class Methods
+  # ----------------------------------------
+  def self.json_keys #public attributes
+    [:id, :first_name, :last_name]
+  end
   # ----------------------------------------
   # :section: Permission Checkers
   # ----------------------------------------
@@ -76,7 +84,7 @@ class User < ActiveRecord::Base
   def name
     "#{self.first_name} #{self.last_name}"
   end
-  
+
   protected
 
 

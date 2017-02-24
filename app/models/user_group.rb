@@ -24,39 +24,11 @@ class UserGroup < ApplicationRecord
   validates :owner_id, :presence => true
 
 
-  #---------------
-  #:section: Utility Methods
-  #---------------
-
-  # Returns a json model of the UserGroup.
-  # ===attributes
-  # * +options+: hash, pass <tt>{}</tt> for no options, or <tt>{:include_members=>true}</tt>
-  #
-  # ===examples
-  #
-  #  #Just the group
-  #  user_group.as_json({}) =
-  #  {"name"        => "Lab Group",
-  #   "description" => "Users working on NILM in the lab",
-  #   "id"          => 3}
-  #
-  #  #Include the members
-  #  user_group.as_json({:include_members=>true}) =
-  #  {"name"        => "Lab Group",
-  #   "description" => "Users working on NILM in the lab",
-  #   "id"          => 3}
-  #   :members      => [
-  #       {"first_name" => "John",
-  #        "last_name"  => "Ledner",
-  #        "id"         => 3,
-  #        :confirmed   => true,
-  #        }, ... ]
-  #   }
-  def as_json(options)
-     group = super(only: [:name, :description, :id])
-     if(options[:include_members])
-       group[:members] = self.users.as_json(:abbreviated=>true)
-     end
-     return group
+  # ----------------------------------------
+  # :section: Class Methods
+  # ----------------------------------------
+  def self.json_keys #public attributes
+    [:id, :name]
   end
+
 end

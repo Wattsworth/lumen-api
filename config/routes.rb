@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :db_streams, only: [:update]
 
   mount_devise_token_auth_for 'User', at: 'auth'
-  resources :user_groups
+  resources :users, only: [:index, :create, :destroy]
+  resources :user_groups, only: [:index, :create, :destroy]
   resources :permissions, only: [:index, :create, :destroy]
 end

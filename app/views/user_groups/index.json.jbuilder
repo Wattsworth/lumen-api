@@ -1,1 +1,3 @@
-json.array! @user_groups, partial: 'user_groups/user_group', as: :user_group
+json.array! @user_groups do |group|
+  json.extract! group, *UserGroup.json_keys
+end
