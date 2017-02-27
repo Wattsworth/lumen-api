@@ -7,6 +7,11 @@ Rails.application.routes.draw do
 
   mount_devise_token_auth_for 'User', at: 'auth'
   resources :users, only: [:index, :create, :destroy]
-  resources :user_groups, only: [:index, :create, :destroy]
+  resources :user_groups, only: [:index, :create, :destroy] do
+    member do
+      put 'add_member'
+      put 'remove_member'
+    end
+  end
   resources :permissions, only: [:index, :create, :destroy]
 end

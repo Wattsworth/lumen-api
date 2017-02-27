@@ -48,14 +48,14 @@ class User < ActiveRecord::Base
     allowed_nilms = []
     roles.each do |role|
       #first get NILM's explicitly related to this user
-      user_nilms = self.nilms.where(permissions:{role: role})
+      user_nilms = self.nilms.where(permissions:{role: role}).includes(:db)
       allowed_nilms+= user_nilms.pluck(:id)
 
       #add NILM's related through a user_group
       User.joins(:user_groups, :permissions, :nilms)
       user_groups = self.user_groups
       group_nilms = Nilm.joins(permissions: :user_group).where(permissions:{role: role}).
-         where(user_groups: {id: user_groups.pluck(:id)})
+         where(user_groups: {id: user_groups.pluck(:id)}).includes(:db)
       if(not allowed_nilms.empty?)
         group_nilms = group_nilms.where("nilms.id NOT IN (?)", allowed_nilms)
       end
