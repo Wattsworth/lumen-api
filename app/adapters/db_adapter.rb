@@ -3,6 +3,7 @@
 # Wrapper around NilmDB HTTP service
 class DbAdapter
   include HTTParty
+  default_timeout 10
 
   def initialize(url)
     @url = url

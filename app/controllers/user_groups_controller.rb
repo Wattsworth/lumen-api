@@ -5,7 +5,10 @@ class UserGroupsController < ApplicationController
 
   # GET /user_groups.json
   def index
-    @user_groups = UserGroup.all
+    @owned_groups = UserGroup.where(owner: current_user)
+    @member_groups = current_user.user_groups
+    my_groups = @member_groups+@owned_groups
+    @other_groups = UserGroup.where.not(id: my_groups.pluck(:id))
   end
 
   # POST /user_groups.json

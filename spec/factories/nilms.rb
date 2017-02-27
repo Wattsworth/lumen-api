@@ -5,7 +5,7 @@ FactoryGirl.define do
 
   factory :nilm do
     db
-    name "test_nilm"
+    name {Faker::StarWars.unique.planet}
     description { Faker::Lorem.sentence }
     transient do
       admins []
