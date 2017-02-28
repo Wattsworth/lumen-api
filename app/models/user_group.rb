@@ -15,12 +15,11 @@ class UserGroup < ApplicationRecord
   #---Associations----
   has_and_belongs_to_many :users
   belongs_to :owner, class_name: "User"
-  has_many :permissions
+  has_many :permissions, dependent: :destroy
   has_many :nilms, through: :permissions
 
   #---Validations-----
   validates :name, :presence => true, :uniqueness => true
-  validates :description, :presence => true
   validates :owner_id, :presence => true
 
 
@@ -28,7 +27,7 @@ class UserGroup < ApplicationRecord
   # :section: Class Methods
   # ----------------------------------------
   def self.json_keys #public attributes
-    [:id, :name]
+    [:id, :name, :description]
   end
 
 end

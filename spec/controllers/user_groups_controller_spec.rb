@@ -153,4 +153,74 @@ end
       end
     end
   end
+
+  describe 'POST create' do
+    context 'with authenticated user' do
+      it 'creates a group' do
+        @auth_headers = other_user.create_new_auth_token
+        post "/user_groups.json",
+          params: {name: 'test_group', description: 'some text'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+        expect(UserGroup.find_by_name('test_group').owner).to eq other_user
+        #check to make sure JSON renders the members
+        body = JSON.parse(response.body)
+        # no members yet
+        expect(body['data']['members'].count).to eq 0
+      end
+      it 'returns error if unsuccesful' do
+        @auth_headers = other_user.create_new_auth_token
+        create(:user_group, name: 'CanOnlyBeOne')
+        post "/user_groups.json",
+          params: {name: 'CanOnlyBeOne', description: 'some text'},
+          headers: @auth_headers
+        # can't have duplicate name
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message(/Name/)
+        expect(UserGroup.where(name: 'CanOnlyBeOne').count).to eq 1
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        post "/user_groups.json",
+          params: { name: 'test', description: 'something'}
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'DELETE destroy' do
+    context 'with group owner' do
+        it 'removes the group and associated data' do
+          @auth_headers = owner.create_new_auth_token
+          nilm = create(:nilm, admins: [group])
+          pCount = Permission.count
+          delete "/user_groups/#{group.id}.json",
+            headers: @auth_headers
+          expect(response).to have_http_status(:ok)
+          expect(response).to have_notice_message
+          expect(UserGroup.exists?(group.id)).to be false
+          # make sure the associated permissions are destroyed
+          expect(Permission.count).to eq(pCount-1)
+        end
+    end
+    context 'with anybody else' do
+      it 'returns unauthorized' do
+        @auth_headers = member1.create_new_auth_token
+        delete "/user_groups/#{group.id}.json",
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(UserGroup.exists?(group.id)).to be true
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        delete "/user_groups/#{group.id}.json"
+        expect(response).to have_http_status(:unauthorized)
+        expect(UserGroup.exists?(group.id)).to be true
+      end
+    end
+
+  end
 end

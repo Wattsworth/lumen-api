@@ -22,7 +22,16 @@ class UserGroupsController < ApplicationController
 
   # POST /user_groups.json
   def create
-    # TODO
+    @user_group = UserGroup.create(user_group_params)
+    @user_group.owner = current_user
+    @service = StubService.new
+    if @user_group.save
+      @service.add_notice('created new group')
+      render :show, status: :ok
+    else
+      @service.errors = @user_group.errors.full_messages
+      render :show, status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /user_groups/1/add_member.json
@@ -46,7 +55,9 @@ class UserGroupsController < ApplicationController
 
   # DELETE /user_groups/1.json
   def destroy
-    # TODO
+    @service = StubService.new
+    @user_group.destroy
+    @service.set_notice('removed group')
   end
 
   private
