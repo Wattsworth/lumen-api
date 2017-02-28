@@ -221,6 +221,54 @@ end
         expect(UserGroup.exists?(group.id)).to be true
       end
     end
+  end
 
+  describe 'PUT update' do
+    context 'with owner' do
+      it 'updates the group' do
+        @auth_headers = owner.create_new_auth_token
+        put "/user_groups/#{group.id}.json",
+          params: {name: 'new', description: 'changed'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+        expect(group.reload.name).to eq('new')
+        expect(group.description).to eq('changed')
+        #check to make sure JSON renders the members
+        body = JSON.parse(response.body)
+        expect(body['data']['members'].count).to eq group.users.count
+      end
+      it 'returns error if unsuccesful' do
+        @auth_headers = owner.create_new_auth_token
+        orig_name = group.name
+        # name cannot be blank
+        put "/user_groups/#{group.id}.json",
+          params: {name: '', description: 'changed'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
+        expect(group.reload.name).to eq(orig_name)
+      end
+    end
+    context 'with anybody else' do
+      it 'returns unauthorized' do
+        @auth_headers = member1.create_new_auth_token
+        orig_name = group.name
+        put "/user_groups/#{group.id}.json",
+          params: {name: 'new', description: 'changed'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(group.reload.name).to eq orig_name
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        orig_name = group.name
+        put "/user_groups/#{group.id}.json",
+          params: {name: 'new', description: 'changed'}
+        expect(response).to have_http_status(:unauthorized)
+        expect(group.reload.name).to eq orig_name
+      end
+    end
   end
 end

@@ -50,7 +50,14 @@ class UserGroupsController < ApplicationController
 
   # PATCH/PUT /user_groups/1.json
   def update
-    # TODO
+    @service = StubService.new
+    if @user_group.update(user_group_params)
+      @service.add_notice('updated group')
+      render :show, status: :ok
+    else
+      @service.errors = @user_group.errors.full_messages
+      render :show, status: :unprocessable_entity
+    end
   end
 
   # DELETE /user_groups/1.json
