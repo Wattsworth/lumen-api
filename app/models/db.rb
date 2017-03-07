@@ -18,8 +18,8 @@ class Db < ApplicationRecord
     return super unless super.nil? || super.empty?
     # no default URL if no parent NILM available
     return '--error, no parent NILM--' if nilm.nil?
-    # return the default URL"
-    "#{nilm.url}/nilmdb"
+    # return the default URL
+    nilm.url
   end
 
   def self.json_keys

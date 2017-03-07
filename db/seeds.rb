@@ -37,9 +37,8 @@ lab = FactoryGirl.create(:user_group, name: 'Lab', owner: john, members: [steve,
 
 # create real nilms
 nc = CreateNilm.new
-nc.run(name: 'Local', url: 'http://localhost:8080')
+nc.run(name: 'Local', url: 'http://localhost:8080', owner: john)
 home = nc.nilm
-FactoryGirl.create(:permission, nilm: home, user: john, role: 'admin')
 FactoryGirl.create(:permission, nilm: home, user_group: donnals, role: 'owner')
 FactoryGirl.create(:permission, nilm: home, user: steve, role: 'viewer')
 

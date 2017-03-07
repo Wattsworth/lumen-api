@@ -1,5 +1,5 @@
 json.data do
-  json.partial! "nilms/nilm", nilm: @nilm
+  # nothing here
 end
 
 json.partial! "helpers/messages", service: @service

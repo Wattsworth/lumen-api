@@ -13,16 +13,9 @@ class DbsController < ApplicationController
   # PATCH/PUT /dbs/1.json
   def update
     @service = StubService.new
-    prev_url = @db.url
     if @db.update_attributes(db_params)
-      if prev_url != @db.url || params[:refresh]
-        # refresh the database
-        @service = refresh
-        render status: @service.success? ? :ok : :unprocessable_entity
-      else
-        @service.add_notice('database updated')
-        render status: :ok
-      end
+      @service.add_notice('Database updated')
+      render status: :ok
     else
       @service.errors = @db.errors.full_messages
       render status: :unprocessable_entity
@@ -31,14 +24,14 @@ class DbsController < ApplicationController
 
   private
 
-  def refresh
-    adapter = DbAdapter.new(@db.url)
-    service = UpdateDb.new(db: @db)
-    service.run(adapter.dbinfo, adapter.schema)
-  end
+  #def refresh
+  #    adapter = DbAdapter.new(@db.url)
+  #  service = UpdateDb.new(db: @db)
+  #  service.run(adapter.dbinfo, adapter.schema)
+  #end
 
   def db_params
-    params.permit(:url, :max_points_per_plot)
+    params.permit(:max_points_per_plot)
   end
 
   def set_db

@@ -21,7 +21,12 @@ class DbAdapter
     rescue
       return nil
     end
-
+    # if the site exists but is not a nilm...
+    required_keys = %w(size other free reserved)
+    unless info.respond_to?(:has_key?) &&
+           required_keys.all? { |s| info.key? s }
+      return nil
+    end
     {
       version: version,
       size_db: info['size'],
@@ -38,7 +43,10 @@ class DbAdapter
     rescue
       return nil
     end
-
+    #if the url exists but is not a nilm...
+    unless resp.parsed_response.respond_to?(:map)
+      return nil
+    end
     resp.parsed_response.map do |entry|
       metadata = if entry[0].match(UpdateStream.decimation_tag).nil?
                    __get_metadata(entry[0])
@@ -85,7 +93,7 @@ class DbAdapter
       return { error: true, msg: 'cannot contact NilmDB server' }
     end
     unless response.success?
-      Rails.logger.warn("#{@url}: update_metadata(#{path})"+
+      Rails.logger.warn("#{@url}: update_metadata(#{path})"\
                         " => #{response.code}:#{response.body}")
       return { error: true, msg: "error updating #{path} metadata" }
     end

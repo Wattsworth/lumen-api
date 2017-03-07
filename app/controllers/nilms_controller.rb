@@ -3,20 +3,26 @@
 # controller for NILM objects
 class NilmsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_nilm, only: [:show, :update]
+  before_action :set_nilm, only: [:update, :refresh, :destroy]
   before_action :authorize_viewer, only: [:show]
-  before_action :authorize_owner, only: [:update]
+  before_action :authorize_owner, only: [:update, :refresh]
+  before_action :authorize_admin, only: [:destroy]
 
-  # GET /nilms
   # GET /nilms.json
   def index
     @nilms = current_user.retrieve_nilms_by_permission
   end
 
-  # GET /nilms/1
-  # GET /nilms/1.json
-  def show
-    # renders nilms/show
+
+  # POST /nilms.json
+  def create
+    @service = CreateNilm.new
+    @service.run(name: nilm_params[:name],
+                 url: nilm_params[:url],
+                 description: nilm_params[:description],
+                 owner: current_user)
+    @nilm = @service.nilm
+    render :show, status: @service.success? ? :ok : :unprocessable_entity
   end
 
   # PATCH/PUT /nilms/1
@@ -24,12 +30,26 @@ class NilmsController < ApplicationController
   def update
     @service = StubService.new
     if @nilm.update(nilm_params)
-      @service.add_notice('NILM Updated')
-      render status: :ok
+      @service.add_notice('Installation Updated')
+      render :show, status: :ok
     else
       @service.errors = @nilm.errors.full_messages
-      render status: :unprocessable_entity
+      render :show, status: :unprocessable_entity
     end
+  end
+
+  # PATCH/PUT /nilms/1/refresh.json
+  def refresh
+    @service = UpdateNilm.new()
+    @service.run(@nilm)
+    render status: @service.success? ? :ok : :unprocessable_entity
+  end
+
+  # DELETE /nilms/1.json
+  def destroy
+    @service = StubService.new
+    @nilm.destroy
+    @service.set_notice('removed nilm')
   end
 
 
@@ -45,6 +65,9 @@ class NilmsController < ApplicationController
     end
 
     #authorization based on nilms
+    def authorize_admin
+      head :unauthorized  unless current_user.admins_nilm?(@nilm)
+    end
     def authorize_owner
       head :unauthorized  unless current_user.owns_nilm?(@nilm)
     end

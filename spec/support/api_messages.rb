@@ -26,6 +26,34 @@ RSpec::Matchers.define :have_error_message do |regex|
   end
 end
 
+RSpec::Matchers.define :have_warning_message do |regex|
+  match do |response|
+    body = JSON.parse(response.body)
+    # omit regex to test if there are any warning messages
+    if(regex == nil)
+      return false if body["messages"]["warnings"].empty?
+      return true
+    end
+    # specify regex to match a particular warning message
+    body["messages"]["warnings"].each do |warning|
+      return true if(regex.match(warning))
+    end
+    return false
+  end
+
+  failure_message do |str|
+    body = JSON.parse(response.body)
+    "Expected #{regex} to match in [ " +
+      body["messages"]["warnings"].join(", ")+" ]"
+  end
+
+  failure_message_when_negated do |str|
+    body = JSON.parse(response.body)
+    "Expected #{regex} to not match in:\n" +
+      body["messages"]["warnings"].join(", ")
+  end
+end
+
 RSpec::Matchers.define :have_notice_message do |regex|
   match do |response|
     body = JSON.parse(response.body)

@@ -45,7 +45,7 @@ module ServiceStatus
   def add_errors(messages)
     messages.each{|m| self.add_error(m)}
   end
-  
+
   def errors?
     !@errors.empty?
   end
@@ -54,6 +54,10 @@ module ServiceStatus
     # ignore duplicates
     return if @warnings.include?(message)
     @warnings << String(message)
+  end
+
+  def add_warnings(messages)
+    messages.each{|m| self.add_warning(m)}
   end
 
   def warnings?

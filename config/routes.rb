@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :nilms, only: [:index, :show, :update]
+  resources :nilms, only: [:index, :create, :update, :destroy] do
+    member do
+      put 'refresh'
+    end
+  end
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
   resources :db_streams, only: [:update]

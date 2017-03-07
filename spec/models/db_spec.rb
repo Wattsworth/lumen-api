@@ -23,6 +23,7 @@ RSpec.describe 'Db' do
     expect(DbFolder.find_by_id(root_folder.id)).to be nil
   end
 
+  #TODO: nilms will only have joule endpoint
   describe 'url' do
     it 'can be customized' do
       db_x = Db.create(url: 'custom_string')
@@ -31,7 +32,7 @@ RSpec.describe 'Db' do
     it 'can be left as default' do
       nilm = Nilm.create(url: 'base')
       db_x = Db.new(nilm: nilm, url: '')
-      expect(db_x.url).to eq('base/nilmdb')
+      expect(db_x.url).to eq('base')
     end
   end
 end

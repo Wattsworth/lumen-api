@@ -5,8 +5,9 @@ FactoryGirl.define do
 
   factory :nilm do
     db
-    name {Faker::StarWars.unique.planet}
+    name {Faker::Lorem.unique.words(3).join(' ')}
     description { Faker::Lorem.sentence }
+    url {Faker::Internet.unique.url}
     transient do
       admins []
       owners []

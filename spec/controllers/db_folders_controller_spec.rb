@@ -2,8 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe DbFoldersController, type: :request do
-  let(:john) { create(:user, first_name: 'John') }
-  let(:steve) { create(:user, first_name: 'Steve') }
+  let(:john) { create(:confirmed_user, first_name: 'John') }
+  let(:steve) { create(:confirmed_user, first_name: 'Steve') }
   let(:john_nilm) { create(:nilm, name: "John's NILM", admins: [john]) }
   let(:john_folder) do
     create(:db_folder, name: 'John Folder',
@@ -20,10 +20,6 @@ RSpec.describe DbFoldersController, type: :request do
   # index action does not exist
 
   describe 'GET show' do
-    before do
-      john.confirm
-      steve.confirm
-    end
     context 'with any permissions' do
       it 'returns the db_folder as json' do
         # john has some permission on all 3 nilms
@@ -58,8 +54,6 @@ RSpec.describe DbFoldersController, type: :request do
 
   describe 'PUT update' do
     before do
-      john.confirm
-      steve.confirm
       @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
       @db_success = { error: false, msg: 'success' }
       @db_failure = { error: true, msg: 'dberror' }
@@ -67,7 +61,6 @@ RSpec.describe DbFoldersController, type: :request do
     end
 
     context 'with owner permissions' do
-
       it 'updates nilmdb and local database' do
         @auth_headers = john.create_new_auth_token
         expect(@mock_adapter).to receive(:set_folder_metadata)

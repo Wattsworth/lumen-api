@@ -11,7 +11,6 @@ RSpec.describe DbsController, type: :request do
   let(:hidden_nilm) { create(:nilm, name: "Private NILM", owners: [steve])}
 
   # index action does not exist
-
   describe 'GET show' do
     before do
       john.confirm
@@ -56,23 +55,6 @@ RSpec.describe DbsController, type: :request do
       steve.confirm
     end
     context 'with owner permissions' do
-      it 'refreshes db if URL is changed or refresh paramter is set' do
-        # TODO: this is a mess, figure out how instance doubles work
-        mock_adapter = spy #instance_double(DbAdapter)
-        allow(DbAdapter).to receive(:new).and_return(mock_adapter)
-        mock_service =  spy #---_ this line is to provide dummy messages
-        allow(mock_service).to receive(:run).and_return(StubService.new)
-        allow(UpdateDb).to receive(:new).and_return(mock_service)
-
-        @auth_headers = john.create_new_auth_token
-        put "/dbs/#{john_nilm.db.id}.json",
-            params: {url: 'http://new/url'},
-            headers: @auth_headers
-        expect(response.status).to eq(200)
-        expect(mock_service).to have_received(:run)
-        # service is stubbed so message is empty
-        # expect(response).to have_notice_message
-      end
       it 'returns 422 on invalid parameters' do
         # max points must be a positive number
         @auth_headers = john.create_new_auth_token
@@ -86,14 +68,14 @@ RSpec.describe DbsController, type: :request do
       it 'only allows configurable parameters to be changed' do
         # should ignore size and accept max_points
         @auth_headers = john.create_new_auth_token
-        size = john_nilm.db.size_db
+        url = john_nilm.db.url
         num_points = john_nilm.db.max_points_per_plot
         put "/dbs/#{john_nilm.db.id}.json",
-            params: {max_points_per_plot: num_points+10, size_db: size+10},
+            params: {max_points_per_plot: num_points+10, url: 'different'},
             headers: @auth_headers
         expect(response.status).to eq(200)
         expect(response).to have_notice_message()
-        expect(john_nilm.db.reload.size_db).to eq(size)
+        expect(john_nilm.db.reload.url).to eq(url)
         expect(john_nilm.db.max_points_per_plot).to eq(num_points+10)
       end
     end

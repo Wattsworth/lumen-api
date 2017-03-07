@@ -10,8 +10,8 @@ class Nilm < ApplicationRecord
   has_many :user_groups, through: :permissions
 
   #---Validations-----
-  validates :name, presence: true
-
+  validates :name, presence: true, uniqueness: true
+  validates :url, presence: true, uniqueness: true
 
   def self.json_keys
     [:id, :name, :description, :url]
