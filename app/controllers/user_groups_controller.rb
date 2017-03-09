@@ -4,11 +4,15 @@ class UserGroupsController < ApplicationController
   before_action :set_user_group,
                 only: [:update,
                        :remove_member,
+                       :invite_member,
+                       :create_member,
                        :add_member,
                        :destroy]
   before_action :authorize_group_admin,
                 only: [:update,
                        :remove_member,
+                       :invite_member,
+                       :create_member,
                        :add_member,
                        :destroy]
 
@@ -39,6 +43,32 @@ class UserGroupsController < ApplicationController
     @service = AddGroupMember.new
     @service.run(@user_group, params[:user_id])
     render :show, status: @service.success? ? :ok : :unprocessable_entity
+  end
+
+  # PATCH/PUT /user_groups/1/create_member.json
+  def create_member
+    @service = StubService.new
+    user = User.new(user_params)
+    unless user.save
+      @service.errors = user.errors.full_messages
+      render :show, status: :unprocessable_entity
+      return
+    end
+    @user_group.users << user
+    @service.add_notice('created user')
+    render :show
+  end
+
+  # PATCH/PUT /user_groups/1/invite_member.json
+  def invite_member
+    @service = InviteUser.new
+    @service.run(params[:email])
+    if @service.success?
+      @user_group.users << @service.user
+      render :show
+    else
+      render :show, status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /user_groups/1/remove_member.json
@@ -77,6 +107,11 @@ class UserGroupsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_group_params
     params.permit(:name, :description)
+  end
+
+  def user_params
+    params.permit(:first_name, :last_name, :email,
+                  :password, :password_confirmation)
   end
 
   def authorize_group_admin

@@ -112,6 +112,73 @@ end
     end
   end
 
+  describe 'PUT create_member' do
+    context 'with owner' do
+      it 'creates a user and adds him to the group' do
+        members = group.users.length
+        @auth_headers = owner.create_new_auth_token
+        put "/user_groups/#{group.id}/create_member.json",
+          params: {first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'poorchoice'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(User.find_by_email('valid@url.com')).to_not be nil
+        expect(response).to have_notice_message
+        #make sure response contains the new user
+        expect(response.header['Content-Type']).to include('application/json')
+        body = JSON.parse(response.body)
+        expect(body["data"]["members"].length).to eq(members+1)
+      end
+      it 'returns error message if user has errors' do
+        @auth_headers = owner.create_new_auth_token
+        put "/user_groups/#{group.id}/create_member.json",
+          params: {first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'nomatch'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(User.find_by_email('valid@url.com')).to be nil
+        expect(response).to have_error_message
+      end
+    end
+    context 'with anyone else' do
+      it 'returns unauthorized' do
+        @auth_headers = member1.create_new_auth_token
+        put "/user_groups/#{group.id}/create_member.json",
+          params: {first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'poorchoice'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(User.find_by_email('valid@url.com')).to be nil
+      end
+    end
+    context 'without sigin' do
+      it 'returns unauthorized' do
+        put "/user_groups/#{group.id}/create_member.json",
+          params: {first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'poorchoice'}
+        expect(response).to have_http_status(:unauthorized)
+        expect(User.find_by_email('valid@url.com')).to be nil
+      end
+    end
+  end
+
+  describe 'PUT invite_member' do
+    context 'with owner' do
+      it 'invites a user and adds him to the group'
+      it 'adds existing members to the group'
+    end
+    context 'with anyone else' do
+      it 'returns unauthorized'
+    end
+    context 'without sigin' do
+      it 'returns unauthorized'
+    end
+  end
+
   describe 'PUT remove_member' do
     context 'with owner' do
       it 'removes a member' do

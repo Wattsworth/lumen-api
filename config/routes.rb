@@ -13,7 +13,9 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :create, :destroy]
   resources :user_groups, only: [:index, :update, :create, :destroy] do
     member do
+      put 'create_member'
       put 'add_member'
+      put 'invite_member'
       put 'remove_member'
     end
   end
