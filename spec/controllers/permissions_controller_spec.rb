@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe PermissionsController, type: :request do
-  let(:john) { create(:user, first_name: 'John') }
-  let(:nicky) { create(:user, first_name: 'Nicky')}
-  let(:steve) { create(:user, first_name: 'Steve') }
-  let(:pete) { create(:user, first_name: 'Pete') }
+  let(:john) { create(:confirmed_user, first_name: 'John') }
+  let(:nicky) { create(:confirmed_user, first_name: 'Nicky')}
+  let(:steve) { create(:confirmed_user, first_name: 'Steve') }
+  let(:pete) { create(:confirmed_user, first_name: 'Pete') }
   let(:john_nilm) { create(:nilm, name: "John's NILM",
                                   admins: [john],
                                   owners: [nicky],
@@ -101,6 +101,71 @@ RSpec.describe PermissionsController, type: :request do
       end
     end
   end
+
+  describe 'PUT #create_user' do
+    context 'with admin privileges' do
+      it 'creates user with specified permission' do
+        @auth_headers = john.create_new_auth_token
+        put "/permissions/create_user.json",
+          params: {nilm_id: john_nilm.id,
+                   role: 'viewer',
+                   first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'poorchoice'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+        user = User.find_by_email('valid@url.com')
+        expect(user.views_nilm?(john_nilm)).to be true
+      end
+      it 'returns error if user cannot be created' do
+        #password does not match confirmation
+        @auth_headers = john.create_new_auth_token
+        put "/permissions/create_user.json",
+          params: {nilm_id: john_nilm.id,
+                   role: 'viewer',
+                   first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'error'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
+        user = User.find_by_email('valid@url.com')
+        expect(user).to be nil
+      end
+    end
+    context 'with anyone else' do
+      it 'returns unauthorized' do
+        #password does not match confirmation
+        @auth_headers = steve.create_new_auth_token
+        put "/permissions/create_user.json",
+          params: {nilm_id: john_nilm.id,
+                   role: 'viewer',
+                   first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'error'},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+        user = User.find_by_email('valid@url.com')
+        expect(user).to be nil
+      end
+    end
+    context 'without signin' do
+      it 'returns unauthorized' do
+        #password does not match confirmation
+        put "/permissions/create_user.json",
+          params: {nilm_id: john_nilm.id,
+                   role: 'viewer',
+                   first_name: 'bill', last_name: 'will',
+                   email: 'valid@url.com', password: 'poorchoice',
+                   password_confirmation: 'error'}
+        expect(response).to have_http_status(:unauthorized)
+        user = User.find_by_email('valid@url.com')
+        expect(user).to be nil
+      end
+    end
+  end
+
 
   describe 'DELETE #destroy' do
     # removes specified permission from nilm

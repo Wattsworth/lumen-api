@@ -19,5 +19,10 @@ Rails.application.routes.draw do
       put 'remove_member'
     end
   end
-  resources :permissions, only: [:index, :create, :destroy]
+  resources :permissions, only: [:index, :create, :destroy] do
+    collection do
+      put 'create_user'
+      put 'invite_user'
+    end
+  end
 end
