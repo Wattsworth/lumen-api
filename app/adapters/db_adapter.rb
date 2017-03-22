@@ -4,6 +4,7 @@
 class DbAdapter
   include HTTParty
   default_timeout 10
+  attr_reader :url
 
   def initialize(url)
     @url = url
@@ -82,6 +83,53 @@ class DbAdapter
                        __build_stream_metadata(db_stream))
   end
 
+  def get_count(path, start_time, end_time)
+    begin
+      resp = self.class.get("#{@url}/stream/extract",
+               :query=>{
+                 :path=>path,
+                 :start=>start_time,
+                 :end=>end_time,
+                 :count=>1
+                })
+      return nil unless resp.success?
+      return resp.parsed_response.to_i
+    rescue
+      return nil
+    end
+  end
+
+  def get_data(path, start_time, end_time)
+    begin
+      resp = self.class.get("#{@url}/stream/extract",
+               :query=>{
+                 :path=>path,
+                 :start=>start_time,
+                 :end=>end_time,
+                 :markup=>1
+                })
+      return nil unless resp.success?
+      return __parse_data(resp.parsed_response)
+    rescue
+      return nil
+    end
+  end
+
+  def get_intervals(path, start_time, end_time)
+    begin
+      resp = self.class.get("#{@url}/stream/intervals",
+               :query=>{
+                 :path=>path,
+                 :start=>start_time,
+                 :end=>end_time
+                })
+      return nil unless resp.success?
+      return __parse_intervals(resp.parsed_response)
+    rescue
+      return nil
+    end
+  end
+
   def _set_path_metadata(path, data)
     params = { path: path,
                data: data }.to_json
@@ -148,5 +196,48 @@ class DbAdapter
       end
     end
     metadata.symbolize_keys
+  end
+
+  # create an array from string response
+  def __parse_data(resp)
+    data = []
+    add_break = false
+    resp.split("\n").each do |row|
+      next if row.length==0 #last row is empty (\n)
+      words = row.split(" ")
+      #check if this is an interval
+       if(words[0]=="#")
+         #this is a comment line, check if it is an interval boundary marker
+         if(words[1]=="interval-start")
+           intervalStart=words[2].to_i
+         end
+         if(words[1]=="interval-end")
+           intervalEnd=words[2].to_i
+           if(intervalEnd!=intervalStart)
+             add_break = true
+           end
+         end
+         next
+       end
+       data.push(nil) if(add_break)  #add a data break
+       add_break = false
+       #this is a normal row
+       data.push(words.map(&:to_i))
+    end
+    data
+  end
+
+  #create horizontal line segments representing
+  #the intervals
+  #
+  def __parse_intervals(resp)
+    intervals = JSON.parse('['+resp.chomp().gsub(/\r\n/,',')+']')
+    data = []
+    intervals.each do |interval|
+      data.push([interval[0],0])
+      data.push([interval[1],0])
+      data.push(nil)  #break up the intervals
+    end
+    return data
   end
 end

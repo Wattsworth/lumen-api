@@ -2,5 +2,6 @@
 
 FactoryGirl.define do
   factory :db_decimation do
+    
   end
 end

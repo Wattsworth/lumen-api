@@ -51,4 +51,59 @@ describe DbAdapter do
     end
   end
 
+  describe 'get_count' do
+    it 'returns number of elements in path over interval', :vcr do
+      adapter = DbAdapter.new(url)
+      start_time = 1361546159000000
+      end_time = 1361577615684742
+      path = '/tutorial/pump-events'
+      raw_count = adapter.get_count(path,start_time, end_time)
+      lvl4_count = adapter.get_count(path+"~decim-4",start_time, end_time)
+      expect(raw_count>0).to be true
+      expect(raw_count/4).to eq(lvl4_count)
+    end
+    it 'returns nil on server failure', :vcr do
+      adapter = DbAdapter.new(url)
+      start_time = 1361546159000000
+      end_time = 1361577615684742
+      path = '/path/does/not/exist'
+      count = adapter.get_count(path,start_time, end_time)
+      expect(count).to be nil
+    end
+  end
+
+  describe 'get_data' do
+    it 'returns array of data over interval', :vcr do
+      adapter = DbAdapter.new(url)
+      start_time = 1361546159000000
+      end_time = 1361577615684742
+      path = '/tutorial/pump-events'
+      raw_data = adapter.get_data(path,start_time, end_time)
+      lvl4_data = adapter.get_data(path+"~decim-4",start_time, end_time)
+      expect(raw_data.length>0).to be true
+      expect(raw_data.length/4).to eq(lvl4_data.length)
+    end
+    it 'adds nil to indicate interval breaks', :vcr do
+      adapter = DbAdapter.new(url)
+      start_time = 1361466001000000
+      end_time = 1361577615684742
+      path = '/tutorial/pump-events'
+      data = adapter.get_data(path,start_time, end_time)
+      expect(data.length>0).to be true
+      num_intervals = data.select{|elem| elem==nil}.length
+      expect(num_intervals).to eq 1
+    end
+  end
+
+  describe 'get_intervals' do
+    it 'returns array of interval line segments', :vcr do
+      adapter = DbAdapter.new(url)
+      start_time = 1360017784000000
+      end_time = 1361579612066315
+      path = '/tutorial/pump-events'
+      intervals = adapter.get_intervals(path,start_time, end_time)
+      expect(intervals.length).to eq(60) #20 intervals 
+    end
+  end
+
 end

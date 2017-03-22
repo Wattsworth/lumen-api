@@ -16,12 +16,20 @@ FactoryGirl.define do
 
     transient do
       elements_count 4
+      decimations_count 0
     end
 
     after(:create) do |stream, evaluator|
       create_list(:db_element,
                   evaluator.elements_count,
                   db_stream: stream)
+      evaluator.decimations_count.times do |x|
+        create(:db_decimation,
+        db_stream: stream,
+        start_time: stream.start_time,
+        end_time: stream.end_time,
+        level: 4**(x+1))
+      end
     end
   end
 end
