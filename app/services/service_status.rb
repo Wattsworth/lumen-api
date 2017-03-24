@@ -68,6 +68,12 @@ module ServiceStatus
     !errors?
   end
 
+  def reset_messages
+    @errors = []
+    @warnings = []
+    @notices = []
+  end
+
   def run
     raise 'Implement in client, return service object'
   end

@@ -25,6 +25,10 @@ class DbElement < ApplicationRecord
     self.offset = 0.0
   end
 
+  def name_path
+    "#{db_stream.name_path}/#{self.name}"
+  end
+
   def self.json_keys
     [:id, :name, :units, :column, :default_max, :discrete,
      :default_min, :scale_factor, :offset, :plottable]

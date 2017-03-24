@@ -27,6 +27,10 @@ class DbFolder < ApplicationRecord
     self.parent == nil
   end
 
+  def name_path
+    return "" if root_folder?
+    return "#{parent.name_path}/#{self.name}"
+  end
 
   def self.defined_attributes
     [:name, :description, :hidden]

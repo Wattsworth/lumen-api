@@ -3,7 +3,7 @@
 # generic DbStream
 FactoryGirl.define do
   factory :db_element do
-    name { Faker::Lorem.unique.words(3) }
+    name { Faker::Lorem.unique.words(3).join(' ') }
     units 'volts'
     sequence(:column)
     default_max 100

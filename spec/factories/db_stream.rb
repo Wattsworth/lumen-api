@@ -3,7 +3,7 @@
 # generic DbStream
 FactoryGirl.define do
   factory :db_stream do
-    name { Faker::Lorem.words(3) }
+    name { Faker::Lorem.words(3).join(' ') }
     name_abbrev { Faker::Lorem.word }
     description { Faker::Lorem.sentence }
     delete_locked false

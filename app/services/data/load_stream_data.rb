@@ -34,6 +34,8 @@ class LoadStreamData
       db_stream, valid_decim, start_time, end_time, resolution
     )
     if plottable_decim.nil?
+      #check if its nil becuase the nilm isn't available
+      return self unless self.success?
       # data is not sufficiently decimated, get intervals from
       # the valid decimation level (highest resolution)
       path = __build_path(db_stream, valid_decim.level)

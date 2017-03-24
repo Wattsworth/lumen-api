@@ -5,4 +5,5 @@
 # run a service (eg a simple update)
 class StubService
   include ServiceStatus
+  attr_reader :data
 end

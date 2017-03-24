@@ -200,6 +200,7 @@ class DbAdapter
 
   # create an array from string response
   def __parse_data(resp)
+    return [] if resp==nil #no data returned
     data = []
     add_break = false
     resp.split("\n").each do |row|
@@ -222,7 +223,7 @@ class DbAdapter
        data.push(nil) if(add_break)  #add a data break
        add_break = false
        #this is a normal row
-       data.push(words.map(&:to_i))
+       data.push(words.map(&:to_f))
     end
     data
   end
