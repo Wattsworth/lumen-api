@@ -18,13 +18,13 @@ class LoadStreamData
   # sets data and data_type
   # data_type: raw
   # data:
-  #   [{id: element_id, values: [[ts,y],[ts,y],nil,[ts,y]]},...]
+  #   [{id: element_id, type: raw values: [[ts,y],[ts,y],nil,[ts,y]]},...]
   # data_type: interval
   # data:
-  #   [{id: element_id, values: [[start,0],[end,0],nil,...]}]
+  #   [{id: element_id, type: raw, values: [[start,0],[end,0],nil,...]}]
   # data_type: decimated
   # data:
-  #   [{id: element_id, values: [[ts,y,ymin,ymax],[ts,y,ymin,ymax],nil,...]}]
+  #   [{id: element_id, type: raw, values: [[ts,y,ymin,ymax],[ts,y,ymin,ymax],nil,...]}]
   #
   def run(db_stream, start_time, end_time)
     resolution = db_stream.db.max_points_per_plot
@@ -152,7 +152,7 @@ class LoadStreamData
 
   def __build_raw_data(db_stream, resp)
     elements = db_stream.db_elements.order(:column)
-    data = elements.map { |e| { id: e.id, values: [] } }
+    data = elements.map { |e| { id: e.id, type: 'raw', values: [] } }
     resp.each do |row|
       if row.nil? # add an interval break to all the elements
         data.each { |d| d[:values].push(nil) }
@@ -168,7 +168,7 @@ class LoadStreamData
 
   def __build_decimated_data(db_stream, resp)
     elements = db_stream.db_elements.order(:column)
-    data = elements.map { |e| { id: e.id, values: [] } }
+    data = elements.map { |e| { id: e.id, type: 'decimated', values: [] } }
     resp.each do |row|
       if row.nil? # add an interval break to all the elements
         data.each { |d| d[:values].push(nil) }
@@ -193,7 +193,7 @@ class LoadStreamData
 
   def __build_interval_data(db_stream, resp)
     elements = db_stream.db_elements.order(:column)
-    elements.map { |e| { id: e.id, values: resp } }
+    elements.map { |e| { id: e.id, type: 'interval', values: resp } }
   end
 
   def __scale_value(value,element)
