@@ -30,7 +30,7 @@ class DbElement < ApplicationRecord
   end
 
   def self.json_keys
-    [:id, :name, :units, :column, :default_max, :discrete,
+    [:id, :db_stream_id, :name, :units, :column, :default_max, :discrete,
      :default_min, :scale_factor, :offset, :plottable]
   end
 end
