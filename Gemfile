@@ -56,6 +56,8 @@ group :development, :test do
   gem 'spring-commands-rspec'
   gem 'terminal-notifier-guard'
   gem 'terminal-notifier'
+  gem 'capistrano', '~> 3.6'
+  gem 'capistrano-rails', '~> 1.2'
 end
 
 # NOTE: install mailcatcher for development
