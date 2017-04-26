@@ -12,7 +12,7 @@ RSpec.describe 'DbElement' do
     specify { expect(db_element).to respond_to(:scale_factor) }
     specify { expect(db_element).to respond_to(:offset) }
     specify { expect(db_element).to respond_to(:plottable) }
-    specify { expect(db_element).to respond_to(:discrete) }
+    specify { expect(db_element).to respond_to(:display_type) }
   end
 
   describe 'validation' do

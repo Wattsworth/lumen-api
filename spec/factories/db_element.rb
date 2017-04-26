@@ -11,6 +11,6 @@ FactoryGirl.define do
     scale_factor 1.0
     offset 0.0
     plottable true
-    discrete false
+    display_type 'continuous'
   end
 end

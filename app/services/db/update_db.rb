@@ -10,7 +10,6 @@ class UpdateDb
   end
 
   def run(dbinfo, schema)
-
     # check to make sure dbinfo and schema are set
     # if either is nil, the database is not available
     if(dbinfo.nil? || schema.nil?)

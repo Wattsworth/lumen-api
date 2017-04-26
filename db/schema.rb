@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170214031515) do
+ActiveRecord::Schema.define(version: 20170422184639) do
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time",   limit: 8
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170214031515) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.boolean  "plottable"
-    t.boolean  "discrete"
+    t.string   "display_type"
   end
 
   create_table "db_folders", force: :cascade do |t|

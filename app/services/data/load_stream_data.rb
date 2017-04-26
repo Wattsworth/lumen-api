@@ -33,6 +33,7 @@ class LoadStreamData
     plottable_decim = findPlottableDecimationLevel(
       db_stream, valid_decim, start_time, end_time, resolution
     )
+    elements = db_stream.db_elements.order(:column)
     if plottable_decim.nil?
       #check if its nil becuase the nilm isn't available
       return self unless self.success?
@@ -41,7 +42,7 @@ class LoadStreamData
       path = __build_path(db_stream, valid_decim.level)
       resp = @db_adapter.get_intervals(path, start_time, end_time)
       @data_type = 'interval'
-      @data = __build_interval_data(db_stream, resp)
+      @data = __build_interval_data(elements, resp)
       return self
     end
     # request is plottable, see if we can get the raw (level 1) data
@@ -54,10 +55,13 @@ class LoadStreamData
 
     if plottable_decim.level == 1
       @data_type = 'raw'
-      @data = __build_raw_data(db_stream, resp)
+      @data = __build_raw_data(elements, resp)
     else
       @data_type = 'decimated'
-      @data = __build_decimated_data(db_stream, resp)
+      decimateable_elements = elements.where(display_type: ["continuous","discrete"])
+      interval_elements = elements.where(display_type: "event")
+      @data = __build_decimated_data(decimateable_elements, resp) +
+              __build_intervals_from_decimated_data(interval_elements, resp)
     end
   end
 
@@ -150,8 +154,7 @@ class LoadStreamData
     "#{db_stream.path}~decim-#{level}"
   end
 
-  def __build_raw_data(db_stream, resp)
-    elements = db_stream.db_elements.order(:column)
+  def __build_raw_data(elements, resp)
     data = elements.map { |e| { id: e.id, type: 'raw', values: [] } }
     resp.each do |row|
       if row.nil? # add an interval break to all the elements
@@ -166,8 +169,7 @@ class LoadStreamData
     return data
   end
 
-  def __build_decimated_data(db_stream, resp)
-    elements = db_stream.db_elements.order(:column)
+  def __build_decimated_data(elements, resp)
     data = elements.map { |e| { id: e.id, type: 'decimated', values: [] } }
     resp.each do |row|
       if row.nil? # add an interval break to all the elements
@@ -176,12 +178,13 @@ class LoadStreamData
       end
       ts = row[0]
       elements.each_with_index do |elem, i|
+        ####TODO: fix offset calcs when elements is a subset
         mean_offset = 0
-        min_offset = elements.length
-        max_offset = elements.length*2
-        mean = __scale_value(row[1+i+mean_offset],elem)
-        min =  __scale_value(row[1+i+min_offset], elem)
-        max =  __scale_value(row[1+i+max_offset], elem)
+        min_offset = elem.db_stream.db_elements.length
+        max_offset = elem.db_stream.db_elements.length*2
+        mean = __scale_value(row[1+elem.column+mean_offset],elem)
+        min =  __scale_value(row[1+elem.column+min_offset], elem)
+        max =  __scale_value(row[1+elem.column+max_offset], elem)
         tmp_min = [min,max].min
         max = [min,max].max
         min = tmp_min
@@ -191,9 +194,40 @@ class LoadStreamData
     return data
   end
 
-  def __build_interval_data(db_stream, resp)
-    elements = db_stream.db_elements.order(:column)
+  def __build_interval_data(elements, resp)
     elements.map { |e| { id: e.id, type: 'interval', values: resp } }
+  end
+
+  #for data that cannot be represented as decimations
+  # eg: events, compute intervals from the actual decimated data
+  def __build_intervals_from_decimated_data(elements, resp)
+    #compute intervals from resp
+    start_time = resp.first[0]
+    end_time = resp.last[0]
+    interval_start = start_time
+    interval_end = start_time
+    intervals = []
+    resp.each do |row|
+      if row.nil?
+        intervals += [[interval_start, 0], [interval_end, 0], nil]
+        interval_start = nil
+        next
+      end
+      if interval_start == nil
+        interval_start = row[0]
+        next
+      end
+      interval_end = row[0]
+    end
+
+    if interval_start != nil
+      intervals += [[interval_start, 0], [end_time, 0]]
+    end
+    elements.map do |e|
+      { id: e.id,
+      type: 'interval',
+      values: intervals }
+    end
   end
 
   def __scale_value(value,element)

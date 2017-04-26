@@ -13,6 +13,8 @@ class DbElement < ApplicationRecord
   validates :scale_factor, presence: true, numericality: true
   validates :default_min, allow_nil: true, numericality: true
   validates :default_max, allow_nil: true, numericality: true
+  TYPES = %w(discrete continuous event)
+  validates :display_type, :inclusion => {:in => TYPES}
 
   # force set any validated params to acceptable
   # default values this allows us to process corrupt databases
@@ -23,6 +25,7 @@ class DbElement < ApplicationRecord
     self.default_max = nil
     self.scale_factor = 1.0
     self.offset = 0.0
+    self.display_type = 'continuous'
   end
 
   def name_path
@@ -30,7 +33,7 @@ class DbElement < ApplicationRecord
   end
 
   def self.json_keys
-    [:id, :db_stream_id, :name, :units, :column, :default_max, :discrete,
-     :default_min, :scale_factor, :offset, :plottable]
+    [:id, :db_stream_id, :name, :units, :column, :default_max,
+     :default_min, :scale_factor, :offset, :plottable, :display_type]
   end
 end

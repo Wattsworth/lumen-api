@@ -64,7 +64,8 @@ class UpdateStream
   def __build_elements(stream:, stream_data:)
     stream.column_count.times do |x|
       element = stream.db_elements.find_by_column(x)
-      element ||= DbElement.new(db_stream: stream, column: x)
+      element ||= DbElement.new(db_stream: stream, column: x,
+        display_type: 'continuous')
       # check if there is stream metadata for column x
       entry = stream_data.select { |meta| meta[:column] == x }
       # use the metadata if present

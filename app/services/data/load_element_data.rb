@@ -49,6 +49,10 @@ class LoadElementData
         .sort{|a,b| a.end_time > b.end_time }
         .first.end_time
     end
+    if @start_time > @end_time
+      add_error("invalid time bounds")
+      return
+    end
     #2 pull data from streams
     combined_data = []
     req_streams.each do |stream|

@@ -2,16 +2,17 @@
 class DbElementsController < ApplicationController
   before_action :authenticate_user!
 
-  def index
-    @elements = DbElement.find(JSON.decode(params[:elements]))
-    # make sure the user is allowed to view these elements
-    @elements.each do |elem|
-      unless current_user.views_nilm?(elem.db_stream.db.nilm)
-        head :unauthorized
-        return
-      end
-    end
-  end
+
+  #def index
+  #  @elements = DbElement.find(JSON.parse(params[:elements]))
+  #  # make sure the user is allowed to view these elements
+  #  @elements.each do |elem|
+  #    unless current_user.views_nilm?(elem.db_stream.db.nilm)
+  #      head :unauthorized
+  #      return
+  #    end
+  #  end
+  #end
 
   def data
     req_elements = DbElement.find(JSON.parse(params[:elements]))

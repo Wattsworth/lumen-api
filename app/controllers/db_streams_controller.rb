@@ -19,8 +19,8 @@ class DbStreamsController < ApplicationController
     params.permit(:name, :description, :name_abbrev, :hidden,
                   db_elements_attributes:
                     [:id, :name, :units, :default_max,
-                     :default_min, :scale_factor,
-                     :offset, :plottable, :discrete])
+                     :default_min, :scale_factor, :display_type,
+                     :offset, :plottable])
   end
 
   def set_stream
