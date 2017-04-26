@@ -58,6 +58,7 @@ group :development, :test do
   gem 'terminal-notifier'
   gem 'capistrano', '~> 3.6'
   gem 'capistrano-rails', '~> 1.2'
+  gem 'capistrano-rbenv', '~> 2.0'
 end
 
 # NOTE: install mailcatcher for development
