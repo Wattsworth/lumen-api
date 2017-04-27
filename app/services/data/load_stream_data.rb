@@ -202,14 +202,18 @@ class LoadStreamData
   # eg: events, compute intervals from the actual decimated data
   def __build_intervals_from_decimated_data(elements, resp)
     #compute intervals from resp
-    start_time = resp.first[0]
-    end_time = resp.last[0]
-    interval_start = start_time
-    interval_end = start_time
+    if(resp.empty?)
+      return {id: e.id, type: 'interval', values: []}
+    end
     intervals = []
+    interval_start = nil
+    interval_end = nil
     resp.each do |row|
       if row.nil?
-        intervals += [[interval_start, 0], [interval_end, 0], nil]
+        if !interval_start.nil? && !interval_end.nil?
+          #interval break and we know the start and end times
+          intervals += [[interval_start, 0], [interval_end, 0], nil]
+        end
         interval_start = nil
         next
       end
@@ -220,8 +224,8 @@ class LoadStreamData
       interval_end = row[0]
     end
 
-    if interval_start != nil
-      intervals += [[interval_start, 0], [end_time, 0]]
+    if !interval_start.nil? && !interval_end.nil?
+      intervals += [[interval_start, 0], [interval_end, 0]]
     end
     elements.map do |e|
       { id: e.id,
