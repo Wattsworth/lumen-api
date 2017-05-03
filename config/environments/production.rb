@@ -63,11 +63,11 @@ Rails.application.configure do
      :port                 => 25,
      :domain               => "wattsworth.net",
      :user_name            => ENV['SMTP_USERNAME'],
-     :password             => ENV['GMAIL_PASSWORD'],
+     :password             => ENV['SMTP_PASSWORD'],
      :authentication       => "login",
      :enable_starttls_auto => true
   }
-  
+
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

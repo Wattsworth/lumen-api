@@ -38,3 +38,5 @@ append :linked_files, "config/secrets.yml", "db/production.sqlite3"
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
+
+#after 'deploy:publishing', 'deploy:restart'
