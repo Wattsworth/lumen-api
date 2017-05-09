@@ -1,0 +1,12 @@
+Hello <%= @resource.email %>,<br/>
+
+<p><%= @resource.invited_by.name %> has invited you to join Wattsworth.
+Click the link below to create your account.</p>
+
+<p><%= link_to "Accept Invitation",
+"#{@resource.invitation_url}?invitation_token=#{@token}" %></p>
+
+<p>If you don't want to accept the invitation, please ignore this email.<br />
+<br/>
+
+~wattsworth robot

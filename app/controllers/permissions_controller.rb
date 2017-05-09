@@ -46,6 +46,24 @@ class PermissionsController < ApplicationController
     render :create, status: @service.success? ? :ok : :unprocessable_entity
   end
 
+  # PUT /permissions/invite_user.json
+  def invite_user
+    invitation_service = InviteUser.new()
+    invitation_service.run(
+      current_user,
+      params[:email],
+      params[:redirect_url])
+    unless invitation_service.success?
+      @service = invitation_service
+      render 'helpers/empty_response', status: :unprocessable_entity
+      return
+    end
+    @service = CreatePermission.new
+    @service.absorb_status(invitation_service)
+    @service.run(@nilm, params[:role], 'user', invitation_service.user.id)
+    @permission = @service.permission
+    render :create, status: @service.success? ? :ok : :unprocessable_entity
+  end
 
   private
 

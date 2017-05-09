@@ -2,8 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe DbElementsController, type: :request do
-  let(:user1) { create(:confirmed_user, first_name: 'John') }
-  let(:user2) { create(:confirmed_user, first_name: 'Sam') }
+  let(:user1) { create(:user, first_name: 'John') }
+  let(:user2) { create(:user, first_name: 'Sam') }
   describe 'GET #data' do
     # retrieve data for elements listed by array of ids
     context 'with authenticated user' do

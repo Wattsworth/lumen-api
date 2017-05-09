@@ -13,7 +13,8 @@
 #
 class UserGroup < ApplicationRecord
   #---Associations----
-  has_and_belongs_to_many :users
+  has_many :memberships
+  has_many :users, through: :memberships
   belongs_to :owner, class_name: "User"
   has_many :permissions, dependent: :destroy
   has_many :nilms, through: :permissions
@@ -28,6 +29,10 @@ class UserGroup < ApplicationRecord
   # ----------------------------------------
   def self.json_keys #public attributes
     [:id, :name, :description]
+  end
+
+  def accepted_users
+    self.users.select{|u| u.accepted_or_not_invited?}
   end
 
 end

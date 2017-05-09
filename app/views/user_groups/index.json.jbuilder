@@ -1,7 +1,7 @@
 json.owner do
   json.array! @owned_groups do |group|
     json.extract! group, *UserGroup.json_keys
-    json.members group.users do |user|
+    json.members group.accepted_users do |user|
       json.extract! user, *User.json_keys
     end
   end

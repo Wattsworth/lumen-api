@@ -17,7 +17,7 @@ describe 'AddGroupMember service' do
     service.run(group, other_user.id)
     expect(service.success?).to be true
     expect(group.users.count).to eq(3)
-    expect(group.users.include?(other_user)).to be(true)
+    expect(group.users.reload.include?(other_user)).to be(true)
   end
   it 'errors if user is the owner' do
     service = AddGroupMember.new

@@ -67,7 +67,7 @@ RSpec.describe 'LoadStreamData' do
           else
             i_count += 1
             expect(data[:type]).to eq 'interval'
-            expect(data[:values]).to eq [[10,40],[50,90]]
+            expect(data[:values]).to eq [[40,0],[50,0]]
           end
         end
         expect(d_count).to eq 2 #2 decimated Streams

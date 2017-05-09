@@ -2,13 +2,14 @@ class User < ActiveRecord::Base
   #---Attributes------
   devise :database_authenticatable, :registerable,
           :recoverable, :rememberable, :trackable, :validatable,
-          :confirmable, :omniauthable
+          :omniauthable, :invitable
   include DeviseTokenAuth::Concerns::User
 
   #---Associations----
   has_many :permissions
   has_many :nilms, through: :permissions
-  has_and_belongs_to_many :user_groups
+  has_many :memberships
+  has_many :user_groups, through: :memberships
 
   #---Validations-----
   validates :first_name, :last_name, :email, :presence => true
@@ -82,7 +83,15 @@ class User < ActiveRecord::Base
   end
 
   def name
-    "#{self.first_name} #{self.last_name}"
+    if self.first_name.nil? && self.last_name.nil?
+      if self.email.nil?
+        return "UNKNOWN NAME"
+      else
+        return self.email
+      end
+    else
+      return "#{self.first_name} #{self.last_name}"
+    end
   end
 
   protected

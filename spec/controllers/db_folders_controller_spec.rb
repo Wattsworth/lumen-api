@@ -2,8 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe DbFoldersController, type: :request do
-  let(:john) { create(:confirmed_user, first_name: 'John') }
-  let(:steve) { create(:confirmed_user, first_name: 'Steve') }
+  let(:john) { create(:user, first_name: 'John') }
+  let(:steve) { create(:user, first_name: 'Steve') }
   let(:john_nilm) { create(:nilm, name: "John's NILM", admins: [john]) }
   let(:john_folder) do
     create(:db_folder, name: 'John Folder',

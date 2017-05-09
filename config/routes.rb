@@ -14,7 +14,12 @@ Rails.application.routes.draw do
     end
   end
 
-  mount_devise_token_auth_for 'User', at: 'auth'
+  # fix for devise invitable from:
+  #http://gabrielhilal.com/2015/11/07/integrating-devise_invitable-into-devise_token_auth/
+  mount_devise_token_auth_for 'User', at: 'auth', skip: [:invitations]
+  devise_for :users, path: "auth", only: [:invitations],
+    controllers: { invitations: 'invitations' }
+
   resources :users, only: [:index, :create, :destroy]
   resources :user_groups, only: [:index, :update, :create, :destroy] do
     member do

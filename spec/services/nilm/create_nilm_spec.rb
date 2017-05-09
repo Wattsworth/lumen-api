@@ -12,7 +12,7 @@ RSpec.describe 'CreateNilm' do
         errors: ['cannot contact database'],
         warnings: [])
       allow(UpdateDb).to receive(:new).and_return(service)
-      user = create(:confirmed_user, first_name: "John")
+      user = create(:user, first_name: "John")
       # run the NILM creation
       nilm_creator = CreateNilm.new
       nilm_creator.run(

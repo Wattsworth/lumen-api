@@ -38,7 +38,7 @@ class CreatePermission
       add_errors(@permission.errors.full_messages)
       return self
     end
-    set_notice("Created permission")
+    add_notice("Created permission")
     self
   end
 end

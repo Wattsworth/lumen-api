@@ -35,8 +35,8 @@ class LoadStreamData
     )
     elements = db_stream.db_elements.order(:column)
     if plottable_decim.nil?
-      #check if its nil becuase the nilm isn't available
-      return self unless self.success?
+      # check if its nil becuase the nilm isn't available
+      return self unless success?
       # data is not sufficiently decimated, get intervals from
       # the valid decimation level (highest resolution)
       path = __build_path(db_stream, valid_decim.level)
@@ -58,8 +58,8 @@ class LoadStreamData
       @data = __build_raw_data(elements, resp)
     else
       @data_type = 'decimated'
-      decimateable_elements = elements.where(display_type: ["continuous","discrete"])
-      interval_elements = elements.where(display_type: "event")
+      decimateable_elements = elements.where(display_type: %w(continuous discrete))
+      interval_elements = elements.where(display_type: 'event')
       @data = __build_decimated_data(decimateable_elements, resp) +
               __build_intervals_from_decimated_data(interval_elements, resp)
     end
@@ -163,10 +163,10 @@ class LoadStreamData
       end
       ts = row[0]
       elements.each_with_index do |elem, i|
-        data[i][:values].push([ts, __scale_value(row[1+i],elem)])
+        data[i][:values].push([ts, __scale_value(row[1 + i], elem)])
       end
     end
-    return data
+    data
   end
 
   def __build_decimated_data(elements, resp)
@@ -178,46 +178,44 @@ class LoadStreamData
       end
       ts = row[0]
       elements.each_with_index do |elem, i|
-        ####TODO: fix offset calcs when elements is a subset
+        # ###TODO: fix offset calcs when elements is a subset
         mean_offset = 0
         min_offset = elem.db_stream.db_elements.length
-        max_offset = elem.db_stream.db_elements.length*2
-        mean = __scale_value(row[1+elem.column+mean_offset],elem)
-        min =  __scale_value(row[1+elem.column+min_offset], elem)
-        max =  __scale_value(row[1+elem.column+max_offset], elem)
-        tmp_min = [min,max].min
-        max = [min,max].max
+        max_offset = elem.db_stream.db_elements.length * 2
+        mean = __scale_value(row[1 + elem.column + mean_offset], elem)
+        min =  __scale_value(row[1 + elem.column + min_offset], elem)
+        max =  __scale_value(row[1 + elem.column + max_offset], elem)
+        tmp_min = [min, max].min
+        max = [min, max].max
         min = tmp_min
-        data[i][:values].push([ts,mean,min,max])
+        data[i][:values].push([ts, mean, min, max])
       end
     end
-    return data
+    data
   end
 
   def __build_interval_data(elements, resp)
     elements.map { |e| { id: e.id, type: 'interval', values: resp } }
   end
 
-  #for data that cannot be represented as decimations
+  # for data that cannot be represented as decimations
   # eg: events, compute intervals from the actual decimated data
   def __build_intervals_from_decimated_data(elements, resp)
-    #compute intervals from resp
-    if(resp.empty?)
-      return {id: e.id, type: 'interval', values: []}
-    end
+    # compute intervals from resp
+    return { id: e.id, type: 'interval', values: [] } if resp.empty?
     intervals = []
     interval_start = nil
     interval_end = nil
     resp.each do |row|
       if row.nil?
         if !interval_start.nil? && !interval_end.nil?
-          #interval break and we know the start and end times
+          # interval break and we know the start and end times
           intervals += [[interval_start, 0], [interval_end, 0], nil]
+          interval_start = nil
         end
-        interval_start = nil
         next
       end
-      if interval_start == nil
+      if interval_start.nil?
         interval_start = row[0]
         next
       end
@@ -229,12 +227,12 @@ class LoadStreamData
     end
     elements.map do |e|
       { id: e.id,
-      type: 'interval',
-      values: intervals }
+        type: 'interval',
+        values: intervals }
     end
   end
 
-  def __scale_value(value,element)
-    (value.to_f-element.offset)*element.scale_factor
+  def __scale_value(value, element)
+    (value.to_f - element.offset) * element.scale_factor
   end
 end

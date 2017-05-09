@@ -17,7 +17,11 @@ class Permission < ApplicationRecord
 
   def target_name
     if self.user_id?
-      return self.user.name
+      if self.user.name.empty?
+        return self.user.email
+      else
+        return self.user.name
+      end
     elsif self.user_group_id?
       return self.user_group.name
     else

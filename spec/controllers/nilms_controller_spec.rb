@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe NilmsController, type: :request do
-  let(:john) { create(:confirmed_user, first_name: 'John') }
-  let(:nicky) {create(:confirmed_user, first_name: 'Nicky')}
-  let(:steve) { create(:confirmed_user, first_name: 'Steve') }
+  let(:john) { create(:user, first_name: 'John') }
+  let(:nicky) {create(:user, first_name: 'Nicky')}
+  let(:steve) { create(:user, first_name: 'Steve') }
   let(:john_nilm) { create(:nilm, name: "John's NILM", admins: [john], owners: [nicky]) }
   let(:lab_nilm) { create(:nilm, name: 'Lab NILM', owners: [john]) }
   let(:pete_nilm) { create(:nilm, name: "Pete's NILM", viewers: [john])}

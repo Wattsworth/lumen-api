@@ -17,8 +17,6 @@ RSpec.describe DbStreamsController, type: :request do
 
   describe 'PUT update' do
     before do
-      john.confirm
-      steve.confirm
       @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
       @db_success = { error: false, msg: 'success' }
       @db_failure = { error: true, msg: 'dberror' }

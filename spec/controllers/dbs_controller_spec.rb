@@ -12,10 +12,6 @@ RSpec.describe DbsController, type: :request do
 
   # index action does not exist
   describe 'GET show' do
-    before do
-      john.confirm
-      steve.confirm
-    end
     context 'with any permissions' do
       it 'returns the db as json' do
         # john has some permission on all 3 nilms
@@ -50,10 +46,6 @@ RSpec.describe DbsController, type: :request do
 
 
   describe 'PUT update' do
-    before do
-      john.confirm
-      steve.confirm
-    end
     context 'with owner permissions' do
       it 'returns 422 on invalid parameters' do
         # max points must be a positive number

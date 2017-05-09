@@ -4,17 +4,13 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :request do
   let(:steve) { create(:user, first_name: 'Steve')}
   let(:john) { create(:user, first_name: 'Jonh') }
-  let(:newguy) { create(:user, first_name: 'Unconfirmed')}
   describe 'GET index' do
-    before do
-      john.confirm
-      steve.confirm
-    end
 
     context 'with authenticated user' do
-      it 'returns confirmed users' do
+      it 'returns accepted and created users' do
         # force lazy evaluation of let to build users
-        newguy
+        newguy = User.invite!({:email=>'newguy@test.com'}, john)
+        steve
         @auth_headers = john.create_new_auth_token
         get "/users.json", headers: @auth_headers
         expect(response.header['Content-Type']).to include('application/json')

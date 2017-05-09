@@ -61,14 +61,20 @@ class UserGroupsController < ApplicationController
 
   # PATCH/PUT /user_groups/1/invite_member.json
   def invite_member
-    @service = InviteUser.new
-    @service.run(params[:email])
-    if @service.success?
-      @user_group.users << @service.user
-      render :show
-    else
-      render :show, status: :unprocessable_entity
+    invitation_service = InviteUser.new()
+    invitation_service.run(
+      current_user,
+      params[:email],
+      params[:redirect_url])
+    unless invitation_service.success?
+      @service = invitation_service
+      render 'helpers/empty_response', status: :unprocessable_entity
     end
+    user = invitation_service.user
+    @service = AddGroupMember.new
+    @service.absorb_status(invitation_service)
+    @service.run(@user_group, user.id)
+    render :show, status: @service.success? ? :ok : :unprocessable_entity
   end
 
   # PATCH/PUT /user_groups/1/remove_member.json

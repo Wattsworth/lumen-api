@@ -3,7 +3,9 @@ class UsersController < ApplicationController
 
   # GET /users.json
   def index
-    @users = User.confirmed
+    #return all created or accepted users
+    @users = User.where(invitation_created_at: nil)
+      .or(User.where.not(invitation_accepted_at: nil))
   end
 
   # note: update is handled by devise

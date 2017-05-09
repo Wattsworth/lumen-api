@@ -19,8 +19,10 @@ class AddGroupMember
       return self
     end
     # ok, this user is new to the group, add them
-    @user_group.users << user
-    set_notice("added user to group")
+    # create the Membership directly to avoid validation of
+    # invited users who do not have all attributes set
+    Membership.create(user: user, user_group: user_group)
+    add_notice("added user to group")
     self
   end
 end
