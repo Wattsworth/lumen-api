@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   has_many :nilms, through: :permissions
   has_many :memberships
   has_many :user_groups, through: :memberships
-
+  has_many :data_views
+  
   #---Validations-----
   validates :first_name, :last_name, :email, :presence => true
   validates :email, :uniqueness => true

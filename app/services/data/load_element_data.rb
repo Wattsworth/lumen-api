@@ -62,7 +62,7 @@ class LoadElementData
       if data_service.success?
         combined_data.concat(data_service.data)
       else
-        add_warning("unable to retrieve data for #{stream.name_path}")
+        add_warning("unable to retrieve data for #{stream.path}")
       end
     end
     #3 extract requested elements from the stream datasets

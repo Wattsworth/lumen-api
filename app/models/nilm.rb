@@ -8,10 +8,17 @@ class Nilm < ApplicationRecord
   has_many :permissions, dependent: :destroy #viewer, owner, admin
   has_many :users, through: :permissions
   has_many :user_groups, through: :permissions
+  has_many :data_views_nilms
+  has_many :data_views, through: :data_views_nilms
 
   #---Validations-----
   validates :name, presence: true, uniqueness: true
   validates :url, presence: true, uniqueness: true
+
+  #---Callbacks------
+  before_destroy do |record|
+    DataView.destroy(record.data_views.pluck(:id))
+  end
 
   def self.json_keys
     [:id, :name, :description, :url]

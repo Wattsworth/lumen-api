@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       put 'refresh'
     end
   end
+  resources :data_views
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
   resources :db_streams, only: [:update]

@@ -28,9 +28,9 @@ class DbElement < ApplicationRecord
     self.display_type = 'continuous'
   end
 
-  def name_path
-    "#{db_stream.name_path}/#{self.name}"
-  end
+  # def name_path
+  #  "#{db_stream.name_path}/#{self.name}"
+  # end
 
   def self.json_keys
     [:id, :db_stream_id, :name, :units, :column, :default_max,

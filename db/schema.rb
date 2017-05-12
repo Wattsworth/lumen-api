@@ -10,7 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170506014329) do
+ActiveRecord::Schema.define(version: 20170512013633) do
+
+  create_table "data_views", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name"
+    t.string   "description"
+    t.text     "image"
+    t.text     "redux_json"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "data_views_nilms", force: :cascade do |t|
+    t.integer "data_view_id"
+    t.integer "nilm_id"
+    t.index ["data_view_id"], name: "index_data_views_nilms_on_data_view_id"
+    t.index ["nilm_id"], name: "index_data_views_nilms_on_nilm_id"
+  end
 
   create_table "db_decimations", force: :cascade do |t|
     t.integer  "start_time",   limit: 8
@@ -86,7 +103,7 @@ ActiveRecord::Schema.define(version: 20170506014329) do
     t.boolean  "available"
   end
 
-  create_table "memberships", id: false, force: :cascade do |t|
+  create_table "memberships", force: :cascade do |t|
     t.integer "user_group_id"
     t.integer "user_id"
     t.index ["user_group_id"], name: "index_memberships_on_user_group_id"

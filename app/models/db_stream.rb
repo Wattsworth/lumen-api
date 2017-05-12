@@ -32,9 +32,9 @@ class DbStream < ApplicationRecord
      [:name, :name_abbrev, :description, :hidden]
   end
 
-  def name_path
-    "#{db_folder.name_path}/#{self.name}"
-  end
+  # def name_path
+  #  "#{db_folder.name_path}/#{self.name}"
+  # end
 
   def remove(db_service:)
     db_service.remove_file(path)
