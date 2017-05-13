@@ -79,4 +79,42 @@ RSpec.describe DataViewsController, type: :request do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    before do
+      service = CreateDataView.new
+      service.run(
+        {name: 'created'}, viewed_streams.map{|x| x.id}, viewer)
+      @my_view = service.data_view
+    end
+    context 'with view owner' do
+      it 'removes the data view' do
+        @auth_headers = viewer.create_new_auth_token
+        delete "/data_views/#{@my_view.id}.json",
+               headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+        expect(DataView.exists?(@my_view.id)).to be false
+        # make sure the associated permissions are destroyed
+        expect(DataViewsNilm.count).to eq(0)
+      end
+    end
+    context 'with anybody else' do
+      it 'returns unauthorized' do
+        other_user = create(:user)
+        @auth_headers = other_user.create_new_auth_token
+        delete "/data_views/#{@my_view.id}.json",
+               headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(DataView.exists?(@my_view.id)).to be true
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        delete "/data_views/#{@my_view.id}.json"
+        expect(response).to have_http_status(:unauthorized)
+        expect(DataView.exists?(@my_view.id)).to be true
+      end
+    end
+  end
 end

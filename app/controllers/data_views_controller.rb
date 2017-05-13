@@ -32,6 +32,7 @@ class DataViewsController < ApplicationController
     @service = StubService.new
     @data_view.destroy
     @service.set_notice('removed data view')
+    render 'helpers/empty_response', status: :ok
   end
 
   private

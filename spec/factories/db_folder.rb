@@ -9,6 +9,6 @@ FactoryGirl.define do
     end_time { start_time + Faker::Number.number(5) }
     size_on_disk { Faker::Number.number(6) }
     hidden false
-    path { "/root/#{Faker::Lorem.unique.word}" }
+    path { "/root/#{Faker::Lorem.word}/#{Faker::Number.unique.number(4)}" }
   end
 end
