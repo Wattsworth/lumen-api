@@ -202,7 +202,13 @@ class LoadStreamData
   # eg: events, compute intervals from the actual decimated data
   def __build_intervals_from_decimated_data(elements, resp)
     # compute intervals from resp
-    return { id: e.id, type: 'interval', values: [] } if resp.empty?
+    if resp.empty?
+      elements.map do |e|
+        { id: e.id,
+          type: 'interval',
+          values: [] }
+      end
+    end
     intervals = []
     interval_start = nil
     interval_end = nil
