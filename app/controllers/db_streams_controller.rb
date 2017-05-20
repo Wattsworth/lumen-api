@@ -3,7 +3,8 @@
 # Controller for DbStreams
 class DbStreamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_stream, only: [:update]
+  before_action :set_stream, only: [:update, :data]
+  before_action :authorize_viewer, only: [:data]
   before_action :authorize_owner, only: [:update]
 
   def update
@@ -11,6 +12,11 @@ class DbStreamsController < ApplicationController
     @service = EditStream.new(adapter)
     @service.run(@db_stream, stream_params)
     render status: @service.success? ? :ok : :unprocessable_entity
+  end
+
+  def data
+    headers["Content-Disposition"] = "attachment; filename='#{@db_stream.name}.txt'"
+    render :layout=>false, :content_type => "text/plain"
   end
 
   private

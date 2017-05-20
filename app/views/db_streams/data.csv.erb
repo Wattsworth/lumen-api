@@ -1,0 +1,29 @@
+###############################################
+# Stream: <%=@db_stream.name%>
+# Path:   <%=@db_stream.path%>
+# Source: <%=@nilm.name%> <%unless @nilm.description.blank?%>(<%=@nilm.description%>)<%end%>
+#
+#
+# start:      --
+# end:        --
+# total time: --
+# total rows: --
+#
+#The raw data file can be retrieved at the following URL:
+# <%=@db.url%>/stream/extract?path=<%=@db_stream.path%>&start=?&end=?
+#
+# to import in matlab run:
+# 	nilm = importdata('thisfilename.txt')
+#
+# nilm.textdata: this help text
+# nilm.data:     the data
+#
+# The data has <%= @db_stream.db_elements.count+1 %> columns with the following format:
+#
+#  Column 1: Timestamp (microseconds)
+	<% col = 2%>
+	<%@db_stream.db_elements.each do |element|%>
+#  Column <%=col%>: <%=element.name%> (<%=element.units%>)
+	<%col+=1%>
+	<%end%>
+#

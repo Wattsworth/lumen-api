@@ -8,7 +8,11 @@ Rails.application.routes.draw do
   resources :data_views
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
-  resources :db_streams, only: [:update]
+  resources :db_streams, only: [:update] do
+    member do
+      post 'data'
+    end
+  end
   resources :db_elements, only: [:index] do
     collection do
       get 'data'
