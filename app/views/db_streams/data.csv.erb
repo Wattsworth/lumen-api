@@ -4,26 +4,29 @@
 # Source: <%=@nilm.name%> <%unless @nilm.description.blank?%>(<%=@nilm.description%>)<%end%>
 #
 #
-# start:      --
-# end:        --
-# total time: --
-# total rows: --
+# start:             <%=Time.at(@legend[:start_time]/1e6)%>
+# end:               <%=Time.at(@legend[:end_time]/1e6)%>
+# total time:        <%=distance_of_time_in_words(@legend[:end_time]/1e6-@legend[:start_time]/1e6)%>
+# total rows:        <%=@legend[:num_rows]%>
+# decimation factor: <%=@legend[:decimation_factor]%>
 #
-#The raw data file can be retrieved at the following URL:
-# <%=@db.url%>/stream/extract?path=<%=@db_stream.path%>&start=?&end=?
+# this file can be loaded directly into MATLAB
 #
-# to import in matlab run:
-# 	nilm = importdata('thisfilename.txt')
+# 	dataset = importdata('thisfilename.csv')
 #
-# nilm.textdata: this help text
-# nilm.data:     the data
+# dataset.textdata: this help text
+# dataset.data:     the data
 #
-# The data has <%= @db_stream.db_elements.count+1 %> columns with the following format:
+# raw data can be accessed using nilmtool, run:
+# nilmtool -u <%=@db.url%> extract -s @<%=@legend[:start_time]%> -e @<%=@legend[:end_time]%> <%=@db_stream.path%>
 #
-#  Column 1: Timestamp (microseconds)
-	<% col = 2%>
-	<%@db_stream.db_elements.each do |element|%>
-#  Column <%=col%>: <%=element.name%> (<%=element.units%>)
-	<%col+=1%>
-	<%end%>
+# <%=@legend[:notes]%>
+#  ----------- LEGEND ---------------
+<%@legend[:columns].each do |col|%>
+# Column <%=col[:index]%>: <%=col[:name]%> (<%=col[:units]%>)
+<%end%>
+# -----------------------------------
 #
+<% @data.each do |row|%>
+<%= row.join(", ")%>
+<%end%>

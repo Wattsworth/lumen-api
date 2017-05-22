@@ -15,6 +15,14 @@ class DbStreamsController < ApplicationController
   end
 
   def data
+    @service = BuildDataset.new
+    @service.run(@db_stream,params[:start_time].to_i,params[:end_time].to_i)
+    unless @service.success?
+      head :unprocessable_entity
+      return
+    end
+    @data = @service.data
+    @legend = @service.legend
     headers["Content-Disposition"] = "attachment; filename='#{@db_stream.name}.txt'"
     render :layout=>false, :content_type => "text/plain"
   end

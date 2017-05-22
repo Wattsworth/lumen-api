@@ -3,13 +3,14 @@
 # Loads stream data over specified interval
 class LoadStreamData
   include ServiceStatus
-  attr_reader :data, :data_type
+  attr_reader :data, :data_type, :decimation_factor
 
   def initialize(db_adapter)
     super()
     @db_adapter = db_adapter
     @data = []
     @data_type = 'unset' # interval, raw, decimated
+    @decimation_factor = 1
   end
 
   # load data at or below the resolution of the
@@ -19,12 +20,16 @@ class LoadStreamData
   # data_type: raw
   # data:
   #   [{id: element_id, type: raw values: [[ts,y],[ts,y],nil,[ts,y]]},...]
+  #
+  # data_type: decimated
+  # event data:
+  #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
+  # continuous or discrete data:
+  #   [{id: element_id, type: decimated, values: [[ts,y,ymin,ymax],[ts,y,ymin,ymax],nil,...]}]
+  #
   # data_type: interval
   # data:
-  #   [{id: element_id, type: raw, values: [[start,0],[end,0],nil,...]}]
-  # data_type: decimated
-  # data:
-  #   [{id: element_id, type: raw, values: [[ts,y,ymin,ymax],[ts,y,ymin,ymax],nil,...]}]
+  #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
   #
   def run(db_stream, start_time, end_time)
     resolution = db_stream.db.max_points_per_plot
@@ -45,7 +50,8 @@ class LoadStreamData
       @data = __build_interval_data(elements, resp)
       return self
     end
-    # request is plottable, see if we can get the raw (level 1) data
+    # request is plottable, see if we can get the data
+    @decimation_factor = plottable_decim.level
     path = __build_path(db_stream, plottable_decim.level)
     resp = @db_adapter.get_data(path, start_time, end_time)
     if resp.nil?
