@@ -119,4 +119,72 @@ RSpec.describe DbStreamsController, type: :request do
       end
     end
   end
+
+  describe 'POST data' do
+    before do
+      @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
+      @db_success = { error: false, msg: 'success' }
+      @db_failure = { error: true, msg: 'dberror' }
+      allow(DbAdapter).to receive(:new).and_return(@mock_adapter)
+    end
+
+    context 'with viewer permissions' do
+      it 'returns dataset file as csv file' do
+        #2 elements, two rows
+        @service_data = [[1e6,1,2],[2e6,3,4]]
+        @service_legend = {
+          start_time: 1e6,
+          end_time: 1e6,
+          num_rows: 2,
+          decimation_factor: 1,
+          notes: 'note_test_string',
+          columns: [{index: 1, name: 'time', units: 'us'},
+                    {index: 2, name: 'e1', units: 'watts'},
+                    {index: 3, name: 'e2', units: 'joules'}]
+        }
+        @mock_service = instance_double(BuildDataset,
+                                        run: StubService.new,
+                                        success?: true,
+                                        data: @service_data,
+                                        legend: @service_legend)
+        allow(BuildDataset).to receive(:new).and_return(@mock_service)
+
+        @auth_headers = john.create_new_auth_token
+        post "/db_streams/#{@stream.id}/data.csv",
+            params: { start_time: 0, end_time: 100},
+            headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        text = response.body
+        expect(text).to include 'note_test_string'
+      end
+      it 'returns error if data cannot be found' do
+        @mock_service = instance_double(BuildDataset,
+                                        run: StubService.new,
+                                        success?: false)
+        allow(BuildDataset).to receive(:new).and_return(@mock_service)
+
+        @auth_headers = john.create_new_auth_token
+        post "/db_streams/#{@stream.id}/data.csv",
+            params: { start_time: 0, end_time: 100},
+            headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+    context 'without viewer permissions' do
+      it 'returns unauthorized' do
+        @auth_headers = steve.create_new_auth_token
+        post "/db_streams/#{@stream.id}/data.json",
+            params: { name: 'ignored' },
+            headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        post "/db_streams/#{@stream.id}/data.json",
+            params: { start_time: 0, end_time: 100 }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end

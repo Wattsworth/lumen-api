@@ -26,9 +26,11 @@ class BuildDataset
   def run(db_stream, start_time, end_time)
     adapter = DbAdapter.new(db_stream.db.url)
     data_service = LoadStreamData.new(adapter)
-    data_service.run(db_stream, start_time, end_time)
+    absorb_status(
+      data_service.run(db_stream, start_time, end_time)
+    )
     unless data_service.success?
-      add_error("unable to retrieve data for #{stream.path}")
+      add_error("unable to retrieve data for #{db_stream.path}")
       return self
     end
     @data = _build_dataset(data_service.data)
@@ -37,7 +39,9 @@ class BuildDataset
     @legend[:end_time]          = end_time
     @legend[:decimation_factor] = data_service.decimation_factor
     @legend[:num_rows]          = @data.length
-    if(@data[0].length!=db_stream.db_elements.length+1)
+    if(@data.empty?)
+      @legend[:notes] = 'there is no data available over this interval'
+    elsif(@data[0].length!=db_stream.db_elements.length+1)
       @legend[:notes] = 'some elements omitted due to insufficient decimation'
     end
     self
@@ -48,16 +52,20 @@ class BuildDataset
     valid_columns = stream_data.select{|d| d[:type]!='interval'}
     return [] if(valid_columns.empty?)
 
-    cleaned_columns = valid_columns.map do |element_data|
+    column_values = valid_columns.map do |element_data|
       element_data[:values].select{|row| row!=nil}
     end
+    return [] if column_values.first.empty?
+
     data_columns = []
     #first column is the timestamp
-    data_columns << cleaned_columns.first.transpose[0]
-    #add element data by column
-    cleaned_columns.each do |data|
-        data_columns << data.transpose[1]
+    data_columns << column_values.first.transpose[0]
+    #...second column is the data,
+    column_values.each do |values|
+        #append values column wise
+        data_columns << values.transpose[1]
     end
+    #flip back to row wise
     data_columns.transpose
   end
 

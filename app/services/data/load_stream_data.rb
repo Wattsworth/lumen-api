@@ -23,7 +23,7 @@ class LoadStreamData
   #
   # data_type: decimated
   # event data:
-  #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
+  #   [{id: element_id, type: interval, values: [[start,0],[end,0],nil,...]}]
   # continuous or discrete data:
   #   [{id: element_id, type: decimated, values: [[ts,y,ymin,ymax],[ts,y,ymin,ymax],nil,...]}]
   #

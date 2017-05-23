@@ -52,7 +52,7 @@ class UpdateFolder
     @folder.size_on_disk = @size_on_disk
     # save the result
     unless @folder.valid?
-      byebug
+      Rails.logger.warn("invalid folder: #{@folder.name}")
     end
     @folder.save!
     set_notice("Folder updated")
