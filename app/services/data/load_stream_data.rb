@@ -69,6 +69,7 @@ class LoadStreamData
       @data = __build_decimated_data(decimateable_elements, resp) +
               __build_intervals_from_decimated_data(interval_elements, resp)
     end
+    self
   end
 
   #===Description

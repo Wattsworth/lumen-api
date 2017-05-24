@@ -8,6 +8,7 @@ RSpec.describe DataView, type: :model do
   specify { expect(data_view).to respond_to(:redux_json) }
   specify { expect(data_view).to respond_to(:owner) }
   specify { expect(data_view).to respond_to(:nilms) }
+  specify { expect(data_view).to respond_to(:visibility) }
 
   it 'is deleted when nilm is destroyed' do
       nilm1 = create(:nilm)

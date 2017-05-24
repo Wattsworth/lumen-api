@@ -38,11 +38,11 @@ class DataViewsController < ApplicationController
   private
 
   def data_view_params
-    params.permit(:name, :description, :image, :redux_json)
+    params.permit(:name, :description, :visibility, :image, :redux_json)
   end
 
   def updatable_data_view_params
-    params.permit(:name, :description)
+    params.permit(:name, :description, :visibility)
   end
 
   def set_data_view

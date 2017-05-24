@@ -10,16 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512013633) do
+ActiveRecord::Schema.define(version: 20170524005258) do
 
   create_table "data_views", force: :cascade do |t|
-    t.integer  "user_id"
-    t.string   "name"
-    t.string   "description"
-    t.text     "image"
-    t.text     "redux_json"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer "user_id"
+    t.string "name"
+    t.string "description"
+    t.text "image"
+    t.text "redux_json"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "visibility"
   end
 
   create_table "data_views_nilms", force: :cascade do |t|
@@ -30,77 +31,77 @@ ActiveRecord::Schema.define(version: 20170512013633) do
   end
 
   create_table "db_decimations", force: :cascade do |t|
-    t.integer  "start_time",   limit: 8
-    t.integer  "end_time",     limit: 8
-    t.integer  "total_rows",   limit: 8
-    t.integer  "total_time",   limit: 8
-    t.integer  "db_stream_id"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "level",        limit: 8
-    t.string   "data_type"
+    t.integer "start_time", limit: 8
+    t.integer "end_time", limit: 8
+    t.integer "total_rows", limit: 8
+    t.integer "total_time", limit: 8
+    t.integer "db_stream_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "level", limit: 8
+    t.string "data_type"
   end
 
   create_table "db_elements", force: :cascade do |t|
-    t.string   "name"
-    t.string   "units"
-    t.integer  "column"
-    t.float    "default_max"
-    t.float    "default_min"
-    t.float    "scale_factor"
-    t.float    "offset"
-    t.integer  "db_stream_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.boolean  "plottable"
-    t.string   "display_type"
+    t.string "name"
+    t.string "units"
+    t.integer "column"
+    t.float "default_max"
+    t.float "default_min"
+    t.float "scale_factor"
+    t.float "offset"
+    t.integer "db_stream_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "plottable"
+    t.string "display_type"
   end
 
   create_table "db_folders", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "parent_id"
-    t.string   "path"
-    t.boolean  "hidden"
-    t.integer  "db_id"
-    t.integer  "start_time",   limit: 8
-    t.integer  "end_time",     limit: 8
-    t.integer  "size_on_disk", limit: 8
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "parent_id"
+    t.string "path"
+    t.boolean "hidden"
+    t.integer "db_id"
+    t.integer "start_time", limit: 8
+    t.integer "end_time", limit: 8
+    t.integer "size_on_disk", limit: 8
   end
 
   create_table "db_streams", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.integer  "db_folder_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "path"
-    t.integer  "start_time",    limit: 8
-    t.integer  "end_time",      limit: 8
-    t.integer  "total_rows",    limit: 8
-    t.integer  "total_time",    limit: 8
-    t.string   "data_type"
-    t.string   "name_abbrev"
-    t.boolean  "delete_locked"
-    t.boolean  "hidden"
-    t.integer  "size_on_disk",  limit: 8
-    t.integer  "db_id"
+    t.string "name"
+    t.string "description"
+    t.integer "db_folder_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "path"
+    t.integer "start_time", limit: 8
+    t.integer "end_time", limit: 8
+    t.integer "total_rows", limit: 8
+    t.integer "total_time", limit: 8
+    t.string "data_type"
+    t.string "name_abbrev"
+    t.boolean "delete_locked"
+    t.boolean "hidden"
+    t.integer "size_on_disk", limit: 8
+    t.integer "db_id"
   end
 
   create_table "dbs", force: :cascade do |t|
-    t.string   "url"
-    t.integer  "db_folder_id"
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
-    t.integer  "nilm_id"
-    t.integer  "size_total",          limit: 8
-    t.integer  "size_db",             limit: 8
-    t.integer  "size_other",          limit: 8
-    t.string   "version"
-    t.integer  "max_points_per_plot",           default: 3600
-    t.boolean  "available"
+    t.string "url"
+    t.integer "db_folder_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "nilm_id"
+    t.integer "size_total", limit: 8
+    t.integer "size_db", limit: 8
+    t.integer "size_other", limit: 8
+    t.string "version"
+    t.integer "max_points_per_plot", default: 3600
+    t.boolean "available"
   end
 
   create_table "memberships", force: :cascade do |t|
@@ -111,60 +112,60 @@ ActiveRecord::Schema.define(version: 20170512013633) do
   end
 
   create_table "nilms", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.string   "url"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string "name"
+    t.string "description"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "permissions", force: :cascade do |t|
-    t.integer  "nilm_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.integer  "user_id"
-    t.integer  "user_group_id"
-    t.string   "role"
+    t.integer "nilm_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.integer "user_group_id"
+    t.string "role"
   end
 
   create_table "user_groups", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.integer  "owner_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string "name"
+    t.string "description"
+    t.integer "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "provider",               default: "email", null: false
-    t.string   "uid",                    default: "",      null: false
-    t.string   "encrypted_password",     default: ""
-    t.string   "reset_password_token"
+    t.string "provider", default: "email", null: false
+    t.string "uid", default: "", null: false
+    t.string "encrypted_password", default: ""
+    t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,       null: false
+    t.integer "sign_in_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.string   "confirmation_token"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.string "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "email"
-    t.text     "tokens"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.string   "invitation_token"
+    t.string "unconfirmed_email"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "email"
+    t.text "tokens"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "invitation_token"
     t.datetime "invitation_created_at"
     t.datetime "invitation_sent_at"
     t.datetime "invitation_accepted_at"
-    t.integer  "invitation_limit"
-    t.integer  "invited_by_id"
-    t.string   "invited_by_type"
-    t.string   "invitation_url"
+    t.integer "invitation_limit"
+    t.integer "invited_by_id"
+    t.string "invited_by_type"
+    t.string "invitation_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true

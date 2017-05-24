@@ -9,23 +9,28 @@
 # total time:        <%=distance_of_time_in_words(@legend[:end_time]/1e6-@legend[:start_time]/1e6)%>
 # total rows:        <%=@legend[:num_rows]%>
 # decimation factor: <%=@legend[:decimation_factor]%>
+# notes:             <%=@legend[:notes]%>
+# legend:
+<%@legend[:columns].each do |col|%>
+#                    Column <%=col[:index]%>: <%=col[:name]%> (<%=col[:units]%>)
+<%end%>
+#
+# --------- MATLAB INSTRUCTIONS ------------
 #
 # this file can be loaded directly into MATLAB
 #
-# 	dataset = importdata('thisfilename.csv')
+#   >> x = importdata('~/Downloads/filename.csv')
+#   x =
+#       data: [1737x15 double] % the data
+#   textdata: {41x1 cell}      % this help text
 #
-# dataset.textdata: this help text
-# dataset.data:     the data
+# --------- NILMTOOL INSTRUCTIONS ----------
 #
 # raw data can be accessed using nilmtool, run:
-# nilmtool -u <%=@db.url%> extract -s @<%=@legend[:start_time]%> -e @<%=@legend[:end_time]%> <%=@db_stream.path%>
 #
-# <%=@legend[:notes]%>
-#  ----------- LEGEND ---------------
-<%@legend[:columns].each do |col|%>
-# Column <%=col[:index]%>: <%=col[:name]%> (<%=col[:units]%>)
-<%end%>
-# -----------------------------------
+# $> nilmtool -u <%=@db.url%> extract -s @<%=@legend[:start_time]%> -e @<%=@legend[:end_time]%> <%=@db_stream.path%>
+#
+# ------------------------------------------
 #
 <% @data.each do |row|%>
 <%= row.join(", ")%>

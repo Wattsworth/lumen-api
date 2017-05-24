@@ -17,25 +17,24 @@ RSpec.describe DataViewsController, type: :request do
         other_stream = create(:db_stream, db: other_db)
         other_user = create(:user)
         service = CreateDataView.new
-        allowed_view = service.run(
-          {name: 'allowed'}, [viewed_streams.first.id], other_user)
-        prohibited_view = service.run(
-          {name: 'prohibited'}, [other_stream.id], other_user)
-        my_view = service.run(
-          {name: 'created'}, viewed_streams.map{|x| x.id}, viewer)
+        service.run(
+          {name: 'allowed', visibility: 'public'}, [viewed_streams.first.id], other_user)
+        service.run(
+          {name: 'prohibited', visibility: 'public'}, [other_stream.id], other_user)
+        service.run(
+          {name: 'private', visibility: 'private'}, [viewed_streams.first.id], other_user)
+        service.run(
+          {name: 'my_public', visibility: 'public'}, viewed_streams.map{|x| x.id}, viewer)
+        service.run(
+          {name: 'my_private', visibility: 'private'}, viewed_streams.map{|x| x.id}, viewer)
+
         #viewer should receive 'allowed' and 'created'
         @auth_headers = viewer.create_new_auth_token
         get "/data_views.json", headers: @auth_headers
         expect(response).to have_http_status(:ok)
         body = JSON.parse(response.body)
-        expect(body.length).to eq 2
-        body.each do |view|
-          if view['name']=='created'
-            expect(view['owner']).to be true
-          else
-            expect(view['owner']).to be false
-          end
-        end
+        names = body.map {|view| view['name']}
+        expect(names).to contain_exactly('allowed','my_public','my_private')
       end
     end
     context 'without sign-in' do
@@ -53,7 +52,7 @@ RSpec.describe DataViewsController, type: :request do
         post "/data_views.json",
           params: {
             name: 'test', description: '', image: '', redux_json: '',
-            stream_ids: viewed_streams.map {|x| x.id}
+             visibility: 'public', stream_ids: viewed_streams.map {|x| x.id}
           }, headers: @auth_headers
         expect(response).to have_http_status(:ok)
         expect(response).to have_notice_message
@@ -66,7 +65,7 @@ RSpec.describe DataViewsController, type: :request do
         post "/data_views.json",
           params: {
             description: 'missing name', image: '', redux_json: '',
-            stream_ids: viewed_streams.map {|x| x.id}
+            visibility: 'public', stream_ids: viewed_streams.map {|x| x.id}
           }, headers: @auth_headers
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response).to have_error_message
@@ -84,7 +83,7 @@ RSpec.describe DataViewsController, type: :request do
     before do
       service = CreateDataView.new
       service.run(
-        {name: 'created'}, viewed_streams.map{|x| x.id}, viewer)
+        {name: 'created', visibility: 'public'}, viewed_streams.map{|x| x.id}, viewer)
       @my_view = service.data_view
     end
     context 'with view owner' do

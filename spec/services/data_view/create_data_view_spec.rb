@@ -13,6 +13,7 @@ describe 'CreateDataView service' do
   it 'creates a dataview' do
     params = {
       name: 'test',
+      visibility: 'public',
       description: '',
       image: '',
       redux_json: ''}
