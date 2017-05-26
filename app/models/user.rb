@@ -11,7 +11,9 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :user_groups, through: :memberships
   has_many :data_views
-  
+  belongs_to :home_data_view, class_name: "DataView",
+    foreign_key: "home_data_view_id", dependent: :destroy
+
   #---Validations-----
   validates :first_name, :last_name, :email, :presence => true
   validates :email, :uniqueness => true

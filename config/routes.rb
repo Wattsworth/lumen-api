@@ -5,7 +5,11 @@ Rails.application.routes.draw do
       put 'refresh'
     end
   end
-  resources :data_views
+  resources :data_views do
+    collection do
+      get 'home' #retrieve a user's home data view
+    end
+  end
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
   resources :db_streams, only: [:update] do

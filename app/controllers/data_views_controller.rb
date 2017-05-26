@@ -7,6 +7,16 @@ class DataViewsController < ApplicationController
     @data_views = DataView.find_viewable(current_user)
   end
 
+  # GET /data_views/home.json
+  def home
+    # return the user's home view if present
+    @data_view = current_user.home_data_view
+    if @data_view.nil?
+      head :not_found
+      return
+    end
+  end
+
   # POST /data_views.json
   def create
     @service = CreateDataView.new()

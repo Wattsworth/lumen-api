@@ -10,20 +10,39 @@ describe 'CreateDataView service' do
     create(:db_stream, db: db),
     create(:db_stream, db: db)]}
 
-  it 'creates a dataview' do
-    params = {
-      name: 'test',
-      visibility: 'public',
-      description: '',
-      image: '',
-      redux_json: ''}
-    stream_ids = viewed_streams.map {|x| x.id}
-    service = CreateDataView.new
-    service.run(params, stream_ids, viewer)
-    expect(service.success?).to be true
-    expect(DataView.count).to eq(1)
-    expect(nilm.data_views.count).to eq(1)
-    expect(viewer.data_views.count).to eq(1)
+  describe 'successfully' do
+    before do
+      @params = {
+        name: 'test',
+        visibility: 'public',
+        description: '',
+        image: '',
+        redux_json: ''}
+      @stream_ids = viewed_streams.map {|x| x.id}
+      @service = CreateDataView.new
+    end
+    it 'creates normal data views' do
+      @service.run(@params, @stream_ids, viewer)
+      expect(@service.success?).to be true
+      expect(DataView.count).to eq(1)
+      expect(nilm.data_views.count).to eq(1)
+      expect(viewer.data_views.count).to eq(1)
+    end
+
+    it 'creates user home views' do
+      #new home view replaces the previous one
+      viewer.update(home_data_view: create(:data_view))
+      expect(DataView.count).to eq(1)
+      #now add the new one
+      @service.run(@params, @stream_ids, viewer, home_view=true)
+      expect(@service.success?).to be true
+      #previous view should be deleted
+      expect(DataView.count).to eq(1)
+      view = DataView.first
+      expect(view.visibility).to eq 'hidden'
+      expect(viewer.home_data_view).to eq(view)
+
+    end
   end
 
   it 'returns error if dataview is not valid' do

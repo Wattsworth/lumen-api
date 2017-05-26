@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170524005258) do
+ActiveRecord::Schema.define(version: 20170525005625) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 20170524005258) do
     t.integer "invited_by_id"
     t.string "invited_by_type"
     t.string "invitation_url"
+    t.integer "home_data_view_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true

@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
     specify { expect(user).to respond_to(:first_name) }
     specify { expect(user).to respond_to(:last_name) }
     specify { expect(user).to respond_to(:email) }
+    specify { expect(user).to respond_to(:home_data_view)}
   end
 
   it 'responds to name' do

@@ -32,6 +32,16 @@ class DbElementsController < ApplicationController
     @service.run(req_elements, start_time, end_time)
     @start_time = @service.start_time
     @end_time = @service.end_time
+
+    # update the user's home view if a data view instance is provided
+    if params[:redux_json]!=nil
+      service = CreateDataView.new()
+      service.run({redux_json: params[:redux_json]},
+        nil, current_user, home_view=true)
+      unless service.success?
+        Rails.logger.warn("error creating home view for #{current_user.id}")
+      end
+    end
     render status: @service.success? ? :ok : :unprocessable_entity
   end
 end

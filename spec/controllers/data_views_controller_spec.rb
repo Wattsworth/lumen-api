@@ -45,6 +45,37 @@ RSpec.describe DataViewsController, type: :request do
     end
   end
 
+  describe 'GET home' do
+    context 'with authenticated user' do
+      it 'returns user home data view' do
+        user1 = create(:user)
+        dv1 = create(:data_view)
+        user1.update(home_data_view: dv1)
+        user2 = create(:user)
+        dv2 = create(:data_view)
+        user2.update(home_data_view: dv2)
+        #user1 gets his view
+        @auth_headers = user1.create_new_auth_token
+        get "/data_views/home.json", headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body["id"]).to eq dv1.id
+        #user2 gets his view
+        @auth_headers = user2.create_new_auth_token
+        get "/data_views/home.json", headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        body = JSON.parse(response.body)
+        expect(body["id"]).to eq dv2.id
+      end
+      it 'returns 404:not_found if data view is unset' do
+        user = create(:user)
+        @auth_headers = user.create_new_auth_token
+        get "/data_views/home.json", headers: @auth_headers
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to be_empty
+      end
+    end
+  end
   describe 'POST create' do
     context 'with authenticated user' do
       it 'creates a dataview' do
