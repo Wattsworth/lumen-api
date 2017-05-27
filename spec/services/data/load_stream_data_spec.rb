@@ -136,9 +136,18 @@ RSpec.describe 'LoadStreamData' do
       expect(@mockAdapter.level_retrieved).to eq(1)
     end
     it 'only if count <= nilm resolution over interval' do
+      #must have decimated data ready!
+      #use custom adapter and service objects
+      data = [[40,0,1,2,3,4,5,6,7,8],nil,[50,0,1,2,3,4,5,6,7,8]]
+      adapter = MockDataDbAdapter.new(
+        start_time: @db_stream.start_time,
+        end_time: @db_stream.end_time,
+        raw_count: 100, data: data
+      )
+      service = LoadStreamData.new(adapter)
       db.max_points_per_plot = 90; db.save
-      @service.run(@db_stream, 10, 90)
-      expect(@mockAdapter.level_retrieved).to be > 1
+      service.run(@db_stream, 10, 90)
+      expect(adapter.level_retrieved).to be > 1
     end
     it 'populates @data structure with raw data' do
       @service.run(@db_stream, 10, 90)

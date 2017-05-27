@@ -1,3 +1,4 @@
+require "benchmark"
 # frozen_string_literal: true
 
 # Loads data for specified elements
@@ -58,7 +59,10 @@ class LoadElementData
     req_streams.each do |stream|
       adapter = DbAdapter.new(stream.db.url)
       data_service = LoadStreamData.new(adapter)
-      data_service.run(stream, @start_time, @end_time)
+      time = Benchmark.measure do
+        data_service.run(stream, @start_time, @end_time,elements.to_a)
+      end
+      puts "------ DataService #{time}"
       if data_service.success?
         combined_data.concat(data_service.data)
       else

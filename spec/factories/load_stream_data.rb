@@ -8,7 +8,7 @@ class MockLoadStreamData
     @data = nil
     @run_count = 0
   end
-  def run(db_stream, start_time, end_time)
+  def run(db_stream, start_time, end_time, elements=[])
     @data = @dataset.select{|d| d[:stream]==db_stream}.first[:data]
     @run_count += 1
     if(@data == nil)

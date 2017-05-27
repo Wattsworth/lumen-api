@@ -15,6 +15,8 @@ class LoadStreamData
 
   # load data at or below the resolution of the
   # associated database, sets data and data_type
+  # specify a subset of elements as an optional array
+  # if ommitted, all elements are extracted from the stream (expensive!)
   #
   # sets data and data_type
   # data_type: raw
@@ -31,14 +33,22 @@ class LoadStreamData
   # data:
   #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
   #
-  def run(db_stream, start_time, end_time)
+  def run(db_stream, start_time, end_time, elements = [])
+
+    # if elements are not explicitly passed, get all of them
+    if(elements.empty?)
+      elements = db_stream.db_elements.all.to_a
+    end
+    elements.sort_by!(&:column)
+
     resolution = db_stream.db.max_points_per_plot
     valid_decim = findValidDecimationLevel(db_stream, start_time)
     # valid_decim is the highest resolution, find one we can plot
     plottable_decim = findPlottableDecimationLevel(
       db_stream, valid_decim, start_time, end_time, resolution
     )
-    elements = db_stream.db_elements.order(:column)
+
+
     if plottable_decim.nil?
       # check if its nil becuase the nilm isn't available
       return self unless success?
@@ -64,10 +74,14 @@ class LoadStreamData
       @data = __build_raw_data(elements, resp)
     else
       @data_type = 'decimated'
-      decimateable_elements = elements.where(display_type: %w(continuous discrete))
-      interval_elements = elements.where(display_type: 'event')
-      @data = __build_decimated_data(decimateable_elements, resp) +
-              __build_intervals_from_decimated_data(interval_elements, resp)
+      decimateable_elements =
+        elements.select{|e| %w(continuous discrete).include? e.display_type}
+      interval_elements = elements.select{|e| e.display_type=='event'}
+      time = Benchmark.measure do
+        @data = __build_decimated_data(decimateable_elements, resp) +
+                __build_intervals_from_decimated_data(interval_elements, resp)
+      end
+      puts "---- [LoadStreamData] Build Dataset #{time}"
     end
     self
   end
@@ -177,25 +191,34 @@ class LoadStreamData
   end
 
   def __build_decimated_data(elements, resp)
-    data = elements.map { |e| { id: e.id, type: 'decimated', values: [] } }
-    resp.each do |row|
+    # if elements is empty we don't need to do anything
+    return [] if elements.empty?
+
+    #prepare the data structure
+    data = elements.map { |e| { id: e.id, type: 'decimated', values: Array.new(resp.length) } }
+
+    #set up constants so we compute them once
+    mean_offset = 0
+    min_offset = elements.first.db_stream.db_elements.length
+    max_offset = elements.first.db_stream.db_elements.length * 2
+
+    resp.each_with_index do |row, k|
       if row.nil? # add an interval break to all the elements
-        data.each { |d| d[:values].push(nil) }
+        data.each { |d| d[:values][k]=nil }
         next
       end
       ts = row[0]
       elements.each_with_index do |elem, i|
-        # ###TODO: fix offset calcs when elements is a subset
-        mean_offset = 0
-        min_offset = elem.db_stream.db_elements.length
-        max_offset = elem.db_stream.db_elements.length * 2
-        mean = __scale_value(row[1 + elem.column + mean_offset], elem)
-        min =  __scale_value(row[1 + elem.column + min_offset], elem)
-        max =  __scale_value(row[1 + elem.column + max_offset], elem)
+        #mean = __scale_value(row[1 + elem.column + mean_offset], elem)
+        #min =  __scale_value(row[1 + elem.column + min_offset], elem)
+        #max =  __scale_value(row[1 + elem.column + max_offset], elem)
+        mean = (row[1 + elem.column + mean_offset] - elem.offset) * elem.scale_factor
+        min =  (row[1 + elem.column + min_offset] - elem.offset) * elem.scale_factor
+        max = (row[1 + elem.column + max_offset] - elem.offset) * elem.scale_factor
         tmp_min = [min, max].min
         max = [min, max].max
         min = tmp_min
-        data[i][:values].push([ts, mean, min, max])
+        data[i][:values][k]=[ts, mean, min, max]
       end
     end
     data
@@ -208,6 +231,9 @@ class LoadStreamData
   # for data that cannot be represented as decimations
   # eg: events, compute intervals from the actual decimated data
   def __build_intervals_from_decimated_data(elements, resp)
+
+    # if elements is empty we don't need to do anything
+    return [] if elements.empty?
     # compute intervals from resp
     if resp.empty?
       elements.map do |e|
