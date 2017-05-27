@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   end
   resources :db_elements, only: [:index] do
     collection do
-      get 'data'
+      post 'data'
     end
   end
 
