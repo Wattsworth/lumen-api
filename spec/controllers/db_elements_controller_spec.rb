@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe DbElementsController, type: :request do
   let(:user1) { create(:user, first_name: 'John') }
   let(:user2) { create(:user, first_name: 'Sam') }
-  describe 'POST #data' do
+  describe 'GET #data' do
     # retrieve data for elements listed by array of ids
     context 'with authenticated user' do
       before do
@@ -31,7 +31,7 @@ RSpec.describe DbElementsController, type: :request do
         allow(LoadElementData).to receive(:new).and_return(@mock_service)
 
         @auth_headers = user1.create_new_auth_token
-        post '/db_elements/data.json',
+        get '/db_elements/data.json',
             params: { elements: [@elem1.id, @elem2.id].to_json,
                       start_time: 0, end_time: 100, redux_json: 'new home view' },
             headers: @auth_headers
@@ -44,7 +44,7 @@ RSpec.describe DbElementsController, type: :request do
       end
       it 'returns error if time bounds are invalid' do
         @auth_headers = user1.create_new_auth_token
-        post '/db_elements/data.json',
+        get '/db_elements/data.json',
             params: { elements: [@elem1.id, @elem2.id].to_json,
                       start_time: 100, end_time: 0 },
             headers: @auth_headers
@@ -59,7 +59,7 @@ RSpec.describe DbElementsController, type: :request do
         stream2.db_elements << @elem3
 
         @auth_headers = user1.create_new_auth_token
-        post '/db_elements/data.json',
+        get '/db_elements/data.json',
             params: { elements: [@elem1.id, @elem3.id].to_json,
                       start_time: 100, end_time: 0 },
             headers: @auth_headers
@@ -68,7 +68,7 @@ RSpec.describe DbElementsController, type: :request do
     end
     context 'without sign-in' do
       it 'returns unauthorized' do
-        post '/db_elements/data.json'
+        get '/db_elements/data.json'
         expect(response).to have_http_status(:unauthorized)
       end
     end

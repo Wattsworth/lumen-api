@@ -64,6 +64,7 @@ class LoadStreamData
     @decimation_factor = plottable_decim.level
     path = __build_path(db_stream, plottable_decim.level)
     resp = @db_adapter.get_data(path, start_time, end_time)
+
     if resp.nil?
       add_error("cannot get data for [#{path}] @ #{@db_adapter.url}")
       return self
@@ -77,11 +78,9 @@ class LoadStreamData
       decimateable_elements =
         elements.select{|e| %w(continuous discrete).include? e.display_type}
       interval_elements = elements.select{|e| e.display_type=='event'}
-      time = Benchmark.measure do
-        @data = __build_decimated_data(decimateable_elements, resp) +
-                __build_intervals_from_decimated_data(interval_elements, resp)
-      end
-      puts "---- [LoadStreamData] Build Dataset #{time}"
+      @data = __build_decimated_data(decimateable_elements, resp) +
+              __build_intervals_from_decimated_data(interval_elements, resp)
+
     end
     self
   end

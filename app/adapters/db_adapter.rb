@@ -73,8 +73,8 @@ class DbAdapter
         path:       entry[0],
         attributes: {
           data_type:  entry[1],
-          start_time: entry[2] || 0,
-          end_time:   entry[3] || 0,
+          start_time: entry[2],
+          end_time:   entry[3],
           total_rows: entry[4],
           total_time: entry[5]
         }.merge(metadata),
