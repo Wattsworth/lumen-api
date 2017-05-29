@@ -6,14 +6,7 @@ class CreateDataView
   attr_reader :data_view
 
   def run(data_view_params, stream_ids, user, home_view=false)
-    if home_view
-      @data_view = DataView.create(
-        data_view_params.merge(
-        {name: 'home_view', visibility: 'hidden', owner: user}))
-      user.home_data_view.destroy unless user.home_data_view.nil?
-      user.update(home_data_view: @data_view)
-      return self
-    end
+
     # normal data view
     @data_view = DataView.new(data_view_params.merge({owner: user}))
 
@@ -36,6 +29,7 @@ class CreateDataView
       return self
     end
     @data_view.nilm_ids = nilm_ids
+    user.update(home_data_view: @data_view) if home_view
     self.set_notice('created data view')
     self
   end

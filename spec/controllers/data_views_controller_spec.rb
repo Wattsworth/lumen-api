@@ -91,6 +91,21 @@ RSpec.describe DataViewsController, type: :request do
         #viewer should own this new dataview
         expect(body['data']['owner']).to be(true)
       end
+      it 'creates home data views' do
+        @auth_headers = viewer.create_new_auth_token
+        post "/data_views.json",
+          params: {
+            home: true,
+            name: 'new home view', description: '', image: '', redux_json: '',
+            visibility: 'public', stream_ids: viewed_streams.map {|x| x.id}
+          }, headers: @auth_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+        body = JSON.parse(response.body)
+        #viewer should own this new dataview
+        expect(body['data']['owner']).to be(true)
+        expect(viewer.reload.home_data_view.name).to eq('new home view')
+      end
       it 'returns error with bad parameters' do
         @auth_headers = viewer.create_new_auth_token
         post "/data_views.json",
@@ -106,6 +121,77 @@ RSpec.describe DataViewsController, type: :request do
       it 'returns unauthorized' do
         post "/data_views.json"
         expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'PUT update' do
+    context 'with view owner' do
+      it 'can set home view' do
+        view = create(:data_view, name: 'old name', owner: viewer)
+        @auth_headers = viewer.create_new_auth_token
+        put "/data_views/#{view.id}.json",
+          params: {
+            name: 'new name', home: true
+          }, headers: @auth_headers, as: :json
+        expect(viewer.reload.home_data_view).to eq(view)
+        expect(view.reload.name).to eq 'new name'
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+      end
+
+      it 'can remove home view' do
+        view = create(:data_view, name: 'old name', owner: viewer)
+        viewer.update(home_data_view: view)
+        @auth_headers = viewer.create_new_auth_token
+        put "/data_views/#{view.id}.json",
+          params: {
+            name: 'new name', home: false
+          }, headers: @auth_headers, as: :json
+        expect(viewer.reload.home_data_view).to be nil
+        expect(view.reload.name).to eq 'new name'
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+      end
+      it 'cannot change redux_json or image' do
+        view = create(:data_view, name: 'old name',
+          redux_json: 'valid_json', image: 'valid_image', owner: viewer)
+        viewer.update(home_data_view: view)
+        @auth_headers = viewer.create_new_auth_token
+        put "/data_views/#{view.id}.json",
+          params: {
+            name: 'new name', redux_json: 'banned', image: 'banned'
+          }, headers: @auth_headers, as: :json
+        expect(viewer.reload.home_data_view).to be nil
+        expect(view.reload.name).to eq 'new name'
+        expect(view.redux_json).to eq 'valid_json'
+        expect(view.image).to eq 'valid_image'
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_notice_message
+      end
+    end
+    context 'with anybody else' do
+      it 'returns unauthorized' do
+        other_user = create(:user)
+        view = create(:data_view, name: 'old name', owner: viewer)
+        @auth_headers = other_user.create_new_auth_token
+        put "/data_views/#{view.id}.json",
+          params: {
+            name: 'new name'
+          }, headers: @auth_headers, as: :json
+        expect(view.reload.name).to eq 'old name'
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        view = create(:data_view, name: 'old name', owner: viewer)
+        put "/data_views/#{view.id}.json",
+          params: {
+            name: 'new name'
+          }, as: :json
+        expect(view.reload.name).to eq 'old name'
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end

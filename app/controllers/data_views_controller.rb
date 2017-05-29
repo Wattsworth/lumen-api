@@ -20,7 +20,9 @@ class DataViewsController < ApplicationController
   # POST /data_views.json
   def create
     @service = CreateDataView.new()
-    @service.run(data_view_params, params[:stream_ids], current_user)
+    home_view = params[:home]==true
+    @service.run(data_view_params, params[:stream_ids],
+      current_user, home_view)
     @data_view = @service.data_view
     render :show, status: @service.success? ? :ok : :unprocessable_entity
   end
@@ -29,6 +31,13 @@ class DataViewsController < ApplicationController
   def update
     @service = StubService.new
     if @data_view.update(updatable_data_view_params)
+      #set the user home view if param[:home] is set
+      if(params[:home])
+        current_user.update(home_data_view: @data_view)
+      #otherwise clear it if this is is the current home view
+      elsif(current_user.home_data_view==@data_view)
+        current_user.update(home_data_view: nil)
+      end
       @service.add_notice('updated data view')
       render :show, status: :ok
     else

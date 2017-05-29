@@ -30,18 +30,10 @@ describe 'CreateDataView service' do
     end
 
     it 'creates user home views' do
-      #new home view replaces the previous one
-      viewer.update(home_data_view: create(:data_view))
-      expect(DataView.count).to eq(1)
-      #now add the new one
       @service.run(@params, @stream_ids, viewer, home_view=true)
       expect(@service.success?).to be true
-      #previous view should be deleted
-      expect(DataView.count).to eq(1)
       view = DataView.first
-      expect(view.visibility).to eq 'hidden'
       expect(viewer.home_data_view).to eq(view)
-
     end
   end
 
