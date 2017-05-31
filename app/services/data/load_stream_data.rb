@@ -183,7 +183,7 @@ class LoadStreamData
       end
       ts = row[0]
       elements.each_with_index do |elem, i|
-        data[i][:values].push([ts, __scale_value(row[1 + i], elem)])
+        data[i][:values].push([ts, __scale_value(row[1 + elem.column], elem)])
       end
     end
     data
