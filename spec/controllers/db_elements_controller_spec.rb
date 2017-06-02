@@ -17,7 +17,7 @@ RSpec.describe DbElementsController, type: :request do
         stream.db_elements << @elem1
         stream.db_elements << @elem2
       end
-      it "returns elements with data and updates the user's home view" do
+      it "returns elements with data" do
 
 
         @service_data = [{ id: @elem1.id, data: 'mock1' },
@@ -33,14 +33,12 @@ RSpec.describe DbElementsController, type: :request do
         @auth_headers = user1.create_new_auth_token
         get '/db_elements/data.json',
             params: { elements: [@elem1.id, @elem2.id].to_json,
-                      start_time: 0, end_time: 100, redux_json: 'new home view' },
+                      start_time: 0, end_time: 100 },
             headers: @auth_headers
         expect(response).to have_http_status(:ok)
         # check to make sure JSON renders the elements
         body = JSON.parse(response.body)
         expect(body['data'].count).to eq(2)
-        # check the user home view
-        expect(user1.reload.home_data_view.redux_json).to eq('new home view')
       end
       it 'returns error if time bounds are invalid' do
         @auth_headers = user1.create_new_auth_token

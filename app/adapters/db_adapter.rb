@@ -55,18 +55,6 @@ class DbAdapter
       # The streams are not pure attributes, pull them out
       elements = metadata.delete(:streams) || []
       elements.each(&:symbolize_keys!)
-      # map the legacy discrete flag to new type setting
-      # discrete == True => type = event
-      # discrete == False => type = continuous
-      elements.map! do |e|
-        next unless e[:type].nil?
-        e[:display_type] = if e[:discrete]
-                     'event'
-                   else
-                     'continuous'
-                   end
-        e
-      end
       # Create the schema:
       # 3 elements: path, attributes, elements
       {
@@ -197,8 +185,18 @@ class DbAdapter
       # sanitize 'streams' (elements) parameters
       element_attrs = DbElement.attribute_names.map(&:to_sym)
       metadata['streams'].map! do |element|
-        element.symbolize_keys
-               .slice(*element_attrs)
+        # map the legacy discrete flag to new type setting
+        # discrete == True => type = event
+        # discrete == False => type = continuous
+        element.symbolize_keys!
+        if element[:display_type].nil?
+          if element[:discrete]
+            element[:display_type] = 'event'
+          else
+            element[:display_type] = 'continuous'
+          end
+        end
+        element.slice(*element_attrs)
       end
     end
     metadata.symbolize_keys
