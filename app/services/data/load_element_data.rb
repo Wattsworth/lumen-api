@@ -65,6 +65,11 @@ class LoadElementData
       if data_service.success?
         combined_data.concat(data_service.data)
       else
+        #create error entries
+        error_entries = stream_elements.map do |e|
+          {id: e.id, type: 'error', values: nil}
+        end
+        combined_data.concat error_entries
         add_warning("unable to retrieve data for #{stream.path}")
       end
     end

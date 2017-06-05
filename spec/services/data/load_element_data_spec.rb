@@ -86,7 +86,8 @@ RSpec.describe 'LoadElementData' do
       service.run([@elem0, @elem3],0,100)
       expect(service.warnings.length).to eq 1
       expect(service.data).to eq [
-        {id: @elem0.id, values: 'mock0'}
+        {id: @elem0.id, values: 'mock0'},
+        {id: @elem3.id, type: 'error', values: nil}
       ]
       expect(@mock_stream_service.run_count).to eq 2
     end
