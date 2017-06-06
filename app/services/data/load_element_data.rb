@@ -32,7 +32,23 @@ class LoadElementData
         req_streams << elem.db_stream
       end
     end
-    #2 compute start and end times if nil
+    #2 compute bounds by updating stream info if start/end are missing
+    if(start_time==nil || end_time==nil)
+      req_streams.map do |stream|
+        adapter = DbAdapter.new(stream.db.url)
+        entries = adapter.stream_info(stream)
+        service = UpdateStream.new(
+          stream,
+          entries[:base_entry],
+          entries[:decimation_entries]
+        )
+        unless service.run.success?
+          Rails.logger.warn("Error updating #{stream.name}: #{service.errors}")
+        end
+      end
+    end
+
+    #3 compute start and end times if nil
     streams_with_data = req_streams.select{|stream| stream.total_time > 0}
     if (start_time == nil || end_time == nil) && streams_with_data.empty?
       add_error("no time bounds for requested elements, refresh database?")
@@ -54,7 +70,7 @@ class LoadElementData
       add_error("invalid time bounds")
       return
     end
-    #2 pull data from streams
+    #4 pull data from streams
     combined_data = []
     req_streams.each do |stream|
       adapter = DbAdapter.new(stream.db.url)
@@ -73,7 +89,7 @@ class LoadElementData
         add_warning("unable to retrieve data for #{stream.path}")
       end
     end
-    #3 extract requested elements from the stream datasets
+    #5 extract requested elements from the stream datasets
     req_element_ids = elements.pluck(:id)
     @data = combined_data.select{|d| req_element_ids.include? d[:id] }
     return self

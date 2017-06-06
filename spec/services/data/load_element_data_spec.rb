@@ -92,4 +92,38 @@ RSpec.describe 'LoadElementData' do
       expect(@mock_stream_service.run_count).to eq 2
     end
   end
+
+  #NOTE: This is really quite a large integration test, it
+  #builds the full test nilm and then retrieves data from it.
+  #might be overkill but it really tests out the pipeline :)
+  #
+  describe 'when boundary times are not specified' do
+    let (:url) {'http://localhost:8080/nilmdb'}
+    let(:user) {create(:user)}
+
+    it 'updates the streams', :vcr do
+      adapter = DbAdapter.new(url)
+      service = CreateNilm.new
+      service.run(name: 'test', url: url, owner: user)
+      db = service.nilm.db
+      #request data from ac-power (15 Jun 2015 - 27 Jun 2015)
+      #                  pump-events (04 Feb 2013 - 23 Feb 2013)
+      elem1 = DbStream.find_by_path("/tutorial/ac-power").db_elements.first
+      elem2 = DbStream.find_by_path("/tutorial/pump-events").db_elements.first
+      #make sure the decimations are messed up by partial update
+      ndecims1 = elem1.db_stream.db_decimations.count
+      ndecims2 = elem2.db_stream.db_decimations.count
+      #artificially mess up time bounds to check if service updates the streams
+      elem1.db_stream.update(start_time: 0, end_time: 0)
+      elem2.db_stream.update(start_time: 0, end_time: 0)
+      service = LoadElementData.new
+      service.run([elem1,elem2], nil, nil)
+      #bounds taken from test nilm on vagrant instance
+      expect(service.start_time).to eq(1360017784000000)
+      expect(service.end_time).to eq(1435438182000001)
+      #make sure decimations are still here
+      expect(elem1.db_stream.reload.db_decimations.count).to eq ndecims1
+      expect(elem2.db_stream.reload.db_decimations.count).to eq ndecims2
+    end
+  end
 end

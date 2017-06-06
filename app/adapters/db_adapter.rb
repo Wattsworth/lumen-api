@@ -36,15 +36,20 @@ class DbAdapter
     }
   end
 
-  def schema
+  def schema(path='')
     # GET extended info stream list
     begin
-      resp = self.class.get("#{@url}/stream/list?extended=1")
+      if(path.empty?)
+        resp = self.class.get("#{@url}/stream/list?extended=1")
+      else
+        resp = self.class.get("#{@url}/stream/list?path=#{path}&extended=1")
+      end
       return nil unless resp.success?
     rescue
       return nil
     end
     # if the url exists but is not a nilm...
+
     return nil unless resp.parsed_response.respond_to?(:map)
     resp.parsed_response.map do |entry|
       metadata = if entry[0].match(UpdateStream.decimation_tag).nil?
@@ -69,6 +74,25 @@ class DbAdapter
         elements: elements
       }
     end
+  end
+
+  # return latest info about the specified stream
+  # TODO: the HTTP API does not
+  # support wild cards so no decimations are returned
+  #  {
+  #    base_entry: ...,
+  #    decimation_entries: [...]
+  #  }
+  # this can be fed into UpdateStream service
+  def stream_info(stream)
+    entries = schema("#{stream.path}")
+    base_entry = entries
+      .select{|e| e[:path].match(UpdateStream.decimation_tag).nil?}
+      .first
+    {
+      base_entry: base_entry,
+      decimation_entries: entries - [base_entry]  #whatever is left over
+    }
   end
 
   def set_folder_metadata(db_folder)

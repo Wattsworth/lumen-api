@@ -16,6 +16,14 @@ describe DbAdapter do
     end
   end
 
+  it 'retrieves stream specific schema', :vcr do
+    adapter = DbAdapter.new(url)
+    entries = adapter.stream_info(create(:db_stream,path:"/tutorial/pump-prep"))
+    expect(entries[:base_entry][:path]).to eq "/tutorial/pump-prep"
+    #TODO: support decimation lookup, need HTTP API to process wild cards
+    expect(entries[:decimation_entries].length).to eq 0
+  end
+
   describe 'set_stream_metadata' do
     it 'updates config_key in metadata', :vcr do
       adapter = DbAdapter.new(url)
@@ -102,7 +110,7 @@ describe DbAdapter do
       end_time = 1361579612066315
       path = '/tutorial/pump-events'
       intervals = adapter.get_intervals(path,start_time, end_time)
-      expect(intervals.length).to eq(60) #20 intervals 
+      expect(intervals.length).to eq(60) #20 intervals
     end
   end
 
