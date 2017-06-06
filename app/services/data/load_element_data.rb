@@ -42,12 +42,12 @@ class LoadElementData
     @end_time = end_time
     if start_time == nil
       @start_time = streams_with_data
-        .sort{|a,b| a.start_time < b.start_time }
+        .sort_by{|x| x.start_time}
         .first.start_time
     end
     if end_time == nil
       @end_time = streams_with_data
-        .sort{|a,b| a.end_time > b.end_time }
+        .sort_by{|x| -1*x.end_time}
         .first.end_time
     end
     if @start_time > @end_time
