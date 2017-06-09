@@ -18,8 +18,6 @@ RSpec.describe DbElementsController, type: :request do
         stream.db_elements << @elem2
       end
       it "returns elements with data" do
-
-
         @service_data = [{ id: @elem1.id, data: 'mock1' },
                          { id: @elem2.id, data: 'mock2' }]
         @mock_service = instance_double(LoadElementData,
@@ -39,6 +37,31 @@ RSpec.describe DbElementsController, type: :request do
         # check to make sure JSON renders the elements
         body = JSON.parse(response.body)
         expect(body['data'].count).to eq(2)
+      end
+
+      it 'computes padding if specified' do
+        @service_data = [{ id: @elem1.id, data: 'mock1' },
+                         { id: @elem2.id, data: 'mock2' }]
+        @mock_service = instance_double(LoadElementData,
+                                        run: StubService.new,
+                                        success?: true, notices: [], warnings: [], errors: [],
+                                        data: @service_data)
+        allow(LoadElementData).to receive(:new).and_return(@mock_service)
+        expect(@mock_service).to receive(:run).with([@elem1,@elem2],90,210,nil)
+        @auth_headers = user1.create_new_auth_token
+        get '/db_elements/data.json',
+            params: { elements: [@elem1.id, @elem2.id].to_json,
+                      start_time: 100, end_time: 200, padding: 0.1 },
+            headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        # check to make sure JSON renders the elements
+        body = JSON.parse(response.body)
+        expect(body['data'].count).to eq(2)
+        # reported time bounds should *NOT* include padding
+        body['data'].map do |data|
+          expect(data['start_time']).to eq 100
+          expect(data['end_time']).to eq 200
+        end
       end
       it 'returns error if time bounds are invalid' do
         @auth_headers = user1.create_new_auth_token

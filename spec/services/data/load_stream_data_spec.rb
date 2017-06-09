@@ -34,7 +34,7 @@ RSpec.describe 'LoadStreamData' do
         expect(@service.success?).to be true
         expect(@service.data_type).to eq('decimated')
       end
-      it 'finds appropriate level based on nilm resolution' do
+      it 'finds max allowed resolution by default' do
         # expect level 16 decimation to meet plotting requirements
         @service.run(@db_stream, 10, 90)
         expect(@mockAdapter.level_retrieved).to eq(16)
@@ -45,6 +45,19 @@ RSpec.describe 'LoadStreamData' do
         # with lower resolution setting, level 64 should meet requirements
         db.max_points_per_plot = 26; db.save
         @service.run(@db_stream, 10, 90)
+        expect(@mockAdapter.level_retrieved).to eq(64)
+      end
+      it 'finds lower resolution if requested' do
+        # expect level 64 decimation to meet plotting requirements
+        @service.run(@db_stream, 10, 90, [], 50)
+        expect(@mockAdapter.level_retrieved).to eq(64)
+        # with higher resolution setting, level should stay the same
+        db.max_points_per_plot = 425; db.save
+        @service.run(@db_stream, 10, 90, [], 50)
+        expect(@mockAdapter.level_retrieved).to eq(64)
+        # when resolution > allowed, returns allowed
+        db.max_points_per_plot = 26; db.save
+        @service.run(@db_stream, 10, 90, [], 1000)
         expect(@mockAdapter.level_retrieved).to eq(64)
       end
       it 'populates @data structure with decimated data' do

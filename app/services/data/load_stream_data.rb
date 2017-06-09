@@ -17,6 +17,8 @@ class LoadStreamData
   # associated database, sets data and data_type
   # specify a subset of elements as an optional array
   # if ommitted, all elements are extracted from the stream (expensive!)
+  # optionally specify a resolution, if omitted, returns maximum resolution
+  # allowed by the nilm
   #
   # sets data and data_type
   # data_type: raw
@@ -33,7 +35,7 @@ class LoadStreamData
   # data:
   #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
   #
-  def run(db_stream, start_time, end_time, elements = [])
+  def run(db_stream, start_time, end_time, elements = [], resolution=nil)
 
     # if elements are not explicitly passed, get all of them
     if(elements.empty?)
@@ -41,7 +43,11 @@ class LoadStreamData
     end
     elements.sort_by!(&:column)
 
-    resolution = db_stream.db.max_points_per_plot
+    resolution = if resolution.nil?
+                   db_stream.db.max_points_per_plot
+                 else
+                   [db_stream.db.max_points_per_plot,resolution].min
+                 end
     valid_decim = findValidDecimationLevel(db_stream, start_time)
     # valid_decim is the highest resolution, find one we can plot
     plottable_decim = findPlottableDecimationLevel(
@@ -98,9 +104,8 @@ class LoadStreamData
   # the decimation level will be 0
   #
   def findPlottableDecimationLevel(
-    db_stream, valid_decim, start_time, end_time, _resolution
+    db_stream, valid_decim, start_time, end_time, resolution
   )
-
     path = db_stream.path
     path += "~decim-#{valid_decim.level}" if valid_decim.level > 1
     # figure out how much data this stream has over the interval
@@ -112,16 +117,15 @@ class LoadStreamData
     # find out how much raw data exists over the specified interval
     raw_count = count * valid_decim.level
     # now we can find the right decimation level for plotting
-    max_count = db_stream.db.max_points_per_plot
     # if the valid decim can be plotted, use it
-    return valid_decim if raw_count <= max_count
+    return valid_decim if raw_count <= resolution
     # otherwise look for a higher decimation level
     found_valid_decim = false
     db_stream.db_decimations
              .where('level >= ?', valid_decim.level)
              .order(:level)
              .each do |decim|
-      if raw_count / decim.level <= max_count
+      if raw_count / decim.level <= resolution
         # the lowest decimation level is the best
         return decim
       end

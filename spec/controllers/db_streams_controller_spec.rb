@@ -12,7 +12,52 @@ RSpec.describe DbStreamsController, type: :request do
                                  db: john_nilm.db)
   end
 
-  # index action does not exist
+  describe 'GET index' do
+    let(:viewer) {create(:user)}
+    let(:nilm) {create(:nilm, viewers: [viewer])}
+    let(:db) {create(:db, nilm: nilm)}
+    let(:stream2) {create(:db_stream, db: db)}
+    let(:stream1) {create(:db_stream, db: db)}
+    let(:other_nilm) {create(:nilm)}
+    let(:other_db) {create(:db, nilm: other_nilm)}
+    let(:other_stream) {create(:db_stream, db: other_db)}
+
+    context 'with viewer permissions' do
+      it 'returns array of requested streams' do
+        @auth_headers = viewer.create_new_auth_token
+        get "/db_streams.json",
+          params: {streams: [stream1.id, stream2.id].to_json},
+          headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        # check to make sure JSON renders the streams
+        streams = JSON.parse(response.body)
+        expect(streams.count).to eq(2)
+      end
+      it 'returns unauthorized with a mix of allowed and forbidden streams' do
+        @auth_headers = viewer.create_new_auth_token
+        get "/db_streams.json",
+          params: {streams: [stream1.id, stream2.id, other_stream.id].to_json},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'without permissions' do
+      it 'returns unauthorized' do
+        @auth_headers = viewer.create_new_auth_token
+        get "/db_streams.json",
+          params: {streams: [other_stream.id].to_json},
+          headers: @auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        get "/db_streams.json",
+          params: {streams: [stream1.id, stream2.id].to_json}
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
   # show action does not exist
 
   describe 'PUT update' do

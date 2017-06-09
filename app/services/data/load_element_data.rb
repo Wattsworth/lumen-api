@@ -17,6 +17,8 @@ class LoadElementData
   # start_time and end_time are unix us
   # if start_time is nil it is set to earliest timestamp
   # if end_time is nil it is set to latest timestamp
+  # if resolution is nil, retrieve highest resolution possible
+
   #
   # sets data
   # data:
@@ -24,7 +26,7 @@ class LoadElementData
   #    {id: element_id, values: [...]},...]
   # see load_stream_data for details on the value structure
   #
-  def run(elements, start_time, end_time)
+  def run(elements, start_time, end_time, resolution = nil)
     #1 figure out what streams need to be pulled
     req_streams = []
     elements.each do |elem|
@@ -76,7 +78,7 @@ class LoadElementData
       adapter = DbAdapter.new(stream.db.url)
       data_service = LoadStreamData.new(adapter)
       stream_elements = elements.select{|e| e.db_stream_id==stream.id}.to_a
-      data_service.run(stream, @start_time, @end_time,stream_elements)
+      data_service.run(stream, @start_time, @end_time,stream_elements,resolution)
 
       if data_service.success?
         combined_data.concat(data_service.data)

@@ -1,8 +1,8 @@
 ###############################################
 # Stream: <%=@db_stream.name%>
+# Installation: <%=@nilm.name%> <%unless @nilm.description.blank?%>(<%=@nilm.description%>)<%end%>
 # Path:   <%=@db_stream.path%>
-# Source: <%=@nilm.name%> <%unless @nilm.description.blank?%>(<%=@nilm.description%>)<%end%>
-#
+# URL: <%=@nilm.url%>
 #
 # start:             <%=Time.at(@legend[:start_time]/1e6)%>
 # end:               <%=Time.at(@legend[:end_time]/1e6)%>

@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   end
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
-  resources :db_streams, only: [:update] do
+  resources :db_streams, only: [:index, :update] do
     member do
       post 'data'
     end

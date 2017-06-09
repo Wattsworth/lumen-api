@@ -7,6 +7,22 @@ class DbStreamsController < ApplicationController
   before_action :authorize_viewer, only: [:data]
   before_action :authorize_owner, only: [:update]
 
+  def index
+    if params[:streams].nil?
+      head :unprocessable_entity
+      return
+    end
+
+    @streams = DbStream.find(JSON.parse(params[:streams]))
+    # make sure the user is allowed to view these streams
+    @streams.each do |stream|
+      unless current_user.views_nilm?(stream.db.nilm)
+        head :unauthorized
+        return
+      end
+    end
+  end
+
   def update
     adapter = DbAdapter.new(@db.url)
     @service = EditStream.new(adapter)
