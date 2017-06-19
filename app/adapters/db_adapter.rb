@@ -99,6 +99,8 @@ class DbAdapter
   end
 
   def set_folder_metadata(db_folder)
+    # always try to create the info stream, this fails silently if it exists
+    __create_stream("#{db_folder.path}/info","uint8_1")
     _set_path_metadata("#{db_folder.path}/info",
                        __build_folder_metadata(db_folder))
   end
@@ -202,6 +204,24 @@ class DbAdapter
     __sanitize_metadata(metadata)
   end
 
+  # create a new stream on the database
+  def __create_stream(path,dtype)
+    params = { path: path,
+               layout: dtype }.to_json
+    begin
+      response = self.class.post("#{@url}/stream/create",
+                                 body: params,
+                                 headers: { 'Content-Type' => 'application/json' })
+    rescue
+      return { error: true, msg: 'cannot contact NilmDB server' }
+    end
+    unless response.success?
+      Rails.logger.warn("#{@url}: create(#{path})"\
+                        " => #{response.code}:#{response.body}")
+      return { error: true, msg: "error creating #{path}" }
+    end
+    { error: false, msg: 'success' }
+  end
   # make sure all the keys are valid parameters
   # this function does not know the difference between folders and streams
   # this *should* be ok as long as nobody tinkers with the config_key__ entries

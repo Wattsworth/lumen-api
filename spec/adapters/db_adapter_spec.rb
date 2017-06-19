@@ -50,6 +50,13 @@ describe DbAdapter do
       result = adapter.set_folder_metadata(folder)
       expect(result[:error]).to be false
     end
+    it 'creates info stream if missing', :vcr do
+      adapter = DbAdapter.new(url)
+      folder = DbFolder.new(path: '/v2_folder/another',
+      name: 'another', description: 'new')
+      result = adapter.set_folder_metadata(folder)
+      expect(result[:error]).to be false
+    end
     it 'returns error on server failure', :vcr do
       adapter = DbAdapter.new(url)
       folder = DbFolder.new(path: '/badpath')
