@@ -38,6 +38,7 @@ gem 'devise_token_auth'
 gem 'devise_invitable'
 gem 'omniauth'
 gem 'oj'  # fast json
+gem 'mini_magick'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

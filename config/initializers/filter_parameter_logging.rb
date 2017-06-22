@@ -2,3 +2,6 @@
 
 # Configure sensitive parameters which will be filtered from the log file.
 Rails.application.config.filter_parameters += [:password]
+Rails.application.config.filter_parameters << lambda do |key, value|
+ value.replace('[BASE64 STRING OMITTED]') if key == 'redux_json' || key == 'image'
+end

@@ -50,12 +50,17 @@ class UpdateStream
   # create or update DbDecimations for the
   # specified DbStream
   def __build_decimations(stream:, entry_group:)
+    if !entry_group.empty?
+      Rails.logger.warn("deleting decimations for #{stream.path}")
+      stream.db_decimations.destroy_all #remove existing decimations
+    end
     entry_group.each do |entry|
       level = entry[:path].match(UpdateStream.decimation_tag)[1].to_i
       decim = stream.db_decimations.find_by_level(level)
       decim ||= DbDecimation.new(db_stream: stream, level: level)
       decim.update_attributes(entry[:attributes])
-      decim.save!
+
+      #decim.save!
     end
   end
 
@@ -71,11 +76,11 @@ class UpdateStream
       # use the metadata if present
       unless element.update_attributes(entry[0] || {})
         element.use_default_attributes
+        element.save!
         Rails.logger.warn(stream_data)
         Rails.logger.warn("corrupt metadata: #{stream.path}:"\
                           "e#{element.column}")
       end
-      element.save!
     end
   end
 

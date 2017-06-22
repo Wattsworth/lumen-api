@@ -7,8 +7,22 @@ class CreateDataView
 
   def run(data_view_params, stream_ids, user, home_view=false)
 
+
+
     # normal data view
     @data_view = DataView.new(data_view_params.merge({owner: user}))
+
+    #resize thumbnail because client can upload any dimension
+    if(!@data_view.image.empty?)
+      metadata = "data:image/png;base64,"
+      base64_string = @data_view.image[metadata.size..-1]
+      blob = Base64.decode64(base64_string)
+      image = MiniMagick::Image.read(blob)
+      image.resize('200x100!')
+      image.format 'png'
+      scaled_image_bytes = image.to_blob
+      @data_view.image = metadata+Base64.strict_encode64(scaled_image_bytes)
+    end
 
     # build nilm associations for permissions
     begin
