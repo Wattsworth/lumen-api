@@ -45,8 +45,6 @@ group :development, :test do
   gem 'byebug'
   gem 'rspec-rails', '~> 3.1'
   gem 'rubocop', require: false
-  gem 'factory_girl_rails'
-  gem 'faker'
   gem 'vcr'
   gem 'webmock'
   gem 'rspec-json_expectations'
@@ -62,6 +60,10 @@ group :development, :test do
   gem 'capistrano-rails', '~> 1.2'
   gem 'capistrano-rbenv', '~> 2.0'
   gem 'capistrano-passenger'
+end
+group :local, :development, :test do
+  gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 # NOTE: install mailcatcher for development
