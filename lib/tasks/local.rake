@@ -1,0 +1,39 @@
+require 'factory_girl_rails'
+
+ADMIN_NAME="admin"
+ADMIN_PASSWORD ="password"
+ADMIN_EMAIL    ="admin@wattsworth.local"
+
+
+
+namespace :local do
+  desc "Setup and standalone systems running Lumen API"
+  task :bootstrap => :environment do
+
+
+    # Create an admin user"
+    @admin = User.find_by_email(ADMIN_EMAIL)
+
+    if(@admin.nil?)
+      puts 'Creating new admin user'
+      @admin = FactoryGirl.create(:user,
+                      first_name: 'John',
+                      last_name: 'Doe',
+                      password: ADMIN_PASSWORD,
+                      password_confirmation: ADMIN_PASSWORD,
+                      email: ADMIN_EMAIL)
+    end
+    @installation = Nilm.find_by_url("http://localhost/nilmdb")
+    if(@installation.nil?)
+      puts 'Creating new local installation'
+      #create a local installation
+      nilm_creator = CreateNilm.new
+      nilm_creator.run(
+        name: 'local',
+        description: 'local database',
+        url: 'http://localhost/nilmdb',
+        owner: @admin
+      )
+    end
+  end
+end

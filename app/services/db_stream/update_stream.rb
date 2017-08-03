@@ -51,7 +51,7 @@ class UpdateStream
   # specified DbStream
   def __build_decimations(stream:, entry_group:)
     if !entry_group.empty?
-      Rails.logger.warn("deleting decimations for #{stream.path}")
+      Rails.logger.debug("deleting decimations for #{stream.path}")
       stream.db_decimations.destroy_all #remove existing decimations
     end
     entry_group.each do |entry|

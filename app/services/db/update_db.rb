@@ -28,13 +28,15 @@ class UpdateDb
     entries = __create_entries(schema)
 
     updater = UpdateFolder.new(@root_folder, entries)
+
     # update db attributes from dbinfo
     @db.size_total = dbinfo[:size_total]
     @db.size_db = dbinfo[:size_db]
     @db.size_other = dbinfo[:size_other]
     @db.version = dbinfo[:version]
-    absorb_status(updater.run)
-
+    #@root_folder.transaction do
+      absorb_status(updater.run)
+    #end
     @db.save
     set_notice("Database refreshed")
     self

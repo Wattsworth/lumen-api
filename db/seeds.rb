@@ -16,7 +16,7 @@ DatabaseCleaner.clean
 
 # create named users
 def create_user(first_name, last_name)
-  FactoryGirl.create(:confirmed_user,
+  FactoryGirl.create(:user,
                      first_name: first_name,
                      last_name: last_name)
 end
