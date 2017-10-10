@@ -4,18 +4,13 @@ lock "3.8.1"
 set :application, "lumen-api"
 set :repo_url, "git@git.wattsworth.net:wattsworth/control-api.git"
 
-set :rbenv_type, :user
-
-set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
-set :rbenv_map_bins, %w{rake gem bundle ruby rails}
-set :rbenv_roles, :all # default value
 set :passenger_restart_with_touch, true
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/opt/rails/lumen"
+
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -28,7 +23,7 @@ set :deploy_to, "/opt/rails/lumen"
 # set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/secrets.yml", "db/production.sqlite3"
+append :linked_files, "config/secrets.yml"
 
 # Default value for linked_dirs is []
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets"
