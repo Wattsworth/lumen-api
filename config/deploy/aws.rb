@@ -9,7 +9,6 @@ server "portal.wattsworth.net", user: "rails", roles: %w{app db web}, port: 22
 set :deploy_to, "/opt/api"
 set :bundle_without, [:development, :test, :local]
 
-
 # role-based syntax
 # ==================
 
