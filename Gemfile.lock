@@ -193,6 +193,8 @@ GEM
     orm_adapter (0.5.0)
     parser (2.4.0.0)
       ast (~> 2.2)
+    pg (0.21.0)
+    pg (0.21.0-x64-mingw32)
     powerpack (0.1.1)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -358,6 +360,7 @@ DEPENDENCIES
   mini_magick
   oj
   omniauth
+  pg
   rack-cors
   rails (= 5.1.1)
   rspec-json_expectations
