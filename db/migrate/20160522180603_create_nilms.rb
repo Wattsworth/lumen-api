@@ -1,4 +1,4 @@
-class CreateNilms < ActiveRecord::Migration
+class CreateNilms < ActiveRecord::Migration[5.0]
   def change
     create_table :nilms do |t|
       t.string :name

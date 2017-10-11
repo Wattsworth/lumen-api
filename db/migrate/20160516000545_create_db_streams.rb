@@ -1,4 +1,4 @@
-class CreateDbStreams < ActiveRecord::Migration
+class CreateDbStreams < ActiveRecord::Migration[5.0]
   def change
     create_table :db_streams do |t|
       t.string :name

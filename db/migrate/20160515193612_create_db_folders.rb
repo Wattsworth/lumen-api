@@ -1,4 +1,4 @@
-class CreateDbFolders < ActiveRecord::Migration
+class CreateDbFolders < ActiveRecord::Migration[5.0]
   def change
     create_table :db_folders do |t|
       t.string :name

@@ -1,4 +1,4 @@
-class AddItemsToDbFolders < ActiveRecord::Migration
+class AddItemsToDbFolders < ActiveRecord::Migration[5.0]
   def change
     add_column :db_folders, :db_id, :integer
     add_column :db_folders, :start_time, :integer, limit: 8

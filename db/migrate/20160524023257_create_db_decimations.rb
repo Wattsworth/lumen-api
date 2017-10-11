@@ -1,4 +1,4 @@
-class CreateDbDecimations < ActiveRecord::Migration
+class CreateDbDecimations < ActiveRecord::Migration[5.0]
   def change
     create_table :db_decimations do |t|
       t.integer :start_time, :int, :limit=>8

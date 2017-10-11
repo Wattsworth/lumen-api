@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RenameForeignDecimationKey < ActiveRecord::Migration
+class RenameForeignDecimationKey < ActiveRecord::Migration[5.0]
   def change
     rename_column :db_decimations, :db_file_id, :db_stream_id
   end

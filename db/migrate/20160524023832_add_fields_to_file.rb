@@ -1,4 +1,4 @@
-class AddFieldsToFile < ActiveRecord::Migration
+class AddFieldsToFile < ActiveRecord::Migration[5.0]
   def change
     add_column :db_decimations, :level, :integer
     add_column :db_files, :start_time, :integer, limit: 8
