@@ -30,14 +30,5 @@ production:
   <<: *default
   database: db/production.sqlite3
 
-aws:
-  adapter: postgresql
-  database: <%= ENV['RDS_DATABASE'] %>
-  host: <%= ENV['RDS_HOST'] %>
-  pool: 5
-  encoding: unicode
-  username: <%= ENV['RDS_USERNAME'] %>
-  password: <%= ENV['RDS_PASSWORD'] %>
-
 cucumber:
   <<: *test
