@@ -8,7 +8,7 @@ server "portal.wattsworth.net", user: "rails", roles: %w{app db web}, port: 22
 # server "db.example.com", user: "deploy", roles: %w{db}
 set :deploy_to, "/opt/api"
 set :bundle_without, [:development, :test, :local]
-append :linked_files, "config/database.yml", "configs/initializers/smtp.rb"
+append :linked_files, "config/database.yml", "config/initializers/smtp.rb"
 
 # role-based syntax
 # ==================
