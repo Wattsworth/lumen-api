@@ -13,7 +13,7 @@ class CreateDataView
     @data_view = DataView.new(data_view_params.merge({owner: user}))
 
     #resize thumbnail because client can upload any dimension
-    if(!@data_view.image.empty?)
+    if(!@data_view.image.nil? && !@data_view.image.empty?)
       metadata = "data:image/png;base64,"
       base64_string = @data_view.image[metadata.size..-1]
       blob = Base64.decode64(base64_string)
