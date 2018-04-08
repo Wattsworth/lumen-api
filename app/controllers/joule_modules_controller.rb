@@ -1,0 +1,2 @@
+class JouleModulesControllerController < ApplicationController
+end

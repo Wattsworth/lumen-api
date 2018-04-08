@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170525005625) do
+ActiveRecord::Schema.define(version: 20180224021655) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -102,6 +102,28 @@ ActiveRecord::Schema.define(version: 20170525005625) do
     t.string "version"
     t.integer "max_points_per_plot", default: 3600
     t.boolean "available"
+  end
+
+  create_table "joule_modules", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.boolean "web_interface"
+    t.string "exec_cmd"
+    t.string "status"
+    t.integer "pid"
+    t.string "joule_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "joule_pipes", force: :cascade do |t|
+    t.integer "joule_pipe_id"
+    t.integer "db_stream_id"
+    t.string "direction"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["db_stream_id"], name: "index_joule_pipes_on_db_stream_id"
+    t.index ["joule_pipe_id"], name: "index_joule_pipes_on_joule_pipe_id"
   end
 
   create_table "memberships", force: :cascade do |t|
