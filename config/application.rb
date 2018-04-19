@@ -32,7 +32,7 @@ module ControlPanel
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     # Add folders under the services and adapters directory
-    %w(data nilm db db_folder db_stream permission user_group user data_view).each do |service|
+    %w(data nilm db db_folder db_stream permission user_group user data_view joule_modules).each do |service|
       config.autoload_paths << Rails.root.join("app/services/#{service}")
     end
     config.autoload_paths << Rails.root.join("app/adapters")

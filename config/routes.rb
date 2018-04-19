@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get 'home' #retrieve a user's home data view
     end
   end
+  resources :joule_modules, only: [:show]
   resources :dbs, only: [:show, :update]
   resources :db_folders, only: [:show, :update]
   resources :db_streams, only: [:index, :update] do

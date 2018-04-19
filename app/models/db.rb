@@ -9,7 +9,7 @@ class Db < ApplicationRecord
              class_name: 'DbFolder',
              dependent: :destroy
   belongs_to :nilm
-
+  has_many :db_streams #flat map of all streams in database
   #---Validations
   validates :max_points_per_plot, numericality: { only_integer: true }
 

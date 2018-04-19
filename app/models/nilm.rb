@@ -10,7 +10,7 @@ class Nilm < ApplicationRecord
   has_many :user_groups, through: :permissions
   has_many :data_views_nilms
   has_many :data_views, through: :data_views_nilms
-
+  has_many :joule_modules, dependent: :destroy
   #---Validations-----
   validates :name, presence: true, uniqueness: true
   validates :url, presence: true, uniqueness: true

@@ -8,6 +8,8 @@ RSpec.describe 'Nilm' do
     specify { expect(nilm).to respond_to(:description) }
     specify { expect(nilm).to respond_to(:url) }
     specify { expect(nilm).to respond_to(:db) }
+    specify { expect(nilm).to respond_to(:joule_modules) }
+
   end
 
   it 'removes associated db when destroyed' do

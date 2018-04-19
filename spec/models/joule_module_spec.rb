@@ -15,17 +15,14 @@ RSpec.describe JouleModule, type: :model do
   it 'removes pipes when destroyed' do
     @joule_module = JouleModule.create
     @joule_module.joule_pipes << JoulePipe.create(
-      db_stream: DbStream.create,
+      db_stream: create(:db_stream),
       direction: 'output')
-    expect(JouleModule.find_by_id(@joule_module.id).pipes.count).to equal 1
+    expect(JouleModule.find_by_id(@joule_module.id).joule_pipes.count).to equal 1
     @joule_module.destroy
     expect(JouleModule.count).to equal 0
     # deletes associated pipes
     expect(JoulePipe.count).to equal 0
     # does not delete the streams
-    expect(DbStream.count).to equal 2
-
+    expect(DbStream.count).to equal 1
   end
-
-
-  end
+end

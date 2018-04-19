@@ -112,17 +112,22 @@ ActiveRecord::Schema.define(version: 20180224021655) do
     t.string "status"
     t.integer "pid"
     t.string "joule_id"
+    t.integer "nilm_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["nilm_id"], name: "index_joule_modules_on_nilm_id"
   end
 
   create_table "joule_pipes", force: :cascade do |t|
     t.integer "joule_pipe_id"
+    t.integer "joule_module_id"
     t.integer "db_stream_id"
+    t.string "name"
     t.string "direction"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["db_stream_id"], name: "index_joule_pipes_on_db_stream_id"
+    t.index ["joule_module_id"], name: "index_joule_pipes_on_joule_module_id"
     t.index ["joule_pipe_id"], name: "index_joule_pipes_on_joule_pipe_id"
   end
 
