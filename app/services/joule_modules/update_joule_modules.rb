@@ -28,7 +28,7 @@ class UpdateJouleModules
   def _build_module(info)
     # create JouleModule and associated pipes from
     # hash returned by the JouleAdapter.module_info
-    params = info.extract!(*JouleModule.json_keys)
+    params = info.extract!(*JouleModule.joule_keys)
     m = JouleModule.new(params)
     # link inputs to database streams
     info[:input_paths].each do |name, path|
