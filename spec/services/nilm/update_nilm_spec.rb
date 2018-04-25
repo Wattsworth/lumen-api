@@ -10,7 +10,9 @@ describe 'UpdateNilm' do
       warnings: [])
     allow(UpdateDb).to receive(:new)
                    .and_return(mock_service)
-
+    mock_adapter = double(JouleAdapter)
+    allow(JouleAdapter).to receive(:new).and_return(mock_adapter)
+    expect(mock_adapter).to receive(:module_info).and_return([])
     nilm = create(:nilm)
     service = UpdateNilm.new()
     service.run(nilm)

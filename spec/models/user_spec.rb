@@ -34,6 +34,11 @@ RSpec.describe User, type: :model do
         @lab = create(:nilm, name: "LEES Lab", admins: [@john, @leeb],
                       owners: [@labmates], viewers: [@public])
       end
+      it "associates nilms with permissions" do
+        expect(@john.get_nilm_permission(@donnal_house)).to eq('admin')
+        expect(@pete.get_nilm_permission(@lab)).to eq('owner')
+        expect(@nicky.get_nilm_permission(@lab)).to eq('viewer')
+      end
       it "lets John admin his house and the lab" do
         expect(@john.admins_nilm?(@donnal_house)).to eq(true)
         expect(@john.owns_nilm?(@donnal_house)).to eq(true)

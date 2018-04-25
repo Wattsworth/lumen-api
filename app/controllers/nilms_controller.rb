@@ -3,16 +3,30 @@
 # controller for NILM objects
 class NilmsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_nilm, only: [:update, :refresh, :destroy]
+  before_action :set_nilm, only: [:update, :show, :refresh, :destroy]
   before_action :authorize_viewer, only: [:show]
   before_action :authorize_owner, only: [:update, :refresh]
   before_action :authorize_admin, only: [:destroy]
 
   # GET /nilms.json
   def index
+    #just the NILM info, no database or joule modules
     @nilms = current_user.retrieve_nilms_by_permission
   end
 
+  def show
+    #render the database and joule modules
+    @role = current_user.get_nilm_permission(@nilm)
+    @url_template = "http://%s.modules.wattsworth.local"
+    #request new information from the NILM
+    if(params[:refresh])
+      @service = UpdateNilm.new()
+      @service.run(@nilm)
+      render status: @service.success? ? :ok : :unprocessable_entity
+    else
+      @service = StubService.new
+    end
+  end
 
   # POST /nilms.json
   def create
@@ -22,27 +36,28 @@ class NilmsController < ApplicationController
                  description: nilm_params[:description],
                  owner: current_user)
     @nilm = @service.nilm
+    @role = 'owner'
     render :show, status: @service.success? ? :ok : :unprocessable_entity
   end
 
   # PATCH/PUT /nilms/1
   # PATCH/PUT /nilms/1.json
   def update
+    #update both the NILM and the Db models
     @service = StubService.new
-    if @nilm.update(nilm_params)
+    if @nilm.update(nilm_params) && @db.update(db_params)
       @service.add_notice('Installation Updated')
       render :show, status: :ok
     else
-      @service.errors = @nilm.errors.full_messages
+      @service.errors = @nilm.errors.full_messages +
+                        @db.errors.full_messages
       render :show, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /nilms/1/refresh.json
   def refresh
-    @service = UpdateNilm.new()
-    @service.run(@nilm)
-    render status: @service.success? ? :ok : :unprocessable_entity
+
   end
 
   # DELETE /nilms/1.json
@@ -57,11 +72,21 @@ class NilmsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_nilm
       @nilm = Nilm.find(params[:id])
+      @db = @nilm.db
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Never trust parameters from the scary internet,
+    # only allow the white list through.
     def nilm_params
       params.permit(:name, :description,:url)
+    end
+
+    def db_params
+      unless params[:db].nil?
+        params[:db].permit(:max_points_per_plot)
+      else
+        return {}
+      end
     end
 
     #authorization based on nilms

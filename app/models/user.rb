@@ -79,10 +79,16 @@ class User < ActiveRecord::Base
     return self.has_permission(["admin","owner"],nilm)
   end
 
-
   #returns true if the user has <em> at least</em> +viewer+ privileges either directly or through a group
   def views_nilm?(nilm)
     return self.has_permission(["admin","owner","viewer"],nilm)
+  end
+
+  def get_nilm_permission(nilm)
+    return 'admin' if admins_nilm?(nilm)
+    return 'owner' if owns_nilm?(nilm)
+    return 'viewer' if views_nilm?(nilm)
+    return 'none'
   end
 
   def name

@@ -9,10 +9,15 @@ class UpdateNilm
       add_error('no associated db object')
       return self
     end
-    adapter = DbAdapter.new(nilm.url)
-    service = UpdateDb.new(db: nilm.db)
+    db_adapter = DbAdapter.new(nilm.url)
+    db_service = UpdateDb.new(db: nilm.db)
     absorb_status(
-      service.run(adapter.dbinfo, adapter.schema)
+      db_service.run(db_adapter.dbinfo, db_adapter.schema)
+    )
+    joule_adapter = JouleAdapter.new(nilm.url)
+    joule_module_service = UpdateJouleModules.new(nilm)
+    absorb_status(
+      joule_module_service.run(joule_adapter.module_info)
     )
     self
   end

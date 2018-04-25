@@ -1,16 +1,11 @@
+
+@data = @nilms[:admin].map{|nilm| {nilm: nilm, role: 'admin'}} +
+        @nilms[:owner].map{|nilm| {nilm: nilm, role: 'owner'}} +
+        @nilms[:viewer].map{|nilm| {nilm: nilm, role: 'viewer'}}
 # frozen_string_literal: true
-json.admin @nilms[:admin] do |nilm|
-  json.extract! nilm, *Nilm.json_keys
-  json.db_id nilm.db.id
-  json.available nilm.db.available
-end
-json.owner @nilms[:owner] do |nilm|
-  json.extract! nilm, *Nilm.json_keys
-  json.db_id nilm.db.id
-  json.available nilm.db.available
-end
-json.viewer @nilms[:viewer] do |nilm|
-  json.extract! nilm, *Nilm.json_keys
-  json.db_id nilm.db.id
-  json.available nilm.db.available
+json.array!(@data) do |d|
+    nilm = d[:nilm]; role=d[:role]
+    json.extract! nilm, *Nilm.json_keys
+    json.role role
+    json.available nilm.db.available
 end

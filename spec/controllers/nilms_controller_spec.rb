@@ -20,9 +20,18 @@ RSpec.describe NilmsController, type: :request do
         get "/nilms.json", headers: @auth_headers
         expect(response.header['Content-Type']).to include('application/json')
         body = JSON.parse(response.body)
-        expect(body["admin"][0]["id"]).to eq(john_nilm.id)
-        expect(body["owner"][0]["id"]).to eq(lab_nilm.id)
-        expect(body["viewer"][0]["id"]).to eq(pete_nilm.id)
+        expect(body.length).to eq 3
+        body.each do |nilm|
+          if(nilm['id']==john_nilm.id)
+            expect(nilm["role"]).to eq("admin")
+          elsif(nilm['id']==lab_nilm.id)
+            expect(nilm["role"]).to eq("owner")
+          elsif(nilm['id']==pete_nilm.id)
+            expect(nilm["role"]).to eq("viewer")
+          else
+            fail "unexpected nilm in json response"
+          end
+        end
       end
     end
     context 'without sign-in' do
@@ -46,7 +55,7 @@ RSpec.describe NilmsController, type: :request do
           expect(nilm.reload.name).to eq("changed:#{nilm.id}")
         end
       end
-      it 'returns 422 on invalid parameters' do
+      it 'returns 422 on invalid nilm parameters' do
         @auth_headers = john.create_new_auth_token
         put "/nilms/#{john_nilm.id}.json",
             params: {id: john_nilm.id, name: ""},
@@ -55,57 +64,106 @@ RSpec.describe NilmsController, type: :request do
         expect(response).to have_error_message(/Name/)
         expect(john_nilm.reload.name).to eq("John's NILM")
       end
+      it 'returns 422 on invalid db parameters' do
+        # max points must be a positive number
+        put "/nilms/#{john_nilm.id}.json",
+            params: {db: {max_points_per_plot: 'invalid'}},
+            headers: john.create_new_auth_token
+        expect(response.status).to eq(422)
+        expect(response).to have_error_message(/not a number/)
+      end
+
+      it 'only allows configurable db parameters to be changed' do
+        # should ignore size and accept max_points
+        url = john_nilm.db.url
+        num_points = john_nilm.db.max_points_per_plot
+        put "/nilms/#{john_nilm.id}.json",
+            params: {db: {max_points_per_plot: num_points+10, url: 'different'}},
+            headers:  john.create_new_auth_token
+        expect(response.status).to eq(200)
+        expect(response).to have_notice_message()
+        expect(john_nilm.db.reload.url).to eq(url)
+        expect(john_nilm.db.max_points_per_plot).to eq(num_points+10)
+      end
     end
     context 'without admin permissions' do
       it 'returns unauthorized' do
         @auth_headers = john.create_new_auth_token
+        num_points = pete_nilm.db.max_points_per_plot
         put "/nilms/#{pete_nilm.id}.json",
             params: {id: pete_nilm.id, name: "test"},
             headers: @auth_headers
         expect(response).to have_http_status(:unauthorized)
         expect(pete_nilm.reload.name).to eq("Pete's NILM")
+        expect(pete_nilm.db.max_points_per_plot).to eq(num_points)
       end
     end
     context 'without sign-in' do
       it 'returns unauthorized' do
+        num_points = pete_nilm.db.max_points_per_plot
         put "/nilms/#{pete_nilm.id}.json",
             params: {id: pete_nilm.id, name: "test"}
         expect(response).to have_http_status(:unauthorized)
         expect(pete_nilm.reload.name).to eq("Pete's NILM")
+        expect(pete_nilm.db.max_points_per_plot).to eq(num_points)
       end
     end
   end
 
-  describe 'PUT refresh' do
-    context 'with owner or admin' do
-      it 'updates the db' do
+  describe 'GET show' do
+    context 'with any permissions' do
+
+      it 'returns nilm and nested db as json' do
+        # john has some permission on all 3 nilms
+        [pete_nilm, lab_nilm, john_nilm].each do |nilm|
+          get "/nilms/#{nilm.id}.json",
+              headers: john.create_new_auth_token
+          expect(response.status).to eq(200)
+          expect(response.header['Content-Type']).to include('application/json')
+          body = JSON.parse(response.body)
+          expect(body['data']['name']).to eq(nilm.name)
+          expect(body['data']['db']['url']).to eq(nilm.db.url)
+        end
+      end
+      it 'returns joule modules as json' do
+        test_module = create(:joule_module, name: 'test', description: 'sample')
+        john_nilm.joule_modules << test_module
+        get "/nilms/#{john_nilm.id}.json",
+            headers: john.create_new_auth_token
+        body = JSON.parse(response.body)
+        expect(body['data']['joule_modules'][0]['name']).to eq(test_module.name)
+        expect(body['data']['joule_modules'][0]['url']).to start_with("http://#{test_module.id}.modules")
+      end
+      it 'refreshes nilm data when requested' do
         @auth_headers = john.create_new_auth_token
         [john_nilm, lab_nilm].each do |nilm|
           mock_service = UpdateNilm.new
           expect(mock_service).to receive(:run).and_return StubService.new
           allow(UpdateNilm).to receive(:new)
                            .and_return(mock_service)
-          put "/nilms/#{nilm.id}/refresh.json",
+          get "/nilms/#{nilm.id}.json?refresh=1",
               headers: @auth_headers
           expect(response).to have_http_status(:ok)
+          expect(response.header['Content-Type']).to include('application/json')
         end
       end
     end
     context 'with anyone else' do
       it 'returns unauthorized' do
         @auth_headers = steve.create_new_auth_token
-        put "/nilms/#{john_nilm.id}/refresh.json",
+        get "/nilms/#{john_nilm.id}.json",
           headers: @auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
     end
     context 'without sign-in' do
       it 'returns unauthorized' do
-        put "/nilms/#{pete_nilm.id}/refresh.json"
+        put "/nilms/#{pete_nilm.id}.json?refresh=1"
         expect(response).to have_http_status(:unauthorized)
       end
     end
   end
+
   describe 'POST create' do
     context 'with authenticated user' do
       it 'creates a NILM' do
