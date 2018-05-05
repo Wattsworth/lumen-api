@@ -1,0 +1,2 @@
+class InterfaceAuthToken < ApplicationRecord
+end

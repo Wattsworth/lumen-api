@@ -44,4 +44,6 @@ Rails.application.routes.draw do
       put 'invite_user'
     end
   end
+
+  get 'interfaces/authenticate', to: 'interfaces#authenticate'
 end
