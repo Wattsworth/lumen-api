@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # generic DbStream
-FactoryGirl.define do
+FactoryBot.define do
   factory :db_element do
     name { Faker::Lorem.unique.words(3).join(' ') }
     units 'volts'

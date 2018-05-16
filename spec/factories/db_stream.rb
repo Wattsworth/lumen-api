@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # generic DbStream
-FactoryGirl.define do
+FactoryBot.define do
   factory :db_stream do
     name { Faker::Lorem.words(3).join(' ') }
     name_abbrev { Faker::Lorem.word }

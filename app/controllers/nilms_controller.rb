@@ -17,7 +17,6 @@ class NilmsController < ApplicationController
   def show
     #render the database and joule modules
     @role = current_user.get_nilm_permission(@nilm)
-    @url_template = "http://%s.modules.wattsworth.local"
     #request new information from the NILM
     if(params[:refresh])
       @service = UpdateNilm.new()

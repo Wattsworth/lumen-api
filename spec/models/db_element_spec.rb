@@ -22,9 +22,9 @@ RSpec.describe 'DbElement' do
       expect(element.errors[:name].any?).to be true
     end
     it 'name is unique in stream' do
-      stream = FactoryGirl.create(:db_stream, name: 'parent')
-      elem1 = FactoryGirl.create(:db_element, name: 'shared', db_stream: stream)
-      elem2 = FactoryGirl.build(:db_element, name: 'shared', db_stream: stream)
+      stream = FactoryBot.create(:db_stream, name: 'parent')
+      elem1 = FactoryBot.create(:db_element, name: 'shared', db_stream: stream)
+      elem2 = FactoryBot.build(:db_element, name: 'shared', db_stream: stream)
       elem2.validate
       expect(elem2.errors[:name].any?).to be true
       # but if element is in a different stream its ok

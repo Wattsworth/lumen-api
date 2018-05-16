@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180224021655) do
+ActiveRecord::Schema.define(version: 20180505193715) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -102,6 +102,17 @@ ActiveRecord::Schema.define(version: 20180224021655) do
     t.string "version"
     t.integer "max_points_per_plot", default: 3600
     t.boolean "available"
+  end
+
+  create_table "interface_auth_tokens", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "joule_module_id"
+    t.string "value"
+    t.datetime "expiration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["joule_module_id"], name: "index_interface_auth_tokens_on_joule_module_id"
+    t.index ["user_id"], name: "index_interface_auth_tokens_on_user_id"
   end
 
   create_table "joule_modules", force: :cascade do |t|

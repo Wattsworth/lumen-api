@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # generic DbFolder
-FactoryGirl.define do
+FactoryBot.define do
   factory :db_folder, aliases: [:root_folder] do
     name { Faker::Lorem.word }
     description { Faker::Lorem.sentence }

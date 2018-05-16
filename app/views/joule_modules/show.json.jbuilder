@@ -1,9 +1,6 @@
-json.data do
-  json.array! @joule_modules do |m|
-    json.extract! m, *JouleModule.json_keys
-    json.url @url_template % [m.id]
-    json.nilm_id @nilm.id
-  end
-end
 
-json.partial! "helpers/messages", service: @service
+json.extract! @joule_module, *JouleModule.json_keys
+json.nilm_id @nilm.id
+if @joule_module.web_interface
+  json.url @auth_token.url
+end

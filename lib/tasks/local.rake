@@ -1,4 +1,4 @@
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 
 ADMIN_NAME="admin"
 ADMIN_PASSWORD ="password"
@@ -16,7 +16,7 @@ namespace :local do
 
     if(@admin.nil?)
       puts 'Creating new admin user'
-      @admin = FactoryGirl.create(:user,
+      @admin = FactoryBot.create(:user,
                       first_name: 'John',
                       last_name: 'Doe',
                       password: ADMIN_PASSWORD,

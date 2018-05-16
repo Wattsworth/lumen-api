@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :joule_module do
     name { Faker::Lorem.words(3).join(' ') }
     description { Faker::Lorem.sentence }

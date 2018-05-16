@@ -61,7 +61,7 @@ group :development, :test do
   gem 'capistrano-passenger'
 end
 group :local, :development, :test do
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'faker'
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'

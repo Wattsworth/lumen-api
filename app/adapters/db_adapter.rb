@@ -195,6 +195,7 @@ class DbAdapter
   def __get_metadata(path)
     dump = self.class.get("#{@url}/stream/get_metadata?path=#{path}")
     # find legacy parameters in raw metadata
+    #TODO: why is parsed_response a string sometimes?? <error>
     metadata = dump.parsed_response.except('config_key__')
     # parse values from config_key entry if it exists
     config_key = JSON.parse(dump.parsed_response['config_key__'] || '{}')

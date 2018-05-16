@@ -3,26 +3,43 @@ class InterfacesController < ActionController::Base
 
   #GET /authenticate
   def authenticate
-    token = InterfaceAuthToken.find(params[:token])
-    #check if token timestamp is valid
-    puts("this session is: #{session[:test]}")
-    #sign_in(User.first)
     reset_session
+    token = InterfaceAuthToken.find_by_id(params[:token])
+    render :unauthorized and return if token.nil?
+    render :unauthorized and return if token.expiration < Time.now
+    token.destroy
     session[:user_id]=token.user.id
     session[:interface_id]=token.joule_module.id
-    #interface_user_session(interface: token.interface.id)
-    #redirect '/'
+    render plain: "welcome #{token.user.email}"
   end
 
   #GET /logout
   def logout
-    interface_user_sign_out
+    reset_session
+    redirect '/'
   end
 
   #everything else is proxied
+  def get
+    render 'ok, you got it'
+  end
+
+  def put
+  end
+
+  def post
+  end
+
+  def delete
+  end
+
   private
 
   def authenticate_interface_user!
-    puts 'authenticating...'
+    @current_user = User.find_by_id(session[:user_id])
+    render :unauthorized if @current_user.nil?
+    #verify the session matches the URL
+    #verify the user has permissions on this module
+
   end
 end
