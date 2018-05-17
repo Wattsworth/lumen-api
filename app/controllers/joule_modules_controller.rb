@@ -8,11 +8,20 @@ class JouleModulesController < ApplicationController
     head :unauthorized and return unless current_user.views_nilm?(@nilm)
 
     if(@joule_module.web_interface)
-      @auth_token = InterfaceAuthToken.create(joule_module: @joule_module,
+      token = InterfaceAuthToken.create(joule_module: @joule_module,
       user: current_user, expiration: 5.minutes.from_now)
+      @module_url = _interface_authentication_url(token)
     end
     render and return
   end
 
+  private
+
+  def _interface_authentication_url(token)
+    urls = Rails.application.config_for(:urls)
+    #eg: http://3.interfaces.wattsworth.net/authenticate?token=1234
+    urls["interfaces"].gsub("XX",token.joule_module.id.to_s)+
+      "/authenticate?token="+token.value
+  end
 
 end

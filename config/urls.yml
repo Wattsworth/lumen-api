@@ -1,0 +1,11 @@
+test:
+  api: http://wattsworth.local/api
+  interfaces: http://XX.interfaces.wattsworth.local
+
+development:
+  api: http://wattsworth.local/api
+  interfaces: http://XX.interfaces.wattsworth.local
+  frontend: http://wattsworth.net
+aws:
+  api: https://wattsworth.net/api
+  interfaces: https://XX.interfaces.wattsworth.net

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
 
   resources :joule_modules, only: [:show]
-  
+
   resources :data_views do
     collection do
       get 'home' #retrieve a user's home data view
@@ -48,6 +48,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'interfaces/authenticate', to: 'interfaces#authenticate'
-  get 'interfaces/*path', to: 'interfaces#get'
+  get 'interfaces/:id/authenticate', to: 'interfaces#authenticate'
+  get 'interfaces/:id', to: 'interfaces#get'
+  get 'interfaces/:id/*path', to: 'interfaces#get'
 end
