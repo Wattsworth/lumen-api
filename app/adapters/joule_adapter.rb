@@ -32,6 +32,6 @@ class JouleAdapter
  end
 
  def module_interface(joule_module, req)
-   self.class.get("#{@url}/module/#{joule_module.joule_id}/#{req}")
+   self.class.get("#{@url}/interface/#{joule_module.joule_id}/#{req}")
  end
 end

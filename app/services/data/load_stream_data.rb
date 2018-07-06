@@ -33,7 +33,7 @@ class LoadStreamData
   #
   # data_type: interval
   # data:
-  #   [{id: element_id, type: decimated, values: [[start,0],[end,0],nil,...]}]
+  #   [{id: element_id, type: interval, values: [[start,0],[end,0],nil,...]}]
   #
   def run(db_stream, start_time, end_time, elements = [], resolution=nil)
 
