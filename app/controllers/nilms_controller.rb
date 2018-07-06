@@ -44,12 +44,13 @@ class NilmsController < ApplicationController
   def update
     #update both the NILM and the Db models
     @service = StubService.new
-    if @nilm.update(nilm_params) && @db.update(db_params)
+    # redundant since the user must be an owner...
+    @role = current_user.get_nilm_permission(@nilm)
+    if @nilm.update(nilm_params) and @nilm.db.update(db_params)
       @service.add_notice('Installation Updated')
       render :show, status: :ok
     else
-      @service.errors = @nilm.errors.full_messages +
-                        @db.errors.full_messages
+      @service.errors = @nilm.errors.full_messages
       render :show, status: :unprocessable_entity
     end
   end
@@ -77,15 +78,10 @@ class NilmsController < ApplicationController
     # Never trust parameters from the scary internet,
     # only allow the white list through.
     def nilm_params
-      params.permit(:name, :description,:url)
+      params.permit(:name, :description, :url)
     end
-
     def db_params
-      unless params[:db].nil?
-        params[:db].permit(:max_points_per_plot)
-      else
-        return {}
-      end
+      params.permit(:max_points_per_plot)
     end
 
     #authorization based on nilms
