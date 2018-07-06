@@ -67,22 +67,22 @@ RSpec.describe NilmsController, type: :request do
       it 'returns 422 on invalid db parameters' do
         # max points must be a positive number
         put "/nilms/#{john_nilm.id}.json",
-            params: {db: {max_points_per_plot: 'invalid'}},
+            params: {max_points_per_plot: 'invalid'},
             headers: john.create_new_auth_token
         expect(response.status).to eq(422)
         expect(response).to have_error_message(/not a number/)
       end
 
       it 'only allows configurable db parameters to be changed' do
-        # should ignore size and accept max_points
-        url = john_nilm.db.url
+        # should ignore url and accept max_points
+        size_db = john_nilm.db.size_db
         num_points = john_nilm.db.max_points_per_plot
         put "/nilms/#{john_nilm.id}.json",
-            params: {db: {max_points_per_plot: num_points+10, url: 'different'}},
+            params: {max_points_per_plot: num_points+10, size: 'different'},
             headers:  john.create_new_auth_token
         expect(response.status).to eq(200)
         expect(response).to have_notice_message()
-        expect(john_nilm.db.reload.url).to eq(url)
+        expect(john_nilm.db.reload.size_db).to eq(size_db)
         expect(john_nilm.db.max_points_per_plot).to eq(num_points+10)
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe NilmsController, type: :request do
   describe 'GET show' do
     context 'with any permissions' do
 
-      it 'returns nilm and nested db as json' do
+      it 'returns nilm and nested root folder as json' do
         # john has some permission on all 3 nilms
         [pete_nilm, lab_nilm, john_nilm].each do |nilm|
           get "/nilms/#{nilm.id}.json",
@@ -122,7 +122,7 @@ RSpec.describe NilmsController, type: :request do
           expect(response.header['Content-Type']).to include('application/json')
           body = JSON.parse(response.body)
           expect(body['data']['name']).to eq(nilm.name)
-          expect(body['data']['db']['url']).to eq(nilm.db.url)
+          expect(body['data']['root_folder']['name']).to_not be_empty
         end
       end
       it 'returns joule modules as json' do

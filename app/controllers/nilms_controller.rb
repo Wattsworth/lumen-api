@@ -46,11 +46,12 @@ class NilmsController < ApplicationController
     @service = StubService.new
     # redundant since the user must be an owner...
     @role = current_user.get_nilm_permission(@nilm)
-    if @nilm.update(nilm_params) and @nilm.db.update(db_params)
+    if @nilm.update(nilm_params) && @db.update(db_params)
       @service.add_notice('Installation Updated')
       render :show, status: :ok
     else
-      @service.errors = @nilm.errors.full_messages
+      @service.errors = @nilm.errors.full_messages +
+                        @db.errors.full_messages
       render :show, status: :unprocessable_entity
     end
   end
