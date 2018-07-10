@@ -6,7 +6,7 @@ class DbStreamsController < ApplicationController
   before_action :set_stream, only: [:update, :data]
   before_action :authorize_viewer, only: [:data]
   before_action :authorize_owner, only: [:update]
-
+  before_action :create_adapter, only: [:update, :data]
   def index
     if params[:streams].nil?
       head :unprocessable_entity
@@ -24,14 +24,13 @@ class DbStreamsController < ApplicationController
   end
 
   def update
-    adapter = DbAdapter.new(@db.url)
-    @service = EditStream.new(adapter)
+    @service = EditStream.new(@node_adapter)
     @service.run(@db_stream, stream_params)
     render status: @service.success? ? :ok : :unprocessable_entity
   end
 
   def data
-    @service = BuildDataset.new
+    @service = BuildDataset.new(@node_adapter)
     @service.run(@db_stream,params[:start_time].to_i,params[:end_time].to_i)
     unless @service.success?
       head :unprocessable_entity
@@ -66,5 +65,14 @@ class DbStreamsController < ApplicationController
 
   def authorize_viewer
     head :unauthorized  unless current_user.views_nilm?(@nilm)
+  end
+
+  def create_adapter
+    @node_adapter = NodeAdapterFactory.from_nilm(@nilm)
+    if @node_adapter.nil?
+      @service = StubService.new
+      @service.add_error("Cannot contact installation")
+      render 'helpers/empty_response', status: :unprocessable_entity
+    end
   end
 end

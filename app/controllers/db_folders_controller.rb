@@ -6,6 +6,7 @@ class DbFoldersController < ApplicationController
   before_action :set_folder, only: [:show, :update]
   before_action :authorize_viewer, only: [:show]
   before_action :authorize_owner, only: [:update]
+  before_action :create_adapter, only: [:update]
 
   # GET /db_folders.json
   def show; end
@@ -13,8 +14,7 @@ class DbFoldersController < ApplicationController
   # PATCH/PUT /db_folders/1.json
   # TODO: create info stream on folders on edit
   def update
-    adapter = DbAdapter.new(@db.url)
-    @service = EditFolder.new(adapter)
+    @service = EditFolder.new(@node_adapter)
     @service.run(@db_folder, folder_params)
     render status: @service.success? ? :ok : :unprocessable_entity
   end
@@ -38,5 +38,14 @@ class DbFoldersController < ApplicationController
 
   def authorize_viewer
     head :unauthorized  unless current_user.views_nilm?(@nilm)
+  end
+
+  def create_adapter
+    @node_adapter = NodeAdapterFactory.from_nilm(@nilm)
+    if @node_adapter.nil?
+      @service = StubService.new
+      @service.add_error("Cannot contact installation")
+      render 'helpers/empty_response', status: :unprocessable_entity
+    end
   end
 end

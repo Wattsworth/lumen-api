@@ -1,12 +1,11 @@
 require "benchmark"
 # frozen_string_literal: true
-
 # Loads data for specified elements
 class LoadElementData
   include ServiceStatus
   attr_reader :data, :start_time, :end_time
 
-  def initialize()
+  def initialize
     super()
     @data = []
     @start_time = nil
@@ -35,18 +34,10 @@ class LoadElementData
       end
     end
     #2 compute bounds by updating stream info if start/end are missing
-    if(start_time==nil || end_time==nil)
+    if start_time==nil || end_time==nil
       req_streams.map do |stream|
-        adapter = DbAdapter.new(stream.db.url)
-        entries = adapter.stream_info(stream)
-        service = UpdateStream.new(
-          stream,
-          entries[:base_entry],
-          entries[:decimation_entries]
-        )
-        unless service.run.success?
-          Rails.logger.warn("Error updating #{stream.name}: #{service.errors}")
-        end
+        adapter = Nilmdb::Adapter.new(stream.db.url)
+        adapter.refresh_stream(stream)
       end
     end
 
@@ -54,7 +45,7 @@ class LoadElementData
     streams_with_data = req_streams.select{|stream| stream.total_time > 0}
     if (start_time == nil || end_time == nil) && streams_with_data.empty?
       add_error("no time bounds for requested elements, refresh database?")
-      return
+      return self
     end
     @start_time = start_time
     @end_time = end_time
@@ -70,18 +61,17 @@ class LoadElementData
     end
     if @start_time > @end_time
       add_error("invalid time bounds")
-      return
+      return self
     end
     #4 pull data from streams
     combined_data = []
     req_streams.each do |stream|
-      adapter = DbAdapter.new(stream.db.url)
-      data_service = LoadStreamData.new(adapter)
       stream_elements = elements.select{|e| e.db_stream_id==stream.id}.to_a
-      data_service.run(stream, @start_time, @end_time,stream_elements,resolution)
+      adapter = Nilmdb::Adapter.new(stream.db.url)
+      result = adapter.load_data(stream, @start_time, @end_time,stream_elements,resolution)
 
-      if data_service.success?
-        combined_data.concat(data_service.data)
+      if not result.nil?
+        combined_data.concat(result[:data])
       else
         #create error entries
         error_entries = stream_elements.map do |e|
@@ -94,6 +84,6 @@ class LoadElementData
     #5 extract requested elements from the stream datasets
     req_element_ids = elements.pluck(:id)
     @data = combined_data.select{|d| req_element_ids.include? d[:id] }
-    return self
-    end
+    self
   end
+end

@@ -54,17 +54,17 @@ RSpec.describe DbFoldersController, type: :request do
 
   describe 'PUT update' do
     before do
-      @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
-      @db_success = { error: false, msg: 'success' }
-      @db_failure = { error: true, msg: 'dberror' }
-      allow(DbAdapter).to receive(:new).and_return(@mock_adapter)
+      @mock_adapter = double(Nilmdb::Adapter) # MockDbAdapter.new #instance_double(DbAdapter)
+      @node_success = { error: false, msg: 'success' }
+      @node_failure = { error: true, msg: 'dberror' }
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
     end
 
     context 'with owner permissions' do
       it 'updates nilmdb and local database' do
         @auth_headers = john.create_new_auth_token
-        expect(@mock_adapter).to receive(:set_folder_metadata)
-          .and_return(@db_success)
+        expect(@mock_adapter).to receive(:save_folder)
+          .and_return(@node_success)
         put "/db_folders/#{john_folder.id}.json",
             params: { name: 'new name' },
             headers: @auth_headers
@@ -75,8 +75,8 @@ RSpec.describe DbFoldersController, type: :request do
 
       it 'does not update if nilmdb update fails' do
         @auth_headers = john.create_new_auth_token
-        expect(@mock_adapter).to receive(:set_folder_metadata)
-          .and_return(@db_failure)
+        expect(@mock_adapter).to receive(:save_folder)
+          .and_return(@node_failure)
         name = john_folder.name
         put "/db_folders/#{john_folder.id}.json",
             params: { name: 'new name' },
@@ -88,7 +88,7 @@ RSpec.describe DbFoldersController, type: :request do
 
       it 'returns 422 on invalid parameters' do
         # name cannot be blank
-        expect(@mock_adapter).to_not receive(:set_folder_metadata)
+        expect(@mock_adapter).to_not receive(:save_folder)
         @auth_headers = john.create_new_auth_token
         put "/db_folders/#{john_folder.id}.json",
             params: { name: '' },
@@ -99,8 +99,8 @@ RSpec.describe DbFoldersController, type: :request do
 
       it 'only allows configurable parameters to be changed' do
         # should ignore start_time and accept description
-        expect(@mock_adapter).to receive(:set_folder_metadata)
-          .and_return(@db_success)
+        expect(@mock_adapter).to receive(:save_folder)
+          .and_return(@node_success)
         @auth_headers = john.create_new_auth_token
         start_time = john_folder.start_time
         put "/db_folders/#{john_folder.id}.json",
@@ -109,6 +109,15 @@ RSpec.describe DbFoldersController, type: :request do
         expect(response.status).to eq(200)
         expect(john_folder.reload.start_time).to eq(start_time)
         expect(john_folder.description).to eq('changed')
+      end
+
+      it 'fails if an adapter cannot be created' do
+        allow(NodeAdapterFactory).to receive(:from_nilm).and_return(nil)
+        put "/db_folders/#{john_folder.id}.json",
+            params: { name: 'new name' },
+            headers: john.create_new_auth_token
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
       end
     end
 

@@ -38,6 +38,9 @@ module ControlPanel
     %w(data nilm db db_folder db_stream permission user_group user data_view joule_modules).each do |service|
       config.autoload_paths << Rails.root.join("app/services/#{service}")
     end
-    config.autoload_paths << Rails.root.join("app/adapters")
+    config.autoload_paths << Rails.root.join("app/adapters/nilmdb")
+    config.autoload_paths << Rails.root.join("app/adapters/joule")
+
+    #config.autoload_paths << Rails.root.join("app/adapters/nilmdb")
   end
 end

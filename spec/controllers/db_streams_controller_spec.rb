@@ -62,16 +62,16 @@ RSpec.describe DbStreamsController, type: :request do
 
   describe 'PUT update' do
     before do
-      @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
+      @mock_adapter = double(Nilmdb::Adapter) # MockDbAdapter.new #instance_double(DbAdapter)
       @db_success = { error: false, msg: 'success' }
       @db_failure = { error: true, msg: 'dberror' }
-      allow(DbAdapter).to receive(:new).and_return(@mock_adapter)
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
     end
 
     context 'with owner permissions' do
       it 'updates nilmdb and local database' do
         @auth_headers = john.create_new_auth_token
-        expect(@mock_adapter).to receive(:set_stream_metadata)
+        expect(@mock_adapter).to receive(:save_stream)
           .and_return(@db_success)
         elem = @stream.db_elements.first
         put "/db_streams/#{@stream.id}.json",
@@ -91,7 +91,7 @@ RSpec.describe DbStreamsController, type: :request do
 
       it 'does not update if nilmdb update fails' do
         @auth_headers = john.create_new_auth_token
-        expect(@mock_adapter).to receive(:set_stream_metadata)
+        expect(@mock_adapter).to receive(:save_stream)
           .and_return(@db_failure)
         name = @stream.name
         put "/db_streams/#{@stream.id}.json",
@@ -104,7 +104,7 @@ RSpec.describe DbStreamsController, type: :request do
 
       it 'returns 422 on invalid stream parameters' do
         # name cannot be blank
-        expect(@mock_adapter).to_not receive(:set_stream_metadata)
+        expect(@mock_adapter).to_not receive(:save_stream)
         @auth_headers = john.create_new_auth_token
         put "/db_streams/#{@stream.id}.json",
             params: { name: '' },
@@ -115,7 +115,7 @@ RSpec.describe DbStreamsController, type: :request do
 
       it 'returns 422 on invalid element parameters' do
         # elements cannot have the same name
-        expect(@mock_adapter).to_not receive(:set_stream_metadata)
+        expect(@mock_adapter).to_not receive(:save_stream)
         @auth_headers = john.create_new_auth_token
         elem1 = @stream.db_elements.first
         elemN = @stream.db_elements.last
@@ -129,7 +129,7 @@ RSpec.describe DbStreamsController, type: :request do
 
       it 'only allows configurable parameters to be changed' do
         # should ignore start_time and accept name
-        expect(@mock_adapter).to receive(:set_stream_metadata)
+        expect(@mock_adapter).to receive(:save_stream)
           .and_return(@db_success)
         @auth_headers = john.create_new_auth_token
         start_time = @stream.start_time
@@ -139,6 +139,14 @@ RSpec.describe DbStreamsController, type: :request do
         expect(response.status).to eq(200)
         expect(@stream.reload.start_time).to eq(start_time)
         expect(@stream.name).to eq('changed')
+      end
+      it 'fails if an adapter cannot be created' do
+        allow(NodeAdapterFactory).to receive(:from_nilm).and_return(nil)
+        put "/db_streams/#{@stream.id}.json",
+            params: { start_time: 10, name: 'changed' },
+            headers: john.create_new_auth_token
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
       end
     end
 
@@ -167,10 +175,10 @@ RSpec.describe DbStreamsController, type: :request do
 
   describe 'POST data' do
     before do
-      @mock_adapter = double(DbAdapter) # MockDbAdapter.new #instance_double(DbAdapter)
+      @mock_adapter = double(Nilmdb::Adapter) # MockDbAdapter.new #instance_double(DbAdapter)
       @db_success = { error: false, msg: 'success' }
       @db_failure = { error: true, msg: 'dberror' }
-      allow(DbAdapter).to receive(:new).and_return(@mock_adapter)
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
     end
 
     context 'with viewer permissions' do

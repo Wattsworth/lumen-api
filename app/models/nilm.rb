@@ -14,7 +14,8 @@ class Nilm < ApplicationRecord
   #---Validations-----
   validates :name, presence: true, uniqueness: true
   validates :url, presence: true, uniqueness: true
-
+  validates :node_type, presence: true,
+            inclusion: { in: %w(nilmdb joule) }
   #---Callbacks------
   before_destroy do |record|
     DataView.destroy(record.data_views.pluck(:id))

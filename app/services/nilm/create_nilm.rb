@@ -5,13 +5,17 @@ class CreateNilm
   include ServiceStatus
   attr_reader :nilm
 
-
+  def initialize(node_adapter)
+    super()
+    @node_adapter = node_adapter
+  end
 
   def run(name:, url:, owner:, description:'')
     # note: url should be NilmDB url
     @nilm = Nilm.new(name: name,
                      description: description,
-                     url: url)
+                     url: url,
+                     node_type: @node_adapter.node_type)
     unless @nilm.valid?
       add_errors(@nilm.errors.full_messages)
       return self
@@ -31,12 +35,10 @@ class CreateNilm
     #give the owner 'admin' permissions on the nilm
     Permission.create(user: owner, nilm: nilm, role: 'admin')
     #update the database
-    service = UpdateDb.new(db: db)
-    adapter = DbAdapter.new(db.url)
-    service.run(adapter.dbinfo, adapter.schema)
+    msgs = @node_adapter.refresh(db: db)
     #errors on the database update are warnings on this service
     #because we can still add the NILM, it will just be offline
-    add_warnings(service.errors + service.warnings)
+    add_warnings(msgs.errors + msgs.warnings)
     add_notice('Created installation')
     self
   end

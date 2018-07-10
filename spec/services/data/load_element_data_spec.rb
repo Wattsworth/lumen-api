@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
+
 RSpec.describe 'LoadElementData' do
   let(:db) { create(:db, max_points_per_plot: 100) }
 
@@ -14,19 +15,16 @@ RSpec.describe 'LoadElementData' do
       @stream_data = [{id: @elem0.id, values: 'mock0'},
                       {id: @elem1.id, values: 'mock1'},
                       {id: @elem2.id, values: 'mock2'}]
-      @mock_stream_service = MockLoadStreamData.new(
-        [stream: @db_stream, data: @stream_data])
-      allow(LoadStreamData).to receive(:new).and_return(@mock_stream_service)
+      @mock_adapter = MockAdapter.new([stream: @db_stream,
+                                       data: @stream_data])
+      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
     end
     it 'makes one request for the stream data' do
-      expect(@mock_stream_service).to receive(:data).and_return(@stream_data)
+      #expect(@mock_adapter).to receive(:load_data)
       service = LoadElementData.new
       service.run([@elem0,@elem2],0,100)
       expect(service.success?).to be true
-      expect(service.data).to eq [
-        {id: @elem0.id, values: 'mock0'},
-        {id: @elem2.id, values: 'mock2'}
-      ]
+      expect(service.data).to eq [@stream_data[0], @stream_data[2]]
     end
   end
 
@@ -43,10 +41,10 @@ RSpec.describe 'LoadElementData' do
       @elem3 = create(:db_element, column: 3, db_stream: @db_stream2)
       @stream2_data = [{id: @elem2.id, values: 'mock2'},
                        {id: @elem3.id, values: 'mock3'}]
-      @mock_stream_service = MockLoadStreamData.new(
+      @mock_adapter = MockAdapter.new(
         [{stream: @db_stream1, data: @stream1_data},
          {stream: @db_stream2, data: @stream2_data}])
-      allow(LoadStreamData).to receive(:new).and_return(@mock_stream_service)
+      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
 
     end
     it 'makes one request per stream' do
@@ -57,7 +55,7 @@ RSpec.describe 'LoadElementData' do
         {id: @elem0.id, values: 'mock0'},
         {id: @elem3.id, values: 'mock3'}
       ]
-      expect(@mock_stream_service.run_count).to eq 2
+      expect(@mock_adapter.run_count).to eq 2
     end
   end
 
@@ -76,10 +74,10 @@ RSpec.describe 'LoadElementData' do
       @elem3 = create(:db_element, column: 3, db_stream: @db_stream2)
       @stream2_data = [{id: @elem2.id, values: 'mock2'},
                        {id: @elem3.id, values: 'mock3'}]
-      @mock_stream_service = MockLoadStreamData.new(
+      @mock_adapter = MockAdapter.new(
         [{stream: @db_stream1, data: @stream1_data},
          {stream: @db_stream2, data: nil}])
-      allow(LoadStreamData).to receive(:new).and_return(@mock_stream_service)
+      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
     end
     it 'fills in the data that is available' do
       service = LoadElementData.new
@@ -89,7 +87,7 @@ RSpec.describe 'LoadElementData' do
         {id: @elem0.id, values: 'mock0'},
         {id: @elem3.id, type: 'error', values: nil}
       ]
-      expect(@mock_stream_service.run_count).to eq 2
+      expect(@mock_adapter.run_count).to eq 2
     end
   end
 
@@ -102,10 +100,10 @@ RSpec.describe 'LoadElementData' do
     let(:user) {create(:user)}
 
     it 'updates the streams', :vcr do
-      adapter = DbAdapter.new(url)
-      service = CreateNilm.new
+      @adapter = Nilmdb::Adapter.new(url)
+      service = CreateNilm.new(@adapter)
       service.run(name: 'test', url: url, owner: user)
-      db = service.nilm.db
+      #db = service.nilm.db
       #request data from ac-power (15 Jun 2015 - 27 Jun 2015)
       #                  pump-events (04 Feb 2013 - 23 Feb 2013)
       elem1 = DbStream.find_by_path("/tutorial/ac-power").db_elements.first

@@ -8,6 +8,7 @@ FactoryBot.define do
     name {Faker::Lorem.unique.words(3).join(' ')}
     description { Faker::Lorem.sentence }
     url {Faker::Internet.unique.url}
+    node_type 'nilmdb'
     transient do
       admins []
       owners []

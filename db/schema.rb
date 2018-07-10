@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_021012) do
+ActiveRecord::Schema.define(version: 2018_07_10_014435) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2018_06_20_021012) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "node_type", default: "f", null: false
   end
 
   create_table "permissions", force: :cascade do |t|

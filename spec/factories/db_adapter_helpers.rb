@@ -10,7 +10,7 @@ class MockDataDbAdapter
     @raw_count = raw_count
     @data = data
     @last_path = nil
-    @url = "http://mockadapter/nilmdb"
+    @url = "http://mockbackend/nilmdb"
   end
 
   def get_data(path, start_time, end_time)

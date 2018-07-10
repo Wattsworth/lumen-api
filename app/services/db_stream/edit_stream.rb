@@ -4,9 +4,9 @@
 class EditStream
   include ServiceStatus
 
-  def initialize(db_adapter)
+  def initialize(node_adapter)
     super()
-    @db_adapter = db_adapter
+    @node_adapter = node_adapter
   end
 
   def run(db_stream, attribs)
@@ -23,7 +23,7 @@ class EditStream
       return self
     end
     # local model checks out, update the remote NilmDB
-    status = @db_adapter.set_stream_metadata(db_stream)
+    status = @node_adapter.save_stream(db_stream)
     # if there was an error don't save the model
     if status[:error]
       add_error(status[:msg])

@@ -5,16 +5,16 @@ test_nilm_url = 'http://localhost:8080/nilmdb'
 
 RSpec.describe 'CreateNilm' do
   describe 'build' do
-    it 'creates and populates a Db object', :vcr do
+    it 'creates and populates a Db object' do
+      result = StubService.new
+      result.add_error("unable to contact database")
       # mock the database updater
-      service = instance_double(UpdateDb,
-        run: StubService.new,
-        errors: ['cannot contact database'],
-        warnings: [])
-      allow(UpdateDb).to receive(:new).and_return(service)
+      @mock_adapter = instance_double(Nilmdb::Adapter,
+                            refresh: result,
+                                     node_type: 'nilmdb')
       user = create(:user, first_name: "John")
       # run the NILM creation
-      nilm_creator = CreateNilm.new
+      nilm_creator = CreateNilm.new(@mock_adapter)
       nilm_creator.run(
         name: 'test',
         description: 'test description',
@@ -28,7 +28,7 @@ RSpec.describe 'CreateNilm' do
       expect(nilm).to_not be nil
       expect(nilm.db).to be_present
       # ...and the database has been populated
-      expect(service).to have_received(:run)
+      expect(@mock_adapter).to have_received(:refresh)
       expect(user.owns_nilm?(nilm)).to be true
     end
   end

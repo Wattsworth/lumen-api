@@ -24,8 +24,8 @@ class InterfacesController < ActionController::Base
   def get
     path = params[:path] || ''
     req = path +"?"+request.query_string
-    adapter = JouleAdapter.new(@joule_module.nilm.url)
-    render plain: adapter.module_interface(@joule_module,req)
+    backend = JouleAdapter.new(@joule_module.nilm.url)
+    render plain: backend.module_interface(@joule_module,req)
   end
 
   def put

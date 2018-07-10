@@ -137,7 +137,8 @@ RSpec.describe NilmsController, type: :request do
       it 'refreshes nilm data when requested' do
         @auth_headers = john.create_new_auth_token
         [john_nilm, lab_nilm].each do |nilm|
-          mock_service = UpdateNilm.new
+          mock_adapter = instance_double(Nilmdb::Adapter)
+          mock_service = UpdateNilm.new(mock_adapter)
           expect(mock_service).to receive(:run).and_return StubService.new
           allow(UpdateNilm).to receive(:new)
                            .and_return(mock_service)
@@ -167,6 +168,13 @@ RSpec.describe NilmsController, type: :request do
   describe 'POST create' do
     context 'with authenticated user' do
       it 'creates a NILM' do
+        result = StubService.new
+        result.add_error("cannot contact database")
+        @mock_adapter = instance_double(Nilmdb::Adapter,
+                                        node_type: 'nilmdb',
+                                        refresh: result)
+        allow(NodeAdapterFactory).to receive(:from_url).and_return(@mock_adapter)
+
         @auth_headers = john.create_new_auth_token
         post "/nilms.json",
           params: {name: 'new', url: 'http://sampleurl/nilmdb'},
@@ -177,7 +185,7 @@ RSpec.describe NilmsController, type: :request do
         # make sure the NILM was built
         nilm = Nilm.find_by_name('new')
         expect(nilm).to_not be nil
-        expect(nilm.db.available).to be false
+        expect(@mock_adapter).to have_received(:refresh)
         # user should be an admin
         expect(john.admins_nilm?(nilm)).to be true
       end

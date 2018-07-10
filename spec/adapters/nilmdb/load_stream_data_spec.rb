@@ -27,7 +27,7 @@ RSpec.describe 'LoadStreamData' do
           raw_count: 1600, data: @data
         )
 
-        @service = LoadStreamData.new(@mockAdapter)
+        @service = Nilmdb::LoadStreamData.new(@mockAdapter)
       end
       it 'sets @type to [decimated]' do
         @service.run(@db_stream, 10, 90)
@@ -105,7 +105,7 @@ RSpec.describe 'LoadStreamData' do
           end_time: @db_stream.end_time,
           raw_count: 1000, data: @data
         )
-        @service = LoadStreamData.new(@mockAdapter)
+        @service = Nilmdb::LoadStreamData.new(@mockAdapter)
       end
       it 'sets @type to [interval] if all decimations have too much data' do
         @service.run(@db_stream, 10, 90)
@@ -140,7 +140,7 @@ RSpec.describe 'LoadStreamData' do
         raw_count: 100, data: @data
       )
 
-      @service = LoadStreamData.new(@mockAdapter)
+      @service = Nilmdb::LoadStreamData.new(@mockAdapter)
     end
     it 'sets @type to [raw]' do
       @service.run(@db_stream, 10, 90)
@@ -150,17 +150,17 @@ RSpec.describe 'LoadStreamData' do
     end
     it 'only if count <= nilm resolution over interval' do
       #must have decimated data ready!
-      #use custom adapter and service objects
+      #use custom backend and service objects
       data = [[40,0,1,2,3,4,5,6,7,8],nil,[50,0,1,2,3,4,5,6,7,8]]
-      adapter = MockDataDbAdapter.new(
+      backend = MockDataDbAdapter.new(
         start_time: @db_stream.start_time,
         end_time: @db_stream.end_time,
         raw_count: 100, data: data
       )
-      service = LoadStreamData.new(adapter)
+      service = Nilmdb::LoadStreamData.new(backend)
       db.max_points_per_plot = 90; db.save
       service.run(@db_stream, 10, 90)
-      expect(adapter.level_retrieved).to be > 1
+      expect(backend.level_retrieved).to be > 1
     end
     it 'populates @data structure with raw data' do
       @service.run(@db_stream, 10, 90)
@@ -191,7 +191,7 @@ RSpec.describe 'LoadStreamData' do
         end_time: @db_stream.end_time,
         raw_count: 400, data: @data
       )
-      @service = LoadStreamData.new(@mockAdapter)
+      @service = Nilmdb::LoadStreamData.new(@mockAdapter)
     end
     it 'still succeeds' do
       #requested interval is before actual data

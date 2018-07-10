@@ -7,8 +7,9 @@ class BuildDataset
   include ServiceStatus
   attr_reader :data, :legend
 
-  def initialize
+  def initialize(node_adapter)
     super()
+    @node_adapter = node_adapter
     @data = [] # [[ts, val1, val2, val3, ...],
                # [ts, val1, val2, val3, ...]]
     @legend = {
@@ -24,24 +25,20 @@ class BuildDataset
   # fill @data with values from db_stream
   # and populate @legend
   def run(db_stream, start_time, end_time)
-    adapter = DbAdapter.new(db_stream.db.url)
-    data_service = LoadStreamData.new(adapter)
-    absorb_status(
-      data_service.run(db_stream, start_time, end_time)
-    )
-    unless data_service.success?
+    result = @node_adapter.load_data(db_stream, start_time, end_time)
+    if result.nil?
       add_error("unable to retrieve data for #{db_stream.path}")
       return self
     end
-    @data = _build_dataset(data_service.data)
-    @legend[:columns]           = _build_legend_columns(data_service.data, db_stream)
+    @data = _build_dataset(result[:data])
+    @legend[:columns]           = _build_legend_columns(result[:data], db_stream)
     @legend[:start_time]        = start_time
     @legend[:end_time]          = end_time
-    @legend[:decimation_factor] = data_service.decimation_factor
+    @legend[:decimation_factor] = result[:decimation_factor]
     @legend[:num_rows]          = @data.length
-    if(@data.empty?)
+    if @data.empty?
       @legend[:notes] = 'there is no data available over this interval'
-    elsif(@data[0].length!=db_stream.db_elements.length+1)
+    elsif @data[0].length!=db_stream.db_elements.length+1
       @legend[:notes] = 'some elements omitted due to insufficient decimation'
     end
     self

@@ -8,13 +8,13 @@ describe 'UpdateJouleModules' do
     nilm = create(:nilm)
     nilm.joule_modules << create(:joule_module, name: 'prev1')
     nilm.joule_modules << create(:joule_module, name: 'prev2')
-    adapter = MockJouleAdapter.new
-    adapter.add_module("new1",inputs={i1: '/path/1'},
+    backend = MockJouleAdapter.new
+    backend.add_module("new1",inputs={i1: '/path/1'},
                               outputs={o1: '/path/2'})
-    adapter.add_module("new2",inputs={i1: '/path/3',i2: '/path/4'},
+    backend.add_module("new2",inputs={i1: '/path/3',i2: '/path/4'},
                              outputs={o1: '/path/5',o2: '/path/5'})
     service = UpdateJouleModules.new(nilm)
-    service.run(adapter.module_info)
+    service.run(backend.module_info)
     expect(service.success?).to be true
     # new modules are in the database
     expect(nilm.joule_modules.find_by_name('new1')).to be_present
@@ -31,21 +31,21 @@ describe 'UpdateJouleModules' do
   end
   it 'produces a warning if a stream is not in the database' do
     nilm = create(:nilm)
-    adapter = MockJouleAdapter.new
-    adapter.add_module("module",outputs={output: '/missing/path'})
+    backend = MockJouleAdapter.new
+    backend.add_module("module",outputs={output: '/missing/path'})
     service = UpdateJouleModules.new(nilm)
-    service.run(adapter.module_info)
+    service.run(backend.module_info)
     expect(service.warnings?).to be true
   end
   it 'links db_stream to the pipe if the stream is in the database' do
     nilm = create(:nilm)
     nilm.db.db_streams << create(:db_stream, path: '/matched/path1')
     nilm.db.db_streams << create(:db_stream, path: '/matched/path2')
-    adapter = MockJouleAdapter.new
-    adapter.add_module("module",inputs={input: '/matched/path1'},
+    backend = MockJouleAdapter.new
+    backend.add_module("module",inputs={input: '/matched/path1'},
                                 outputs={output: '/matched/path2'})
     service = UpdateJouleModules.new(nilm)
-    service.run(adapter.module_info)
+    service.run(backend.module_info)
     expect(service.warnings?).to be false
   end
   it 'returns error if Joule server is unavailable' do

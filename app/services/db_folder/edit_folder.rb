@@ -4,9 +4,9 @@
 class EditFolder
   include ServiceStatus
 
-  def initialize(db_adapter)
+  def initialize(node_adapter)
     super()
-    @db_adapter = db_adapter
+    @node_adapter = node_adapter
   end
 
   def run(db_folder, attribs)
@@ -20,7 +20,8 @@ class EditFolder
       return self
     end
     # local model checks out, update the remote NilmDB
-    status = @db_adapter.set_folder_metadata(db_folder)
+    status = @node_adapter.save_folder(db_folder)
+
     # if there was an error don't save the model
     if status[:error]
       add_error(status[:msg])
