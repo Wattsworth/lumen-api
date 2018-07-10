@@ -12,7 +12,7 @@ module Nilmdb
     def run(dbinfo, schema)
       # check to make sure dbinfo and schema are set
       # if either is nil, the database is not available
-      if(dbinfo.nil? || schema.nil?)
+      if dbinfo.nil? || schema.nil?
         add_error("cannot contact database at #{@db.url}")
         @db.update_attributes(available: false)
         return self

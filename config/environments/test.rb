@@ -39,4 +39,10 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # set up interface subdomain
+
+  config.interface_url_template = lambda do |id|
+    return "http://#{id}.interfaces.wattsworth.local"
+    end
 end
