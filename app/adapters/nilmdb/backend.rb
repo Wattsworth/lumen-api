@@ -42,7 +42,7 @@ module Nilmdb
     def schema(path='')
       # GET extended info stream list
       begin
-        if(path.empty?)
+        if path.empty?
           resp = self.class.get("#{@url}/stream/list?extended=1")
         else
           resp = self.class.get("#{@url}/stream/list?path=#{path}&extended=1")
@@ -79,7 +79,7 @@ module Nilmdb
     end
 
     # return latest info about the specified stream
-    # TODO: the HTTP API does not
+    # the HTTP API does not
     # support wild cards so no decimations are returned
     #  {
     #    base_entry: ...,

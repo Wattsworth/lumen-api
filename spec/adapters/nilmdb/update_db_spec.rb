@@ -28,8 +28,7 @@ describe 'UpdateDb' do
   describe '*run*' do
     def update_with_schema(schema, db: nil)
       @db = db || Db.new
-      @service = Nilmdb::UpdateDb.new(db: @db)
-      mock_info =
+      @service = Nilmdb::UpdateDb.new(@db)
       @service.run(dbinfo, schema) #ignore dbinfo
       @root = @db.root_folder
     end

@@ -13,7 +13,7 @@ class UpdateNilm
       add_error('no associated db object')
       return self
     end
-    absorb_status(@node_adapter.refresh(db: nilm.db))
+    absorb_status(@node_adapter.refresh(nilm))
     self
   end
 end

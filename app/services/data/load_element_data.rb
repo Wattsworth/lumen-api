@@ -36,7 +36,11 @@ class LoadElementData
     #2 compute bounds by updating stream info if start/end are missing
     if start_time==nil || end_time==nil
       req_streams.map do |stream|
-        adapter = Nilmdb::Adapter.new(stream.db.url)
+        adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
+        if adapter.nil?
+          add_error("cannot contact installation")
+          return self
+        end
         adapter.refresh_stream(stream)
       end
     end
@@ -67,9 +71,8 @@ class LoadElementData
     combined_data = []
     req_streams.each do |stream|
       stream_elements = elements.select{|e| e.db_stream_id==stream.id}.to_a
-      adapter = Nilmdb::Adapter.new(stream.db.url)
+      adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
       result = adapter.load_data(stream, @start_time, @end_time,stream_elements,resolution)
-
       if not result.nil?
         combined_data.concat(result[:data])
       else

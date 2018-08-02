@@ -28,6 +28,10 @@ class DbElement < ApplicationRecord
     self.display_type = 'continuous'
   end
 
+  def self.defined_attributes
+    [:name, :units, :default_min, :default_max, :scale_factor, :offset, :display_type, :column]
+  end
+
   # def name_path
   #  "#{db_stream.name_path}/#{self.name}"
   # end

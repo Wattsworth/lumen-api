@@ -28,8 +28,8 @@ class DbStream < ApplicationRecord
 
   validates_with DbDataTypeValidator
 
-  def defined_attributes
-     [:name, :name_abbrev, :description, :hidden]
+  def self.defined_attributes
+     [:name, :name_abbrev, :description, :hidden, :data_type]
   end
 
   # def name_path

@@ -4,7 +4,7 @@ module Nilmdb
   class UpdateDb
     include ServiceStatus
 
-    def initialize(db:)
+    def initialize(db)
       @db = db
       super()
     end

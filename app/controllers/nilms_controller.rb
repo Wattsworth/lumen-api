@@ -7,7 +7,8 @@ class NilmsController < ApplicationController
   before_action :authorize_viewer, only: [:show]
   before_action :authorize_owner, only: [:update, :refresh]
   before_action :authorize_admin, only: [:destroy]
-  before_action :create_adapter, only: [:create]
+  before_action :create_adapter_from_url, only: [:create]
+  before_action :create_adapter_from_nilm, only: [:show]
 
   # GET /nilms.json
   def index
@@ -20,7 +21,7 @@ class NilmsController < ApplicationController
     @role = current_user.get_nilm_permission(@nilm)
     #request new information from the NILM
     if params[:refresh]
-      @service = UpdateNilm.new(@adapter)
+      @service = UpdateNilm.new(@node_adapter)
       @service.run(@nilm)
       render status: @service.success? ? :ok : :unprocessable_entity
     else
@@ -75,7 +76,6 @@ class NilmsController < ApplicationController
     def set_nilm
       @nilm = Nilm.find(params[:id])
       @db = @nilm.db
-      @adapter = Nilmdb::Adapter.new(@nilm.url)
     end
 
     # Never trust parameters from the scary internet,
@@ -98,8 +98,17 @@ class NilmsController < ApplicationController
       head :unauthorized  unless current_user.views_nilm?(@nilm)
     end
 
-    def create_adapter
+    def create_adapter_from_url
       @node_adapter = NodeAdapterFactory.from_url(nilm_params[:url])
+      if @node_adapter.nil?
+        @service = StubService.new
+        @service.add_error("Cannot contact installation")
+        render 'helpers/empty_response', status: :unprocessable_entity
+      end
+    end
+
+    def create_adapter_from_nilm
+      @node_adapter = NodeAdapterFactory.from_nilm(@nilm)
       if @node_adapter.nil?
         @service = StubService.new
         @service.add_error("Cannot contact installation")

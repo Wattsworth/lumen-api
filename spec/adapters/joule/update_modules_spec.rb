@@ -2,50 +2,59 @@
 
 require 'rails_helper'
 
-describe 'UpdateJouleModules' do
+describe Joule::UpdateModules do
 
+  before do
+    raw = File.read(File.dirname(__FILE__)+"/test_module_schema.json")
+    @schema = JSON.parse(raw).map{|item| item.deep_symbolize_keys}
+  end
   it 'replaces existing modules with new ones' do
     nilm = create(:nilm)
     nilm.joule_modules << create(:joule_module, name: 'prev1')
     nilm.joule_modules << create(:joule_module, name: 'prev2')
-    backend = MockJouleAdapter.new
-    backend.add_module("new1",inputs={i1: '/path/1'},
-                              outputs={o1: '/path/2'})
-    backend.add_module("new2",inputs={i1: '/path/3',i2: '/path/4'},
-                             outputs={o1: '/path/5',o2: '/path/5'})
     service = Joule::UpdateModules.new(nilm)
-    service.run(backend.module_info)
+    service.run(@schema)
     expect(service.success?).to be true
     # new modules are in the database
-    expect(nilm.joule_modules.find_by_name('new1')).to be_present
-    expect(nilm.joule_modules.find_by_name('new2')).to be_present
+    %w(Module1 Module2 Module3 Module4).each do |name|
+      expect(nilm.joule_modules.find_by_name(name)).to be_present
+    end
     # old ones are gone
-    expect(JouleModule.count).to eq 2
+    expect(JouleModule.count).to eq 4
     # pipes are updated as well
-    n1 = nilm.joule_modules.find_by_name('new1')
-    expect(n1.joule_pipes.count).to eq 2
-    n2 = nilm.joule_modules.find_by_name('new2')
-    expect(n2.joule_pipes.count).to eq 4
+    m2 = nilm.joule_modules.find_by_name('Module2')
+    expect(m2.joule_pipes.count).to eq 1
+    m3 = nilm.joule_modules.find_by_name('Module3')
+    expect(m3.joule_pipes.count).to eq 3
+    # web interface status is correct
+    expect(m2.web_interface).to be false
+    expect(m3.web_interface).to be true
     # old pipes are gone
-    expect(JoulePipe.count).to eq 6
+    expect(JoulePipe.count).to eq 9
   end
   it 'produces a warning if a stream is not in the database' do
     nilm = create(:nilm)
-    backend = MockJouleAdapter.new
-    backend.add_module("module",outputs={output: '/missing/path'})
     service = Joule::UpdateModules.new(nilm)
-    service.run(backend.module_info)
+    service.run(@schema)
     expect(service.warnings?).to be true
   end
   it 'links db_stream to the pipe if the stream is in the database' do
     nilm = create(:nilm)
-    nilm.db.db_streams << create(:db_stream, path: '/matched/path1')
-    nilm.db.db_streams << create(:db_stream, path: '/matched/path2')
-    backend = MockJouleAdapter.new
-    backend.add_module("module",inputs={input: '/matched/path1'},
-                                outputs={output: '/matched/path2'})
+    # create streams for pipe connections
+    nilm.db.db_streams << create(:db_stream, path: '/folder_1/stream_1_1')
+    nilm.db.db_streams << create(:db_stream, path: '/folder_1/stream_1_2')
+    nilm.db.db_streams << create(:db_stream, path: '/folder_2/stream_2_1')
     service = Joule::UpdateModules.new(nilm)
-    service.run(backend.module_info)
+    #just run module3
+    service.run([@schema[0]])
+    # make sure pipes are connected
+    m3 = nilm.joule_modules.find_by_name('Module3')
+    pipe = m3.joule_pipes.where(direction: 'input', name: 'input1').first
+    expect(pipe.db_stream.path).to eq('/folder_1/stream_1_1')
+    pipe = m3.joule_pipes.where(direction: 'input', name: 'input2').first
+    expect(pipe.db_stream.path).to eq('/folder_1/stream_1_2')
+    pipe = m3.joule_pipes.where(direction: 'output', name: 'output').first
+    expect(pipe.db_stream.path).to eq('/folder_2/stream_2_1')
     expect(service.warnings?).to be false
   end
 end

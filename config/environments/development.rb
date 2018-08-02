@@ -66,4 +66,8 @@ Rails.application.configure do
         :methods =>  [:get, :post, :options, :delete, :put]
     end
   end
+  config.interface_url_template = lambda do |id|
+    return "http://#{id}.interfaces.wattsworth.local"
+  end
+
 end

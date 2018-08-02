@@ -5,8 +5,8 @@ module Nilmdb
       @backend = Backend.new(url)
     end
 
-    def refresh(db:)
-      db_service = UpdateDb.new(db: db)
+    def refresh(nilm)
+      db_service = UpdateDb.new(nilm.db)
       db_service.run(@backend.dbinfo, @backend.schema)
     end
 

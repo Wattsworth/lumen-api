@@ -69,6 +69,8 @@ ActiveRecord::Schema.define(version: 2018_07_10_014435) do
     t.integer "start_time", limit: 8
     t.integer "end_time", limit: 8
     t.integer "size_on_disk", limit: 8
+    t.integer "joule_id"
+    t.index ["joule_id"], name: "index_db_folders_on_joule_id"
   end
 
   create_table "db_streams", force: :cascade do |t|
@@ -88,6 +90,8 @@ ActiveRecord::Schema.define(version: 2018_07_10_014435) do
     t.boolean "hidden"
     t.integer "size_on_disk", limit: 8
     t.integer "db_id"
+    t.integer "joule_id"
+    t.index ["joule_id"], name: "index_db_streams_on_joule_id"
   end
 
   create_table "dbs", force: :cascade do |t|
@@ -155,7 +159,7 @@ ActiveRecord::Schema.define(version: 2018_07_10_014435) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "node_type", default: "f", null: false
+    t.string "node_type"
   end
 
   create_table "permissions", force: :cascade do |t|

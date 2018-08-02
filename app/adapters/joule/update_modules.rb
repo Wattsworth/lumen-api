@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Joule
   # Handles construction of database objects
-  class UpdateJouleModules
+  class UpdateModules
     include ServiceStatus
 
     def initialize(nilm)
@@ -9,47 +9,50 @@ module Joule
       @nilm = nilm
     end
 
-    def run(module_info)
+    def run(module_schemas)
       #module_info as returned by JouleBackend
-        if module_info.nil?
+        if module_schemas.nil?
           add_error("unable to retrieve module information")
           return self
         end
         #remove the previous modules
         @nilm.joule_modules.destroy_all
-        module_info.each do |info|
-          @nilm.joule_modules << _build_module(info)
+        module_schemas.each do |schema|
+          @nilm.joule_modules << _build_module(schema)
         end
 
         set_notice("refreshed modules")
         self
     end
 
-    def _build_module(info)
+    def _build_module(schema)
       # create JouleModule and associated pipes from
       # hash returned by the JouleAdapter.module_info
-      params = info.extract!(*JouleModule.joule_keys)
-      m = JouleModule.new(params)
+      attrs = schema.slice(*JouleModule.defined_attributes)
+      attrs[:pid] = schema[:statistics][:pid]
+      attrs[:web_interface] = schema[:has_interface]
+      attrs[:joule_id] = schema[:id]
+      m = JouleModule.create(attrs)
       # link inputs to database streams
-      info[:input_paths].each do |name, path|
+      schema[:inputs].each do |name, path|
         m.joule_pipes << JoulePipe.new(direction: 'input',
                                        name: name,
                                        db_stream: _retrieve_stream(path))
       end
-      info[:output_paths].each do |name, path|
+      schema[:outputs].each do |name, path|
         m.joule_pipes << JoulePipe.new(direction: 'output',
                                        name: name,
                                        db_stream: _retrieve_stream(path))
       end
-      return m
+      m
     end
 
     def _retrieve_stream(path)
-      dbStream = @nilm.db.db_streams.find_by_path(path)
-      if dbStream.nil?
+      db_stream = @nilm.db.db_streams.find_by_path(path)
+      if db_stream.nil?
         add_warning("[#{path}] not in database")
       end
-      dbStream
+      db_stream
     end
   end
 end

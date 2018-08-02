@@ -6,18 +6,18 @@ module Joule
     end
 
     def refresh(nilm)
-      db_service = UpdateDb.new(db: nilm.db)
+      db_service = UpdateDb.new(nilm.db)
       result = StubService.new
-      result.absorb_status(db_service.run(@backend.dbinfo, @backend.schema))
+      result.absorb_status(db_service.run(@backend.dbinfo, @backend.db_schema))
       module_service = UpdateModules.new(nilm)
-      result.absorb_status(module_service.run(@backend.module_info))
+      result.absorb_status(module_service.run(@backend.module_schemas))
       result
     end
 
     def refresh_stream(db_stream)
-      data = @backend.stream_info(db_stream)
-      service = UpdateStream.new(db_stream, data)
-      service.run
+      data = @backend.stream_info(db_stream.joule_id)
+      service = UpdateStream.new
+      service.run(db_stream, data[:stream], data[:data_info])
     end
 
     def save_stream(db_stream)
@@ -39,6 +39,11 @@ module Joule
           decimation_factor: data_service.decimation_factor
       }
     end
+
+    def module_interface(joule_module, req)
+      @backend.module_interface(joule_module, req)
+    end
+
     def node_type
       'joule'
     end

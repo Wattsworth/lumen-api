@@ -35,7 +35,7 @@ class CreateNilm
     #give the owner 'admin' permissions on the nilm
     Permission.create(user: owner, nilm: nilm, role: 'admin')
     #update the database
-    msgs = @node_adapter.refresh(db: db)
+    msgs = @node_adapter.refresh(nilm)
     #errors on the database update are warnings on this service
     #because we can still add the NILM, it will just be offline
     add_warnings(msgs.errors + msgs.warnings)

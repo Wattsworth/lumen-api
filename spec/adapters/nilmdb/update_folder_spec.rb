@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe 'UpdateFolder service' do
   let(:db) { Db.new }
-  let(:service) { Nilmdb::UpdateDb.new(db: db) }
+  let(:service) { Nilmdb::UpdateDb.new(db) }
   let(:helper) { DbSchemaHelper.new }
   let(:mock_dbinfo) { {} }
 
@@ -20,7 +20,7 @@ describe 'UpdateFolder service' do
     folder = DbFolder.find_by_name('old_name')
     expect(folder).to be_present
     # run update again with new metadata
-    service = Nilmdb::UpdateDb.new(db: db)
+    service = Nilmdb::UpdateDb.new(db)
     service.run(mock_dbinfo, [helper.entry('/folder1/subfolder/info',
                                            metadata: { name: 'new_name' })])
     folder.reload

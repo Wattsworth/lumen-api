@@ -84,4 +84,9 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.interface_url_template = lambda do |id|
+    return "http://#{id}.interfaces.wattsworth.local"
+  end
+
 end

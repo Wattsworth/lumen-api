@@ -17,7 +17,7 @@ RSpec.describe 'LoadElementData' do
                       {id: @elem2.id, values: 'mock2'}]
       @mock_adapter = MockAdapter.new([stream: @db_stream,
                                        data: @stream_data])
-      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
     end
     it 'makes one request for the stream data' do
       #expect(@mock_adapter).to receive(:load_data)
@@ -44,7 +44,7 @@ RSpec.describe 'LoadElementData' do
       @mock_adapter = MockAdapter.new(
         [{stream: @db_stream1, data: @stream1_data},
          {stream: @db_stream2, data: @stream2_data}])
-      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
 
     end
     it 'makes one request per stream' do
@@ -77,7 +77,7 @@ RSpec.describe 'LoadElementData' do
       @mock_adapter = MockAdapter.new(
         [{stream: @db_stream1, data: @stream1_data},
          {stream: @db_stream2, data: nil}])
-      allow(Nilmdb::Adapter).to receive(:new).and_return(@mock_adapter)
+      allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
     end
     it 'fills in the data that is available' do
       service = LoadElementData.new

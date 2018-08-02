@@ -38,7 +38,7 @@ module Nilmdb
     def run(db_stream, start_time, end_time, elements = [], resolution=nil)
 
       # if elements are not explicitly passed, get all of them
-      if(elements.empty?)
+      if elements.empty?
         elements = db_stream.db_elements.all.to_a
       end
       elements.sort_by!(&:column)
