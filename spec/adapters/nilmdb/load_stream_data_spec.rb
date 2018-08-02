@@ -4,6 +4,21 @@ require 'rails_helper'
 RSpec.describe 'LoadStreamData' do
   let(:db) { create(:db, max_points_per_plot: 100) }
 
+  describe 'rapid decimation algorithm' do
+    it 'computes decimation level' do
+      @server = Nilmdb::LoadStreamData.new(nil)
+      examples = [
+          {count: 0, resolution: 100, level: 1},
+          {count: 100, resolution: 500, level: 1},
+          {count: 1000, resolution: 500, level: 4},
+          {count: 10*64, resolution: 10, level: 64},
+          {count: 10*64+1, resolution: 10, level: 64*4}]
+      examples.each do |example|
+        level = @server._compute_decimation_level(example[:count],example[:resolution])
+        expect(level).to eq example[:level]
+      end
+    end
+  end
   describe 'with large datasets' do
     describe 'when the data is decimated' do
       before do
@@ -68,7 +83,7 @@ RSpec.describe 'LoadStreamData' do
         @service.data.each_with_index do |data,i|
           elem = @db_stream.db_elements.find_by_column(i)
           expect(data[:id]).to eq elem.id
-          if(elem.display_type=="discrete" || elem.display_type=="continuous")
+          if elem.display_type=="discrete" || elem.display_type=="continuous"
             d_count += 1
             mean = __scale_value(i,elem)
             min =  __scale_value(i-1,elem)
@@ -101,6 +116,7 @@ RSpec.describe 'LoadStreamData' do
             column: i, offset: i+1, scale_factor:i+2)
         end
         @mockAdapter = MockDataDbAdapter.new(
+            decimations=[1],
           start_time: @db_stream.start_time,
           end_time: @db_stream.end_time,
           raw_count: 1000, data: @data

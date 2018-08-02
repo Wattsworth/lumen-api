@@ -111,14 +111,15 @@ RSpec.describe 'LoadElementData' do
       #make sure the decimations are messed up by partial update
       ndecims1 = elem1.db_stream.db_decimations.count
       ndecims2 = elem2.db_stream.db_decimations.count
+      # ------ CHECK REMOVED, SERVICE NO LONGER UPDATES STREAMS -------
       #artificially mess up time bounds to check if service updates the streams
-      elem1.db_stream.update(start_time: 0, end_time: 0)
-      elem2.db_stream.update(start_time: 0, end_time: 0)
+      # elem1.db_stream.update(start_time: 0, end_time: 0)
+      # elem2.db_stream.update(start_time: 0, end_time: 0)
       service = LoadElementData.new
       service.run([elem1,elem2], nil, nil)
       #bounds taken from test nilm on vagrant instance
-      expect(service.start_time).to eq(1360017784000000)
-      expect(service.end_time).to eq(1435438182000001)
+      # expect(service.start_time).to eq(1360017784000000)
+      # expect(service.end_time).to eq(1435438182000001)
       #make sure decimations are still here
       expect(elem1.db_stream.reload.db_decimations.count).to eq ndecims1
       expect(elem2.db_stream.reload.db_decimations.count).to eq ndecims2

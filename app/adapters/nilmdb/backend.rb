@@ -110,13 +110,11 @@ module Nilmdb
     end
 
     def get_count(path, start_time, end_time)
+      query = {path: path, count: 1}
+      query[:start] = start_time unless start_time.nil?
+      query[:end] = end_time unless end_time.nil?
       resp = self.class.get("#{@url}/stream/extract",
-                            query: {
-                              path: path,
-                              start: start_time,
-                              end: end_time,
-                              count: 1
-                            })
+                            query: query)
       return nil unless resp.success?
       return resp.parsed_response.to_i
     rescue
@@ -124,13 +122,11 @@ module Nilmdb
     end
 
     def get_data(path, start_time, end_time)
+      query = {path: path, markup: 1}
+      query[:start] = start_time unless start_time.nil?
+      query[:end] = end_time unless end_time.nil?
       resp = self.class.get("#{@url}/stream/extract",
-                            query: {
-                              path: path,
-                              start: start_time,
-                              end: end_time,
-                              markup: 1
-                            })
+                            query: query)
       return nil unless resp.success?
       return __parse_data(resp.parsed_response)
     rescue
@@ -138,12 +134,11 @@ module Nilmdb
     end
 
     def get_intervals(path, start_time, end_time)
+      query = {path: path}
+      query[:start] = start_time unless start_time.nil?
+      query[:end] = end_time unless end_time.nil?
       resp = self.class.get("#{@url}/stream/intervals",
-                            query: {
-                              path: path,
-                              start: start_time,
-                              end: end_time
-                            })
+                            query: query)
       return nil unless resp.success?
       return __parse_intervals(resp.parsed_response)
     rescue

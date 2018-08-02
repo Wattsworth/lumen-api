@@ -33,37 +33,43 @@ class LoadElementData
         req_streams << elem.db_stream
       end
     end
-    #2 compute bounds by updating stream info if start/end are missing
-    if start_time==nil || end_time==nil
-      req_streams.map do |stream|
-        adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
-        if adapter.nil?
-          add_error("cannot contact installation")
-          return self
-        end
-        adapter.refresh_stream(stream)
-      end
-    end
 
-    #3 compute start and end times if nil
-    streams_with_data = req_streams.select{|stream| stream.total_time > 0}
-    if (start_time == nil || end_time == nil) && streams_with_data.empty?
-      add_error("no time bounds for requested elements, refresh database?")
-      return self
-    end
+    # ----------- REMOVED FOR SPEED, NOT NECESSARY ------------------------
+    # #2 compute bounds by updating stream info if start/end are missing
+    # if start_time==nil || end_time==nil
+    #   req_streams.map do |stream|
+    #     adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
+    #     if adapter.nil?
+    #       add_error("cannot contact installation")
+    #       return self
+    #     end
+    #     adapter.refresh_stream(stream)
+    #   end
+    # end
+    #
+    # #3 compute start and end times if nil
+    # streams_with_data = req_streams.select{|stream| stream.total_time > 0}
+    # if (start_time == nil || end_time == nil) && streams_with_data.empty?
+    #   add_error("no time bounds for requested elements, refresh database?")
+    #   return self
+    # end
+    # @start_time = start_time
+    # @end_time = end_time
+    # if start_time == nil
+    #   @start_time = streams_with_data
+    #     .sort_by{|x| x.start_time}
+    #     .first.start_time
+    # end
+    # if end_time == nil
+    #   @end_time = streams_with_data
+    #     .sort_by{|x| -1*x.end_time}
+    #     .first.end_time
+    # end
+    # ------------------------- END MODIFICATION ------------------------------
+    
     @start_time = start_time
     @end_time = end_time
-    if start_time == nil
-      @start_time = streams_with_data
-        .sort_by{|x| x.start_time}
-        .first.start_time
-    end
-    if end_time == nil
-      @end_time = streams_with_data
-        .sort_by{|x| -1*x.end_time}
-        .first.end_time
-    end
-    if @start_time > @end_time
+    if (not @start_time.nil?) and (not @end_time.nil?) and (@start_time > @end_time)
       add_error("invalid time bounds")
       return self
     end

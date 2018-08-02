@@ -48,12 +48,38 @@ module Nilmdb
                    else
                      [db_stream.db.max_points_per_plot,resolution].min
                    end
-      valid_decim = findValidDecimationLevel(db_stream, start_time)
-      # valid_decim is the highest resolution, find one we can plot
-      plottable_decim = findPlottableDecimationLevel(
-        db_stream, valid_decim, start_time, end_time, resolution
-      )
 
+      # --------- MODIFIED FOR SPEED & COMPATIBILITY WITH JOULE -------------
+      # ASSUME ALL DATA IS IN RAW AND DECIMATIONS ARE x4
+      # This means we don't need to know the start and end bounds of the data
+
+      # -------------  omitted ------------------
+      # valid_decim = findValidDecimationLevel(db_stream, start_time)
+      # valid_decim is the highest resolution, find one we can plot
+      # plottable_decim = findPlottableDecimationLevel(
+      #  db_stream, valid_decim, start_time, end_time, resolution
+      # )
+      # -------------- end omitted --------------
+
+      valid_decim = DbDecimation.new(level: 1)
+      plottable_decim = DbDecimation.new(level: 1)
+      count = @db_backend.get_count(db_stream.path, start_time, end_time)
+      if count.nil?
+        add_error("cannot get count for [#{db_stream.path}] @ #{@db_backend.url}")
+        return self
+      end
+      decim_level = _compute_decimation_level(count, resolution)
+      if decim_level > 1
+        count = @db_backend.get_count(db_stream.path+"~decim-#{decim_level}" , start_time, end_time)
+        # count will be nil if the decimation level does not exist
+        if (not count.nil?) and (count <= resolution) and (count > 0)
+          plottable_decim = DbDecimation.new(level: decim_level)
+        else
+          plottable_decim = nil
+        end
+      end
+
+      # ----------  END MODIFICATION ---------------------------
 
       if plottable_decim.nil?
         # check if its nil becuase the nilm isn't available
@@ -90,6 +116,14 @@ module Nilmdb
       end
       self
     end
+
+    # Compute decimation level assuming x4 levels
+    def _compute_decimation_level(count, resolution)
+      return 1 if count == 0
+      desired_decimation = (Float(count)/resolution).ceil
+      4 ** (Math.log(desired_decimation)/Math.log(4.0)).ceil
+    end
+
 
     #===Description
     # Given a starting decimation level and time interval
