@@ -27,6 +27,10 @@ module Joule
                      [db_stream.db.max_points_per_plot,resolution].min
                    end
       result = @backend.load_data(db_stream.joule_id, start_time, end_time, resolution)
+      if result.nil?
+        add_error("cannot get data for [#{db_stream.name}] @ #{@db_backend.url}")
+        return self
+      end
       # convert data into single array with nil's at interval boundaries
       data = []
       result[:data].each do |interval|

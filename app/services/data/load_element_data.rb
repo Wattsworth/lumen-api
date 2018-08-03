@@ -66,7 +66,7 @@ class LoadElementData
     #     .first.end_time
     # end
     # ------------------------- END MODIFICATION ------------------------------
-    
+
     @start_time = start_time
     @end_time = end_time
     if (not @start_time.nil?) and (not @end_time.nil?) and (@start_time > @end_time)

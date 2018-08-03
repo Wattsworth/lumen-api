@@ -39,10 +39,28 @@ module Joule
       #puts db_folder.parent.id
       # update or create subfolders
       updated_ids = []
+      size_on_disk = 0
+      start_time = nil
+      end_time = nil
       schema[:children].each do |child_schema|
         child = db_folder.subfolders.find_by_joule_id(child_schema[:id])
         child ||= DbFolder.new(parent: db_folder, db: db_folder.db)
         __update_folder(child, child_schema, db_folder.path)
+        size_on_disk+=child.size_on_disk
+        unless child.start_time.nil?
+          if start_time.nil?
+            start_time = child.start_time
+          else
+            start_time = [child.start_time, start_time].min
+          end
+        end
+        unless child.end_time.nil?
+          if end_time.nil?
+            end_time = child.end_time
+          else
+            end_time = [child.end_time, end_time].max
+          end
+        end
         updated_ids << child_schema[:id]
       end
       # remove any subfolders that are no longer on the folder
@@ -54,10 +72,30 @@ module Joule
         stream = db_folder.db_streams.find_by_joule_id(stream_schema[:id])
         stream ||= DbStream.new(db_folder: db_folder, db: db_folder.db)
         __update_stream(stream, stream_schema, db_folder.path)
+        size_on_disk+=stream.size_on_disk
+        unless stream.start_time.nil?
+          if start_time.nil?
+            start_time = stream.start_time
+          else
+            start_time = [stream.start_time, start_time].min
+          end
+        end
+        unless stream.end_time.nil?
+          if end_time.nil?
+            end_time = stream.end_time
+          else
+            end_time = [stream.end_time, end_time].max
+          end
+        end
         updated_ids << stream_schema[:id]
       end
       # remove any streams that are no longer in the folder
       db_folder.db_streams.where.not(joule_id: updated_ids).destroy_all
+      # save the new disk size
+      db_folder.size_on_disk = size_on_disk
+      db_folder.start_time = start_time
+      db_folder.end_time = end_time
+      db_folder.save
     end
 
     def __update_stream(db_stream, schema, parent_path)
@@ -66,16 +104,23 @@ module Joule
       attrs[:path] = "#{parent_path}/#{schema[:name]}"
       attrs[:data_type] = "#{schema[:datatype].downcase}_#{schema[:elements].count}"
       attrs[:joule_id] = schema[:id]
-      attrs[:total_time] = 100 # non-zero TODO, fix load_element so we don't need this
+      attrs[:start_time] = schema[:data_info][:start]
+      attrs[:end_time] = schema[:data_info][:end]
+      attrs[:total_rows] = schema[:data_info][:rows]
+      attrs[:total_time] = schema[:data_info][:total_time]
+      attrs[:size_on_disk] = schema[:data_info][:bytes]
+
       db_stream.update_attributes(attrs)
-      db_stream.db_elements.destroy_all
+      #db_stream.db_elements.destroy_all
       schema[:elements].each do |element_config|
+        element = db_stream.db_elements.find_by_column(element_config[:index])
+        element ||= DbElement.new(db_stream: db_stream)
         attrs = element_config.slice(*DbElement.defined_attributes)
         # add in extra attributes that require conversion
         attrs[:display_type] = element_config[:display_type].downcase
         attrs[:column] = element_config[:index]
         attrs[:plottable] = true
-        db_stream.db_elements << DbElement.new(attrs)
+        element.update_attributes(attrs)
       end
     end
 

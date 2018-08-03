@@ -34,8 +34,8 @@ module Nilmdb
       unless stream.update_attributes(base_entry[:attributes])
         stream.use_default_attributes
         Rails.logger.warn("corrupt metadata: #{stream.path}")
-
       end
+
       __compute_extents([base_entry] + decimation_entries)
       stream.start_time = @start_time
       stream.end_time = @end_time

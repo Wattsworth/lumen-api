@@ -82,10 +82,10 @@ module Joule
     end
 
     def load_data(joule_id, start_time, end_time, resolution)
-      options = { query: { "id": joule_id,
-                           "start": start_time,
-                           "end": end_time,
-                           "max-rows": resolution}}
+      query = {'id': joule_id, 'max-rows': resolution}
+      query['start'] = start_time unless start_time.nil?
+      query['end'] = end_time unless end_time.nil?
+      options = { query: query}
       begin
         resp = self.class.get("#{@url}/data.json", options)
         #TODO: handle interval data
