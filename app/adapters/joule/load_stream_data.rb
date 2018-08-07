@@ -26,26 +26,40 @@ module Joule
                    else
                      [db_stream.db.max_points_per_plot,resolution].min
                    end
-      result = @backend.load_data(db_stream.joule_id, start_time, end_time, resolution)
-      if result.nil?
-        add_error("cannot get data for [#{db_stream.name}] @ #{@db_backend.url}")
+      resp = @backend.load_data(db_stream.joule_id, start_time, end_time, resolution)
+      unless resp[:success]
+        if resp[:result] == 'decimation error'
+          resp = @backend.load_intervals(db_stream.joule_id, start_time, end_time)
+          if resp[:success]
+            @data = DataBuilder.build_interval_data(elements, resp[:result])
+            @data_type = 'interval'
+            return self
+          end
+        end
+        add_error("cannot get data for [#{db_stream.name}] @ #{@backend.url}: #{resp[:result]}")
         return self
       end
+
       # convert data into single array with nil's at interval boundaries
+      result = resp[:result]
       data = []
       result[:data].each do |interval|
         data += interval
         data.push(nil)
       end
-      if result[:decimated]
-        @data = DataBuilder.build_decimated_data(elements,data)
+      if result[:decimation_factor] > 1
         @data_type = 'decimated'
+        decimateable_elements =
+            elements.select{|e| %w(continuous discrete).include? e.display_type}
+        interval_elements = elements.select{|e| e.display_type=='event'}
+        @data = DataBuilder.build_decimated_data(decimateable_elements, data) +
+            DataBuilder.build_intervals_from_decimated_data(interval_elements, data)
       else
         @data = DataBuilder.build_raw_data(elements,data)
         @data_type = 'raw'
       end
-      #TODO: handle interval data
-      @decimation_factor = 1 # TODO: fix this
+      @decimation_factor = result[:decimation_factor]
+      self
     end
   end
 end

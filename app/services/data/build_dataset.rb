@@ -31,11 +31,12 @@ class BuildDataset
       return self
     end
     @data = _build_dataset(result[:data])
-    @legend[:columns]           = _build_legend_columns(result[:data], db_stream)
-    @legend[:start_time]        = start_time
-    @legend[:end_time]          = end_time
-    @legend[:decimation_factor] = result[:decimation_factor]
-    @legend[:num_rows]          = @data.length
+    @legend[:columns]               = _build_legend_columns(result[:data], db_stream)
+    @legend[:start_time]            = start_time
+    @legend[:end_time]              = end_time
+    @legend[:decimation_factor]     = result[:decimation_factor]
+    @legend[:num_rows]              = @data.length
+    @legend[:download_instructions] = @node_adapter.download_instructions(db_stream, start_time, end_time)
     if @data.empty?
       @legend[:notes] = 'there is no data available over this interval'
     elsif @data[0].length!=db_stream.db_elements.length+1

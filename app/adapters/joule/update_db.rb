@@ -42,6 +42,7 @@ module Joule
       size_on_disk = 0
       start_time = nil
       end_time = nil
+      locked = false
       schema[:children].each do |child_schema|
         child = db_folder.subfolders.find_by_joule_id(child_schema[:id])
         child ||= DbFolder.new(parent: db_folder, db: db_folder.db)
@@ -62,6 +63,7 @@ module Joule
           end
         end
         updated_ids << child_schema[:id]
+        locked = true if child.locked?
       end
       # remove any subfolders that are no longer on the folder
       db_folder.subfolders.where.not(joule_id: updated_ids).destroy_all
@@ -87,6 +89,7 @@ module Joule
             end_time = [stream.end_time, end_time].max
           end
         end
+        locked=true if stream.locked?
         updated_ids << stream_schema[:id]
       end
       # remove any streams that are no longer in the folder
@@ -95,6 +98,7 @@ module Joule
       db_folder.size_on_disk = size_on_disk
       db_folder.start_time = start_time
       db_folder.end_time = end_time
+      db_folder.locked = locked
       db_folder.save
     end
 

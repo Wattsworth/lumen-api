@@ -88,12 +88,66 @@ module Joule
       options = { query: query}
       begin
         resp = self.class.get("#{@url}/data.json", options)
-        #TODO: handle interval data
-        return nil unless resp.success?
+        if resp.code==400 and resp.body.include?('decimated data is not available')
+          return {success: false, result: "decimation error"}
+        end
+        return {success: false, result: resp.body} unless resp.success?
       rescue
-        return nil
+        return {success: false, result: "connection error"}
       end
-      resp.parsed_response.symbolize_keys
+      {success: true, result: resp.parsed_response.symbolize_keys}
+    end
+
+    def load_intervals(joule_id, start_time, end_time)
+      query = {'id': joule_id}
+      query['start'] = start_time unless start_time.nil?
+      query['end'] = end_time unless end_time.nil?
+      options = { query: query}
+      begin
+        resp = self.class.get("#{@url}/data/intervals.json", options)
+        return {success: false, result: resp.body} unless resp.success?
+      rescue
+        return {success: false, result: "connection error"}
+      end
+      data = []
+      resp.parsed_response.each do |interval|
+        data.push([interval[0], 0])
+        data.push([interval[1], 0])
+        data.push(nil) # break up the intervals
+      end
+      {success: true, result: data}
+    end
+
+    def update_stream(db_stream)
+      elements = []
+      db_stream.db_elements.each do |elem|
+        elements <<  {name: elem.name,
+                      plottable: elem.plottable,
+                      units: elem.units,
+                      default_min: elem.default_min,
+                      default_max: elem.default_max,
+                      scale_factor: elem.scale_factor,
+                      offset: elem.offset,
+                      display_type: elem.display_type}
+      end
+
+      attrs = { name: db_stream.name,
+                 description: db_stream.description,
+                 elements: elements
+                }.to_json
+      begin
+        response = self.class.put("#{@url}/stream.json",
+                                   body: {
+                                       id: db_stream.joule_id,
+                                       stream: attrs})
+      rescue
+        return { error: true, msg: 'cannot contact Joule server' }
+      end
+      unless response.success?
+        return { error: true, msg: "error updating #{db_stream.path} metadata" }
+      end
+      { error: false, msg: 'success' }
+
     end
   end
 end

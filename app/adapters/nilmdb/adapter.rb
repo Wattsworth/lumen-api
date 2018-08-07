@@ -36,9 +36,19 @@ module Nilmdb
        decimation_factor: data_service.decimation_factor}
     end
 
+    def download_instructions(db_stream, start_time, end_time)
+      "# --------- NILMTOOL INSTRUCTIONS ----------
+#
+# raw data can be accessed using nilmtool, run:
+#
+# $> nilmtool -u #{@backend.url} extract -s @#{start_time} -e @#{end_time} #{db_stream.path}
+#
+# ------------------------------------------"
+    end
     def node_type
       'nilmdb'
     end
+
 
   end
 end

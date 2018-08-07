@@ -26,9 +26,10 @@ describe Joule::Backend do
                              1531248642561047,
                              1531248642581047,
                              200)
-    expect(resp[:decimated]).to be false
-    expect(resp[:data].count).to be > 0
-    expect(resp[:data].count).to be < 200
+    expect(resp[:success]).to be true
+    expect(resp[:result][:decimated]).to be false
+    expect(resp[:result][:data].count).to be > 0
+    expect(resp[:result][:data].count).to be < 200
   end
 
   it 'loads decimated data', :vcr do
@@ -37,8 +38,9 @@ describe Joule::Backend do
                              1531248642561047,
                              1531330705273202,
                              20)
-    expect(resp[:decimated]).to be true
-    expect(resp[:data].count).to be > 0
-    expect(resp[:data].count).to be < 200
+    expect(resp[:success]).to be true
+    expect(resp[:result][:decimated]).to be true
+    expect(resp[:result][:data].count).to be > 0
+    expect(resp[:result][:data].count).to be < 200
   end
 end

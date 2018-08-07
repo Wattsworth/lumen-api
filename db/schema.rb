@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_10_014435) do
+ActiveRecord::Schema.define(version: 2018_08_07_001215) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 2018_07_10_014435) do
     t.integer "end_time", limit: 8
     t.integer "size_on_disk", limit: 8
     t.integer "joule_id"
+    t.boolean "locked"
     t.index ["joule_id"], name: "index_db_folders_on_joule_id"
   end
 
@@ -91,6 +92,7 @@ ActiveRecord::Schema.define(version: 2018_07_10_014435) do
     t.integer "size_on_disk", limit: 8
     t.integer "db_id"
     t.integer "joule_id"
+    t.boolean "locked"
     t.index ["joule_id"], name: "index_db_streams_on_joule_id"
   end
 

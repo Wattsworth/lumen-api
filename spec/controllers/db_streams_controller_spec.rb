@@ -191,6 +191,7 @@ RSpec.describe DbStreamsController, type: :request do
           num_rows: 2,
           decimation_factor: 1,
           notes: 'note_test_string',
+          download_instructions: 'how to download from CLI',
           columns: [{index: 1, name: 'time', units: 'us'},
                     {index: 2, name: 'e1', units: 'watts'},
                     {index: 3, name: 'e2', units: 'joules'}]

@@ -33,7 +33,7 @@ class DbFolder < ApplicationRecord
   # end
 
   def self.defined_attributes
-    [:name, :description, :hidden]
+    [:name, :description, :hidden, :locked]
   end
 
   def insert_stream(stream:)
@@ -53,6 +53,6 @@ class DbFolder < ApplicationRecord
 
   def self.json_keys
     [:id, :name, :description, :path, :hidden,
-     :start_time, :end_time, :size_on_disk]
+     :start_time, :end_time, :size_on_disk, :locked]
   end
 end

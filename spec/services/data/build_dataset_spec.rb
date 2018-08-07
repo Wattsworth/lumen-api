@@ -14,7 +14,8 @@ RSpec.describe 'BuildDataset' do
               {id: elem1.id, type: 'raw', values: [[10,3],[11,4],nil,[12,5]]},
               {id: elem2.id, type: 'raw', values: [[10,6],[11,7],nil,[12,8]]}]
       @mock_adapter = instance_double(Nilmdb::Adapter,
-                                      load_data: { data: data, decimation_factor: 1})
+                                      load_data: { data: data, decimation_factor: 1},
+                                      download_instructions: "stub")
       allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
       @service = BuildDataset.new(@mock_adapter)
       @service.run(db_stream,0,100)
@@ -44,7 +45,8 @@ RSpec.describe 'BuildDataset' do
               {id: elem1.id, type: 'decimated', values: [[10,3,2,4],[11,4,3,5],nil,[12,5,6,7]]},
               {id: elem2.id, type: 'interval', values:  [[10,0],[11,0],nil,[12,0]]}]
       @mock_adapter = instance_double(Nilmdb::Adapter,
-                                      load_data: { data: data, decimation_factor: 4})
+                                      load_data: { data: data, decimation_factor: 4},
+                                      download_instructions: "stub")
       allow(NodeAdapterFactory).to receive(:from_nilm).and_return(@mock_adapter)
       @service = BuildDataset.new(@mock_adapter)
       @service.run(db_stream,0,100)
@@ -70,7 +72,8 @@ RSpec.describe 'BuildDataset' do
               {id: elem1.id, type: 'interval', values: [[10,0],[11,0],nil,[12,0]]},
               {id: elem2.id, type: 'interval', values: [[10,0],[11,0],nil,[12,0]]}]
       @mock_adapter = instance_double(Nilmdb::Adapter,
-                                      load_data: { data: data, decimation_factor: 1})
+                                      load_data: { data: data, decimation_factor: 1},
+                                      download_instructions: "stub")
       #allow(LoadStreamData).to receive(:new).and_return(@mock_stream_service)
       @service = BuildDataset.new(@mock_adapter)
       @service.run(db_stream,0,100)
@@ -88,7 +91,8 @@ RSpec.describe 'BuildDataset' do
               {id: elem1.id, type: 'raw', values: []},
               {id: elem2.id, type: 'raw', values: []}]
       @mock_adapter = instance_double(Nilmdb::Adapter,
-                                      load_data:{data: data, decimation_factor: 1})
+                                      load_data:{data: data, decimation_factor: 1},
+                                      download_instructions: "stub")
       #allow(LoadStreamData).to receive(:new).and_return(@mock_stream_service)
       @service = BuildDataset.new(@mock_adapter)
       @service.run(db_stream,0,100)

@@ -24,13 +24,7 @@
 #       data: [1737x15 double] % the data
 #   textdata: {41x1 cell}      % this help text
 #
-# --------- NILMTOOL INSTRUCTIONS ----------
-#
-# raw data can be accessed using nilmtool, run:
-#
-# $> nilmtool -u <%=@db.url%> extract -s @<%=@legend[:start_time]%> -e @<%=@legend[:end_time]%> <%=@db_stream.path%>
-#
-# ------------------------------------------
+<%=@legend[:download_instructions].html_safe %>
 #
 <% @data.each do |row|%>
 <%= row.join(", ")%>

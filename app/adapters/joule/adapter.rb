@@ -40,6 +40,16 @@ module Joule
       }
     end
 
+    def download_instructions(db_stream, start_time, end_time)
+      "# --------- JOULE INSTRUCTIONS ----------
+#
+# raw data can be accessed using the joule cli, run:
+#
+# $> joule -u #{@backend.url} data read -s #{start_time} -e #{end_time} #{db_stream.path}
+#
+# ------------------------------------------"
+    end
+
     def module_interface(joule_module, req)
       @backend.module_interface(joule_module, req)
     end
