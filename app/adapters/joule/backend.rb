@@ -71,6 +71,10 @@ module Joule
      self.class.get("#{@url}/interface/#{joule_module.joule_id}/#{req}")
     end
 
+    def module_post_interface(joule_module, req)
+      self.class.post("#{@url}/interface/#{joule_module.joule_id}/#{req}")
+    end
+
     def stream_info(joule_id)
       begin
        resp = self.class.get("#{@url}/stream.json?id=#{joule_id}")
@@ -147,7 +151,23 @@ module Joule
         return { error: true, msg: "error updating #{db_stream.path} metadata" }
       end
       { error: false, msg: 'success' }
+    end
 
+    def update_folder(db_folder)
+      attrs = { name: db_folder.name,
+                description: db_folder.description}.to_json
+      begin
+        response = self.class.put("#{@url}/folder.json",
+                                  body: {
+                                      id: db_folder.joule_id,
+                                      folder: attrs})
+      rescue
+        return { error: true, msg: 'cannot contact Joule server' }
+      end
+      unless response.success?
+        return { error: true, msg: "error updating #{db_folder.path} metadata" }
+      end
+      { error: false, msg: 'success' }
     end
   end
 end

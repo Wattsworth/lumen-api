@@ -54,6 +54,10 @@ module Joule
       @backend.module_interface(joule_module, req)
     end
 
+    def module_post_interface(joule_module, req)
+      @backend.module_post_interface(joule_module, req)
+    end
+
     def node_type
       'joule'
     end

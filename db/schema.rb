@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_07_001215) do
+ActiveRecord::Schema.define(version: 2018_08_18_012410) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -119,6 +119,17 @@ ActiveRecord::Schema.define(version: 2018_08_07_001215) do
     t.datetime "updated_at", null: false
     t.index ["joule_module_id"], name: "index_interface_auth_tokens_on_joule_module_id"
     t.index ["user_id"], name: "index_interface_auth_tokens_on_user_id"
+  end
+
+  create_table "interface_permissions", force: :cascade do |t|
+    t.integer "interface_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.integer "user_group_id"
+    t.string "role"
+    t.integer "precedence"
+    t.index ["interface_id"], name: "index_interface_permissions_on_interface_id"
   end
 
   create_table "joule_modules", force: :cascade do |t|

@@ -51,4 +51,5 @@ Rails.application.routes.draw do
   get 'interfaces/:id/authenticate', to: 'interfaces#authenticate'
   get 'interfaces/:id', to: 'interfaces#get'
   get 'interfaces/:id/*path', to: 'interfaces#get'
+  post 'interfaces/:id/*path', to: 'interfaces#post'
 end

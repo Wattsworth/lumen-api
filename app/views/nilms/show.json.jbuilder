@@ -15,7 +15,7 @@ json.data do
   end
   json.jouleModules(@nilm.joule_modules) do |m|
     json.extract! m, *JouleModule.json_keys
-    json.url Rails.configuration.interface_url_template.call(m.joule_id)
+    json.url Rails.configuration.interface_url_template.call(m.id)
     json.nilm_id @nilm.id
   end
 end
