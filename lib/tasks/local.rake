@@ -14,7 +14,7 @@ namespace :local do
     # Create an admin user"
     @admin = User.find_by_email(ADMIN_EMAIL)
 
-    if(@admin.nil?)
+    if @admin.nil?
       puts 'Creating new admin user'
       @admin = FactoryBot.create(:user,
                       first_name: 'John',
@@ -23,11 +23,12 @@ namespace :local do
                       password_confirmation: ADMIN_PASSWORD,
                       email: ADMIN_EMAIL)
     end
-    @installation = Nilm.find_by_url("http://localhost/nilmdb")
-    if(@installation.nil?)
+    @installation = Nilm.find_by_url("http://localhost:8088")
+    if @installation.nil?
       puts 'Creating new local installation'
       #create a local installation
-      nilm_creator = CreateNilm.new
+      @node_adapter = Joule::Adapter.new("http://localhost:8088")
+      nilm_creator = CreateNilm.new(@node_adapter)
       nilm_creator.run(
         name: 'local',
         description: 'local database',
