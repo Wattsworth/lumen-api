@@ -86,7 +86,8 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.interface_url_template = lambda do |id|
-    return "http://#{id}.interfaces.wattsworth.local"
+    #return "http://#{id}.interfaces.wattsworth.local"
+    return "http://wattsworth.local/api/interfaces/#{id}"
   end
 
 end
