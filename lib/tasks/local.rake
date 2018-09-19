@@ -32,7 +32,7 @@ namespace :local do
       nilm_creator.run(
         name: 'local',
         description: 'local database',
-        url: 'http://localhost/nilmdb',
+        url: 'http://localhost:8088',
         owner: @admin
       )
     end
