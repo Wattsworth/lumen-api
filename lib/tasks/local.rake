@@ -2,7 +2,7 @@ require 'factory_bot_rails'
 
 ADMIN_NAME="admin"
 ADMIN_PASSWORD ="password"
-ADMIN_EMAIL    ="admin@wattsworth.local"
+ADMIN_EMAIL    ="admin@wattsworth.localhost"
 
 
 

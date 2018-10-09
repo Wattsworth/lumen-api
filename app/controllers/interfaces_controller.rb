@@ -31,7 +31,7 @@ class InterfacesController < ActionController::Base
 
   #everything else is proxied
   def get
-    path = request.fullpath.sub("/api/interfaces/#{@joule_module.id}", "")
+    path = create_proxy_path(request.fullpath, @joule_module.id)
     proxied_response = @node_adapter.module_interface(@joule_module,path)
 
     render plain: proxied_response.body
@@ -44,7 +44,7 @@ class InterfacesController < ActionController::Base
   end
 
   def post
-    path = request.fullpath.sub("/api/interfaces/#{@joule_module.id}", "")
+    path = create_proxy_path(request.fullpath, @joule_module.id)
     proxied_response = @node_adapter.module_post_interface(@joule_module,path)
 
     render plain: proxied_response.body
@@ -93,5 +93,11 @@ class InterfacesController < ActionController::Base
     if @node_adapter.node_type != 'joule'
       render 'helpers/empty_response', status: :unprocessable_entity
     end
+  end
+
+  def create_proxy_path(path, module_id)
+    chunks = path.split('/')
+    id_chunk = chunks.find_index(module_id.to_s)
+    chunks.drop(id_chunk+1).join('/')
   end
 end
