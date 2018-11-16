@@ -51,7 +51,7 @@ module Joule
 
     def module_schemas
      begin
-       resp = self.class.get("#{@url}/modules.json")
+       resp = self.class.get("#{@url}/modules.json?statistics=1")
        return nil unless resp.success?
        items = resp.parsed_response
        # if the site exists but is not a joule server...

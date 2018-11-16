@@ -87,7 +87,7 @@ Rails.application.configure do
 
   config.interface_url_template = lambda do |id|
     #return "http://#{id}.interfaces.wattsworth.local"
-    return "http://wattsworth.local/api/interfaces/#{id}"
+    return "http://wattsworth.localhost/api/interfaces/#{id}/"
   end
 
 end
