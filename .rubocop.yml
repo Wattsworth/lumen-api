@@ -2,6 +2,7 @@ AllCops:
   TargetRubyVersion: 2.3
   Include:
     - '**/config.ru'
+    - 'spec/**/*'
   Exclude:
     - '**/Rakefile'
     - 'db/**/*'

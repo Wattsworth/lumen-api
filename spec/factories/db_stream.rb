@@ -6,18 +6,18 @@ FactoryBot.define do
     name { Faker::Lorem.words(3).join(' ') }
     name_abbrev { Faker::Lorem.word }
     description { Faker::Lorem.sentence }
-    delete_locked false
+    delete_locked { false }
     start_time { Faker::Number.number(6).to_i}
     end_time { start_time + Faker::Number.number(5).to_i }
     total_time {end_time - start_time}
     size_on_disk { Faker::Number.number(6).to_i }
-    hidden false
+    hidden { false }
     path { "/root/streams/#{Faker::Lorem.unique.word}" }
     data_type { "float32_#{elements_count}" }
 
     transient do
-      elements_count 4
-      decimations_count 0
+      elements_count { 4 }
+      decimations_count { 0 }
     end
 
     after(:create) do |stream, evaluator|

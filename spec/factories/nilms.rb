@@ -8,11 +8,11 @@ FactoryBot.define do
     name {Faker::Lorem.unique.words(3).join(' ')}
     description { Faker::Lorem.sentence }
     url {Faker::Internet.unique.url}
-    node_type 'nilmdb'
+    node_type { 'nilmdb' }
     transient do
-      admins []
-      owners []
-      viewers []
+      admins { [] }
+      owners { [] }
+      viewers { [] }
     end
 
     after(:create) do |nilm, evaluator|

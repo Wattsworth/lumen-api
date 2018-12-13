@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '5.2.0'
+gem 'rails', '5.2.2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -38,6 +38,8 @@ gem 'devise_invitable'
 gem 'omniauth'
 gem 'oj'  # fast json
 gem 'mini_magick'
+gem 'bootsnap'
+gem 'rubocop-rspec'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

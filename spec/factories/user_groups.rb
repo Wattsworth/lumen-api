@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user_group do
     transient do
-      members []
+      members { [] }
     end
 
     sequence :name do |n| "group#{n}" end
@@ -11,7 +11,7 @@ FactoryBot.define do
 
     factory :test_user_group do
       transient do
-        size []
+        size { [] }
       end
       name { Faker::Company.unique.name }
       description { Faker::ChuckNorris.fact }

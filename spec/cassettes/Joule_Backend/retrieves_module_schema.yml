@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: http://nuc:8088/modules.json
+    uri: http://nuc:8088/modules.json?statistics=1
     body:
       encoding: US-ASCII
       string: ''
