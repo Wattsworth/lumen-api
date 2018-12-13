@@ -1,0 +1,805 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/list?extended=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1999'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '[["/plugs/info", "uint8_1", null, null, 0, 0], ["/tutorial/3-phase",
+        "uint16_6", 1391181592516985, 1391181595571536, 24436, 3054551], ["/tutorial/3-phase~decim-16",
+        "float32_18", 1391181592516985, 1391181595571267, 1527, 3054282], ["/tutorial/3-phase~decim-4",
+        "float32_18", 1391181592516985, 1391181595571536, 6109, 3054551], ["/tutorial/3-phase~decim-64",
+        "float32_18", 1391181592516985, 1391181595566017, 381, 3049032], ["/tutorial/ac-power",
+        "float32_7", 1434408678000000, 1435438182000001, 506105, 1020849000006], ["/tutorial/ac-power~decim-1024",
+        "float32_21", 1434408678000000, 1435437032300781, 491, 1015477964842], ["/tutorial/ac-power~decim-16",
+        "float32_21", 1434408678000000, 1435438161000000, 31629, 1020789000001], ["/tutorial/ac-power~decim-256",
+        "float32_21", 1434408678000000, 1435437885000000, 1974, 1019606625000], ["/tutorial/ac-power~decim-4",
+        "float32_21", 1434408678000000, 1435438182000000, 126525, 1020845000003],
+        ["/tutorial/ac-power~decim-64", "float32_21", 1434408678000000, 1435438109000000,
+        7904, 1020453000000], ["/tutorial/info", "uint8_1", null, null, 0, 0], ["/tutorial/pump-events",
+        "uint8_2", 1360017784000000, 1361579612066315, 2340, 358676963101], ["/tutorial/pump-events~decim-16",
+        "float32_6", 1360017784000000, 1361577615684742, 136, 332091580825], ["/tutorial/pump-events~decim-4",
+        "float32_6", 1360017784000000, 1361579425355793, 577, 353296586737], ["/tutorial/pump-prep",
+        "float32_8", 1360780729757446, 1360786390552071, 339216, 5660794625], ["/tutorial/pump-prep~decim-1024",
+        "float32_24", 1360780729757446, 1360786388147925, 331, 5658390479], ["/tutorial/pump-prep~decim-16",
+        "float32_24", 1360780729757446, 1360786390552071, 21201, 5660794625], ["/tutorial/pump-prep~decim-256",
+        "float32_24", 1360780729757446, 1360786390425640, 1325, 5660668194], ["/tutorial/pump-prep~decim-4",
+        "float32_24", 1360780729757446, 1360786390552071, 84804, 5660794625], ["/tutorial/pump-prep~decim-64",
+        "float32_24", 1360780729757446, 1360786390425640, 5300, 5660668194]]'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/plugs/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '98'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"hidden": "0", "delete_locked": "1", "name": "Smart Plugs", "description":
+        "Managed Smart Plugs"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/3-phase
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1149'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"3 Phase NILM\",\"name_abbrev\":\"\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"I
+        A\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":1,\"name\":\"I
+        B\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":2,\"name\":\"I
+        C\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":3,\"name\":\"V
+        A\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":4,\"name\":\"V
+        B\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":5,\"name\":\"V
+        C\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null}]}"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/3-phase~decim-16
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '72'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/3-phase~decim-4"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/3-phase~decim-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '64'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/3-phase"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/3-phase~decim-64
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/3-phase~decim-16"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1296'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"A/C Smart Plug\",\"name_abbrev\":\"A/C\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"Voltage\",\"units\":\"V\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":300.0},{\"column\":1,\"name\":\"Current\",\"units\":\"I\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":50.0},{\"column\":2,\"name\":\"Watts\",\"units\":\"W\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":2400.0},{\"column\":3,\"name\":\"Avg
+        Power\",\"units\":\"W\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":2400.0},{\"column\":4,\"name\":\"Power
+        Factor\",\"units\":\"pf\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":1.0},{\"column\":5,\"name\":\"Frequency\",\"units\":\"Hz\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":40.0,\"default_max\":80.0},{\"column\":6,\"name\":\"Energy\",\"units\":\"kWh\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false,\"default_min\":0.0,\"default_max\":1000.0}]}"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power~decim-1024
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/ac-power~decim-256"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power~decim-16
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '73'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/ac-power~decim-4"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power~decim-256
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '74'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/ac-power~decim-64"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power~decim-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '65'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/ac-power"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power~decim-64
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '74'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/ac-power~decim-16"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '137'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"hidden": "0", "delete_locked": "1", "name": "Example Data", "description":
+        "Several example data sets. See documentation for details."}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-events
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '445'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"Pump Events\",\"name_abbrev\":\"\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"Turn
+        ON\",\"units\":\"event\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":true,\"default_min\":-0.5,\"default_max\":1.5},{\"column\":1,\"name\":\"Turn
+        OFF\",\"units\":\"event\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":true,\"default_min\":-0.5,\"default_max\":1.5}]}"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-events~decim-16
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-events~decim-4"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-events~decim-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '68'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-events"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1423'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"Pump Prep\",\"name_abbrev\":\"\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"P1\",\"units\":\"W\",\"scale_factor\":-1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":1,\"name\":\"Q1\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":2,\"name\":\"P3\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":3,\"name\":\"Q3\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":4,\"name\":\"P5\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":5,\"name\":\"Q5\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":6,\"name\":\"P7\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":7,\"name\":\"Q7\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null}]}"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep~decim-1024
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '76'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-prep~decim-256"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep~decim-16
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '74'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-prep~decim-4"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep~decim-256
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-prep~decim-64"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep~decim-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '66'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-prep"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep~decim-64
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 09 Jul 2016 22:34:10 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '75'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"decimate_factor": "4", "decimate_source": "/tutorial/pump-prep~decim-16"}'
+    http_version: 
+  recorded_at: Sat, 09 Jul 2016 22:34:10 GMT
+recorded_with: VCR 3.0.1

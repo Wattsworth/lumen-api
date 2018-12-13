@@ -1,0 +1,74 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/list?extended=1&path=/tutorial/pump-prep
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 06 Jun 2017 16:00:11 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '94'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '[["/tutorial/pump-prep", "float32_8", 1360780729757446, 1360786390552071,
+        339216, 5660794625]]'
+    http_version: 
+  recorded_at: Tue, 06 Jun 2017 16:00:12 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 06 Jun 2017 16:00:11 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1707'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"Pump Prep\",\"name_abbrev\":\"\",\"description\":null,\"hidden\":null,\"streams\":[{\"name\":\"P1\",\"units\":\"prep\",\"column\":0,\"default_max\":null,\"default_min\":null,\"scale_factor\":-1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"Q1\",\"units\":\"prep\",\"column\":1,\"default_max\":8000.0,\"default_min\":-7000.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"P3\",\"units\":\"prep\",\"column\":2,\"default_max\":8000.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"Q3\",\"units\":\"prep\",\"column\":3,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"P5\",\"units\":\"prep\",\"column\":4,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"Q5\",\"units\":\"prep\",\"column\":5,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"P7\",\"units\":\"prep\",\"column\":6,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false},{\"name\":\"Q7\",\"units\":\"prep\",\"column\":7,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"display_type\":\"continuous\",\"discrete\":false}]}"}'
+    http_version: 
+  recorded_at: Tue, 06 Jun 2017 16:00:12 GMT
+recorded_with: VCR 3.0.3

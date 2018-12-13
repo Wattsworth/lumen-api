@@ -1,0 +1,48 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://nuc:8088/modules.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '1107'
+      Date:
+      - Wed, 11 Jul 2018 14:58:33 GMT
+      Server:
+      - Python/3.6 aiohttp/3.2.1
+    body:
+      encoding: UTF-8
+      string: '[{"name": "Module3", "description": "a filter", "has_interface": true,
+        "inputs": {"input1": "/folder_1/stream_1_1", "input2": "/folder_1/stream_1_2"},
+        "outputs": {"output1": "/folder_2/stream_2_1"}, "statistics": {"pid": 29702,
+        "create_time": 1531319112.03, "cpu_percent": 0.0, "memory": 8286208}}, {"name":
+        "Module2", "description": "a reader", "has_interface": false, "inputs": {},
+        "outputs": {"output": "/folder_1/stream_1_2"}, "statistics": {"pid": 29703,
+        "create_time": 1531319112.05, "cpu_percent": 0.0, "memory": 8364032}}, {"name":
+        "Module1", "description": "a reader", "has_interface": true, "inputs": {},
+        "outputs": {"output": "/folder_1/stream_1_1"}, "statistics": {"pid": 29704,
+        "create_time": 1531319112.07, "cpu_percent": 0.0, "memory": 8224768}}, {"name":
+        "Module4", "description": "a filter", "has_interface": false, "inputs": {"input1":
+        "/folder_1/stream_1_1", "input2": "/folder_2/stream_2_1"}, "outputs": {"output1":
+        "/folder_3/stream_3_1", "output2": "/folder_3/folder_3_1/stream_3_1_1"}, "statistics":
+        {"pid": 29705, "create_time": 1531319112.1, "cpu_percent": 0.0, "memory":
+        8515584}}]'
+    http_version: 
+  recorded_at: Wed, 11 Jul 2018 14:58:33 GMT
+recorded_with: VCR 4.0.0

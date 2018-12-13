@@ -1,0 +1,36 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/nilmdb/stream/update_metadata
+    body:
+      encoding: UTF-8
+      string: '{"path":"/badpath","data":"{\"config_key__\":\"{\\\"name\\\":null,\\\"name_abbrev\\\":null,\\\"description\\\":null,\\\"hidden\\\":null,\\\"streams\\\":[]}\"}"}'
+    headers:
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Sun, 22 Jan 2017 04:08:55 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - POST
+      Content-Length:
+      - '82'
+      Connection:
+      - close
+      Content-Type:
+      - application/json;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '{"status":"400 Bad Request","message":"No stream at path /badpath","traceback":""}'
+    http_version: 
+  recorded_at: Sun, 22 Jan 2017 04:19:00 GMT
+recorded_with: VCR 3.0.3
