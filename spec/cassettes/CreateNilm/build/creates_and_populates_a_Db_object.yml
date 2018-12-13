@@ -1,0 +1,423 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/version
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '8'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '"1.10.3"'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/dbinfo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '102'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"path": "/opt/data", "other": 2852933632, "reserved": 16777216, "free":
+        7410999296, "size": 60121088}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/list?extended=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '2521'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '[["/plugs/info", "uint8_1", null, null, 0, 0], ["/test/info", "uint8_1",
+        null, null, 0, 0], ["/test/trig", "float32_2", null, null, 0, 0], ["/test/trig~decim-1024",
+        "float32_6", 1468848567173059, 1468849421582277, 5, 854409218], ["/test/trig~decim-16",
+        "float32_6", 1468848290313648, 1468966923816690, 370, 1232759231], ["/test/trig~decim-16384",
+        "float32_6", null, null, 0, 0], ["/test/trig~decim-256", "float32_6", 1468848471324310,
+        1468966896086357, 22, 1079671707], ["/test/trig~decim-4", "float32_6", 1468848289106450,
+        1468966925028150, 1481, 1240811356], ["/test/trig~decim-4096", "float32_6",
+        1468848894506836, 1468848894506837, 1, 1], ["/test/trig~decim-64", "float32_6",
+        1468848295142682, 1468966915698842, 92, 1197251396], ["/tmp/info", "uint8_1",
+        null, null, 0, 0], ["/tutorial/ac-power", "float32_7", 1434408678000000, 1435438182000001,
+        506105, 1020849000006], ["/tutorial/ac-power~decim-1024", "float32_21", 1434408678000000,
+        1435437032300781, 491, 1015477964842], ["/tutorial/ac-power~decim-16", "float32_21",
+        1434408678000000, 1435438161000000, 31629, 1020789000001], ["/tutorial/ac-power~decim-256",
+        "float32_21", 1434408678000000, 1435437885000000, 1974, 1019606625000], ["/tutorial/ac-power~decim-4",
+        "float32_21", 1434408678000000, 1435438182000000, 126525, 1020845000003],
+        ["/tutorial/ac-power~decim-64", "float32_21", 1434408678000000, 1435438109000000,
+        7904, 1020453000000], ["/tutorial/info", "uint8_1", null, null, 0, 0], ["/tutorial/pump-events",
+        "uint8_2", 1360017784000000, 1361579612066315, 2340, 358676963101], ["/tutorial/pump-events~decim-16",
+        "float32_6", 1360017784000000, 1361577615684742, 136, 332091580825], ["/tutorial/pump-events~decim-4",
+        "float32_6", 1360017784000000, 1361579425355793, 577, 353296586737], ["/tutorial/pump-prep",
+        "float32_8", 1360780729757446, 1360786390552071, 339216, 5660794625], ["/tutorial/pump-prep~decim-1024",
+        "float32_24", 1360780729757446, 1360786388147925, 331, 5658390479], ["/tutorial/pump-prep~decim-16",
+        "float32_24", 1360780729757446, 1360786390552071, 21201, 5660794625], ["/tutorial/pump-prep~decim-256",
+        "float32_24", 1360780729757446, 1360786390425640, 1325, 5660668194], ["/tutorial/pump-prep~decim-4",
+        "float32_24", 1360780729757446, 1360786390552071, 84804, 5660794625], ["/tutorial/pump-prep~decim-64",
+        "float32_24", 1360780729757446, 1360786390425640, 5300, 5660668194], ["/v2_folder/tutorial/deeper/3-phase",
+        "uint16_6", 1391181592516985, 1391181595571536, 24436, 3054551], ["/v2_folder/tutorial/test_file",
+        "uint8_1", null, null, 0, 0]]'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/plugs/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '201'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"hidden": "0", "delete_locked": "1", "config_key__": "{\"name\":\"Smart
+        Plugs\",\"description\":\"Managed Smart Plugs\",\"hidden\":false}", "name":
+        "Smart Plugs", "description": "Managed Smart Plugs"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/test/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '88'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"tutorial3adf\",\"description\":\"asdf\",\"hidden\":true}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/test/trig
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '466'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"Test Data2\",\"name_abbrev\":\"test\",\"description\":\"Some
+        test stuff\",\"hidden\":null,\"streams\":[{\"name\":\"sine\",\"units\":null,\"column\":0,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":1.0,\"plottable\":true,\"discrete\":false},{\"name\":\"cosine\",\"units\":null,\"column\":1,\"default_max\":null,\"default_min\":null,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false}]}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tmp/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '250'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"hidden": "1", "delete_locked": "1", "config_key__": "{\"name\":\"tutorial8\",\"description\":\"Managed
+        by Nilmrun for temporary processing\",\"hidden\":true}", "name": "Temporary
+        Group", "description": "Managed by Nilmrun for temporary processing"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/ac-power
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1313'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"A/C Smart Plugrd\",\"name_abbrev\":\"A/C\",\"description\":null,\"hidden\":null,\"streams\":[{\"name\":\"Voltage2\",\"units\":\"V\",\"column\":0,\"default_max\":300.0,\"default_min\":400.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"Current\",\"units\":\"I\",\"column\":1,\"default_max\":50.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"Watts\",\"units\":\"W\",\"column\":2,\"default_max\":2400.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"Avg
+        Power\",\"units\":\"W\",\"column\":3,\"default_max\":2400.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"Power
+        Factor\",\"units\":\"pf\",\"column\":4,\"default_max\":1.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"Frequency\",\"units\":\"Hz\",\"column\":5,\"default_max\":80.0,\"default_min\":40.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false},{\"name\":\"sadf\",\"units\":\"kWh\",\"column\":6,\"default_max\":1000.0,\"default_min\":0.0,\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":false}]}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/info
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '217'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"hidden": "0", "delete_locked": "1", "config_key__": "{\"name\":\"tutorial\",\"description\":\"\",\"hidden\":true}",
+        "name": "Example Data", "description": "Several example data sets. See documentation
+        for details."}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-events
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '452'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"test\",\"name_abbrev\":null,\"description\":\"new\",\"hidden\":null,\"streams\":[{\"name\":\"element1\",\"units\":null,\"column\":0,\"default_max\":null,\"default_min\":null,\"scale_factor\":null,\"offset\":null,\"plottable\":null,\"discrete\":null},{\"name\":\"element2\",\"units\":null,\"column\":1,\"default_max\":null,\"default_min\":null,\"scale_factor\":null,\"offset\":null,\"plottable\":null,\"discrete\":null}]}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/tutorial/pump-prep
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1423'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"Pump Prep\",\"name_abbrev\":\"\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"P1\",\"units\":\"W\",\"scale_factor\":-1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":1,\"name\":\"Q1\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":2,\"name\":\"P3\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":0.0,\"default_max\":8000.0},{\"column\":3,\"name\":\"Q3\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":4,\"name\":\"P5\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":5,\"name\":\"Q5\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":6,\"name\":\"P7\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null},{\"column\":7,\"name\":\"Q7\",\"units\":\"prep\",\"scale_factor\":1.0,\"offset\":0.0,\"plottable\":true,\"discrete\":null,\"default_min\":null,\"default_max\":null}]}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/v2_folder/tutorial/deeper/3-phase
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '1149'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"config_key__": "{\"name\":\"3 Phase NILM\",\"name_abbrev\":\"\",\"delete_locked\":true,\"streams\":[{\"column\":0,\"name\":\"I
+        A\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":1,\"name\":\"I
+        B\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":2,\"name\":\"I
+        C\",\"units\":\"Amps\",\"scale_factor\":0.001,\"offset\":32768.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":3,\"name\":\"V
+        A\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":4,\"name\":\"V
+        B\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null},{\"column\":5,\"name\":\"V
+        C\",\"units\":\"Volts\",\"scale_factor\":0.0919,\"offset\":33068.0,\"plottable\":true,\"discrete\":false,\"default_min\":null,\"default_max\":null}]}"}'
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/get_metadata?path=/v2_folder/tutorial/test_file
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers: {}
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 25 Jan 2017 04:40:09 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: "{}"
+    http_version: 
+  recorded_at: Wed, 25 Jan 2017 04:40:09 GMT
+recorded_with: VCR 3.0.3

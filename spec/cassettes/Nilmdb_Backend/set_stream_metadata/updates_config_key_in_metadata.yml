@@ -1,0 +1,34 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://localhost:8080/nilmdb/stream/update_metadata
+    body:
+      encoding: UTF-8
+      string: '{"path":"/tutorial/pump-events","data":"{\"config_key__\":\"{\\\"name\\\":\\\"test\\\",\\\"name_abbrev\\\":null,\\\"description\\\":\\\"new\\\",\\\"hidden\\\":null,\\\"streams\\\":[{\\\"name\\\":\\\"element1\\\",\\\"units\\\":null,\\\"column\\\":0,\\\"default_max\\\":null,\\\"default_min\\\":null,\\\"scale_factor\\\":null,\\\"offset\\\":null,\\\"plottable\\\":null,\\\"discrete\\\":null},{\\\"name\\\":\\\"element2\\\",\\\"units\\\":null,\\\"column\\\":1,\\\"default_max\\\":null,\\\"default_min\\\":null,\\\"scale_factor\\\":null,\\\"offset\\\":null,\\\"plottable\\\":null,\\\"discrete\\\":null}]}\"}"}'
+    headers:
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sun, 22 Jan 2017 04:08:24 GMT
+      Server:
+      - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - POST
+      Content-Length:
+      - '4'
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: 'null'
+    http_version: 
+  recorded_at: Sun, 22 Jan 2017 04:18:29 GMT
+recorded_with: VCR 3.0.3

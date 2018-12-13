@@ -21,7 +21,7 @@ vendor/bundle
 *~
 
 .byebug_history
-spec/cassettes
+
 vagrant_boxes/*.log
 vagrant_boxes/.vagrant
 coverage

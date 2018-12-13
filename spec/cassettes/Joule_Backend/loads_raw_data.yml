@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://nuc:8088/data.json?end=1531248642581047&id=6&max-rows=200&start=1531248642561047
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '116'
+      Date:
+      - Wed, 11 Jul 2018 17:43:23 GMT
+      Server:
+      - Python/3.6 aiohttp/3.2.1
+    body:
+      encoding: UTF-8
+      string: '{"data": [[[1531248642561047.0, 0.33116427063941956, 0.27765724062919617,
+        0.3490035831928253]]], "decimated": false}'
+    http_version: 
+  recorded_at: Wed, 11 Jul 2018 17:43:23 GMT
+recorded_with: VCR 4.0.0
