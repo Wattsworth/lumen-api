@@ -52,4 +52,9 @@ Rails.application.routes.draw do
   get 'interfaces/:id', to: 'interfaces#get'
   get 'interfaces/:id/*path', to: 'interfaces#get'
   post 'interfaces/:id/*path', to: 'interfaces#post'
+
+  get 'index', to: 'home#index'
+  root to: 'home#index'
+
+
 end
