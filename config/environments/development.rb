@@ -65,9 +65,25 @@ Rails.application.configure do
                :methods =>  [:get, :post, :options, :delete, :put]
     end
   end
-  
+
+  # ------- Lumen Custom Settings ----------
+  #
+
+  # display custom label in page header
+  #
+  config.node_name = "Development"
+
+  # enable password recovery and e-mail invitations
+  # NOTE: configure smtp.rb with SMTP server details
+  #
+  config.send_emails = false
+
   config.interface_url_template = lambda do |id|
-    #return "http://#{id}.interfaces.wattsworth.local"
-    return "http://wattsworth.local/api/interfaces/#{id}/"
+    # change to subdomains for additional security
+    # NOTE: this requires a DNS server
+    # return "http://#{id}.interfaces.wattsworth.local"
+    #
+    return "http://localhost:3000/interfaces/#{id}/"
   end
+
 end

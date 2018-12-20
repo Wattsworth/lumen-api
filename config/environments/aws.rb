@@ -56,7 +56,7 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "control_panel_#{Rails.env}"
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = {:host => 'www.wattsworth.net'}
+  config.action_mailer.default_url_options = {:host => 'cloud.wattsworth.net'}
   config.action_mailer.delivery_method = :smtp
 
 
@@ -88,8 +88,26 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+
+  # ------- Lumen Custom Settings ----------
+  #
+
+  # display custom label in page header
+  #
+  config.node_name = ""
+
+  # enable password recovery and e-mail invitations
+  # NOTE: configure smtp.rb with SMTP server details
+  #
+  config.send_emails = true
+
   config.interface_url_template = lambda do |id|
-    return "http://#{id}.interfaces.wattsworth.net"
+    # change to subdomains for additional security
+    # NOTE: this requires a DNS server
+    # return "http://#{id}.interfaces.wattsworth.local"
+    #
+    return "/api/interfaces/#{id}/"
+
   end
 
 end

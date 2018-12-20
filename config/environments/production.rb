@@ -26,8 +26,8 @@ Rails.application.configure do
   config.assets.js_compressor = :uglifier
   # config.assets.css_compressor = :sass
 
-  # Do not fallback to assets pipeline if a precompiled asset is missed.
-  config.assets.compile = false
+  # TODO: add asset compilation to pipeline
+  config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
@@ -44,11 +44,11 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  config.force_ssl = false
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :info
+  config.log_level = :warn
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
@@ -59,23 +59,6 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "control_panel_#{Rails.env}"
-  config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = {:host => 'beta.wattsworth.net'}
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-     :address              => "mail.wattsworth.net",
-     :port                 => 25,
-     :domain               => "wattsworth.net",
-     :user_name            => ENV['SMTP_USERNAME'],
-     :password             => ENV['SMTP_PASSWORD'],
-     :authentication       => "login",
-     :enable_starttls_auto => true
-  }
-
-
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -100,5 +83,24 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  # ------- Lumen Custom Settings ----------
+  #
+
+  # display custom label in page header
+  #
+  config.node_name = ""
+
+  # enable password recovery and e-mail invitations
+  # NOTE: configure smtp.rb with SMTP server details
+  #
+  config.send_emails = false
+
+  config.interface_url_template = lambda do |id|
+    # change to subdomains for additional security
+    # NOTE: this requires a DNS server
+    # return "http://#{id}.interfaces.wattsworth.local"
+    #
+    return "/api/interfaces/#{id}/"
+  end
 
 end

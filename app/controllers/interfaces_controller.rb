@@ -2,6 +2,8 @@ class InterfacesController < ActionController::Base
   before_action :authenticate_interface_user!, except: [:authenticate]
   before_action :create_adapter, only: [:get, :put, :post, :delete]
 
+  skip_before_action :verify_authenticity_token
+
   after_action :allow_wattsworth_iframe
   #GET /authenticate
   def authenticate
