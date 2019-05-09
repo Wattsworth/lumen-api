@@ -17,7 +17,7 @@ RSpec.describe 'AddNilmByKey' do
       expect(service.success?).to be true
       # creates the nilm
       nilm = service.nilm
-      expect(nilm.url).to eq "http://localhost:8088"
+      expect(nilm.url).to eq "http://127.0.0.1:8088"
       expect(nilm.name).to eq "Test Node"
       expect(nilm.key).to eq "api_key"
       # owner is an admin for the nilm
@@ -43,7 +43,7 @@ RSpec.describe 'AddNilmByKey' do
 
     it 'forwards nilm errors' do
       nilm = create(:nilm)
-      nilm.url = "http://localhost:8088"
+      nilm.url = "http://127.0.0.1:8088"
       nilm.save!
       owner = create(:user)
       key = NilmAuthKey.new(key: "random_key", user: owner)

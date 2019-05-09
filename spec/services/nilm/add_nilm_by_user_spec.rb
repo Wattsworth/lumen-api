@@ -14,7 +14,7 @@ RSpec.describe 'AddNilmByUser' do
       expect(service.success?).to be true
       # creates the nilm
       nilm = service.nilm
-      expect(nilm.url).to eq "http://localhost:8088"
+      expect(nilm.url).to eq "http://127.0.0.1:8088"
       expect(nilm.name).to eq "Test Node"
       expect(nilm.key).to eq "api_key"
       # creates the user associated with the nilm
@@ -56,7 +56,7 @@ RSpec.describe 'AddNilmByUser' do
 
     it 'forwards nilm errors' do
       nilm = create(:nilm)
-      nilm.url = "http://localhost:8088"
+      nilm.url = "http://127.0.0.1:8088"
       nilm.save!
 
       service = AddNilmByUser.new

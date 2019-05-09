@@ -175,8 +175,6 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
           params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:ok)
-        #should have a warning that NILM cannot see database
-        expect(response).to have_warning_message
         # make sure the NILM was built
         nilm = Nilm.find_by_name('Test Node')
         expect(nilm).to_not be nil
@@ -193,7 +191,8 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response).to have_error_message
+        # has an error message
+        expect(response.body).to match("last_name")
         # make sure the NILM was not built
         expect(Nilm.count).to eq 0
         expect(User.count).to eq 0
@@ -208,8 +207,6 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:ok)
-        #should have a warning that NILM cannot see database
-        expect(response).to have_warning_message
         # make sure the NILM was built
         nilm = Nilm.find_by_name('Test Node')
         expect(nilm).to_not be nil
@@ -226,7 +223,7 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response).to have_error_message /auth_key/
+        expect(response.body).to match("auth_key")
         # make sure the NILM was not built
         expect(Nilm.count).to eq 0
         expect(User.count).to eq 1
@@ -239,7 +236,7 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response).to have_error_message /authorization/
+        expect(response.body).to match("invalid")
         # make sure the NILM was not built
         expect(Nilm.count).to eq 0
         expect(User.count).to eq 1
@@ -252,7 +249,7 @@ RSpec.describe NilmsController, type: :request do
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response).to have_error_message
+        expect(response.body).to match("port")
         # make sure the NILM was not built
         expect(Nilm.count).to eq 0
         # user still exists and has an auth key

@@ -38,7 +38,6 @@ class AddNilmByKey
     url.host = host
     url.port = joule_params[:port]
     url.scheme = joule_params[:scheme]
-    puts "using url #{url}"
     #3 Create the Nilm
     adapter = Joule::Adapter.new(url, joule_params[:api_key])
     service = CreateNilm.new(adapter)
