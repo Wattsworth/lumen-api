@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_18_012410) do
+ActiveRecord::Schema.define(version: 2019_05_05_175223) do
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -166,6 +166,13 @@ ActiveRecord::Schema.define(version: 2018_08_18_012410) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
+  create_table "nilm_auth_keys", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "nilms", force: :cascade do |t|
     t.string "name"
     t.string "description"
@@ -173,6 +180,7 @@ ActiveRecord::Schema.define(version: 2018_08_18_012410) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "node_type"
+    t.string "key"
   end
 
   create_table "permissions", force: :cascade do |t|

@@ -1,8 +1,8 @@
 module Joule
   class Adapter
 
-    def initialize(url)
-      @backend = Backend.new(url)
+    def initialize(url, key)
+      @backend = Backend.new(url, key)
     end
 
     def refresh(nilm)

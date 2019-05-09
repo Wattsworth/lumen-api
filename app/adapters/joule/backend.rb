@@ -9,8 +9,12 @@ module Joule
 
     attr_reader :url
 
-    def initialize(url)
-     @url = url
+    def initialize(url, key)
+      @url = url
+      self.class.default_options[:headers] = {'X-API-KEY': key}
+      self.class.default_options[:verify] = false
+
+      # TODO handle SSL configuration
     end
 
     def dbinfo

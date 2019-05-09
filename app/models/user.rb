@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :user_groups, through: :memberships
   has_many :data_views
+  has_one  :nilm_auth_key
   belongs_to :home_data_view, class_name: "DataView",
     foreign_key: "home_data_view_id", dependent: :destroy
 

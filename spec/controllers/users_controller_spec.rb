@@ -27,4 +27,44 @@ RSpec.describe UsersController, type: :request do
       end
     end
   end
+
+  describe 'POST auth_token' do
+    context 'with authenticated admin' do
+      it 'creates an auth_key if none exist' do
+        create(:nilm, admins: [john])
+        @auth_headers = john.create_new_auth_token
+        post "/users/auth_token.json", headers: @auth_headers
+        body = JSON.parse(response.body)
+        expect(body['key']).to eq(john.nilm_auth_key.key)
+      end
+      it 'returns existing auth key' do
+        create(:nilm, admins: [john])
+        auth_key = NilmAuthKey.create(user: john)
+        @auth_headers = john.create_new_auth_token
+        post "/users/auth_token.json", headers: @auth_headers
+        body = JSON.parse(response.body)
+        expect(body['key']).to eq(auth_key.key)
+      end
+    end
+    context 'with authenticated non-admin' do
+      it 'returns unauthorized if nilms exist' do
+        create(:nilm)
+        @auth_headers = john.create_new_auth_token
+        post "/users/auth_token.json", headers: @auth_headers
+        expect(response.status).to eq(401)
+      end
+      it 'returns auth key if no nilms exist' do
+        @auth_headers = john.create_new_auth_token
+        post "/users/auth_token.json", headers: @auth_headers
+        body = JSON.parse(response.body)
+        expect(body['key']).to eq(john.nilm_auth_key.key)
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        post "/users/auth_token.json"
+        expect(response.status).to eq(401)
+      end
+    end
+  end
 end

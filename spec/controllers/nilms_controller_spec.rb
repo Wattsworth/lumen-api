@@ -167,49 +167,97 @@ RSpec.describe NilmsController, type: :request do
   end
 
   describe 'POST create' do
-    context 'with authenticated user' do
+    context 'for first user' do
       it 'creates a NILM' do
-        result = StubService.new
-        result.add_error("cannot contact database")
-        @mock_adapter = instance_double(Nilmdb::Adapter,
-                                        node_type: 'nilmdb',
-                                        refresh: result)
-        allow(NodeAdapterFactory).to receive(:from_url).and_return(@mock_adapter)
-
-        @auth_headers = john.create_new_auth_token
+        user_params = {email: "bob@email.com", password: "password",
+                       first_name: "Bob", last_name: "Test"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
         post "/nilms.json",
-          params: {name: 'new', url: 'http://sampleurl/nilmdb'},
-          headers: @auth_headers
+          params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:ok)
         #should have a warning that NILM cannot see database
         expect(response).to have_warning_message
         # make sure the NILM was built
-        nilm = Nilm.find_by_name('new')
+        nilm = Nilm.find_by_name('Test Node')
         expect(nilm).to_not be nil
-        expect(@mock_adapter).to have_received(:refresh)
         # user should be an admin
-        expect(john.admins_nilm?(nilm)).to be true
+        owner = User.find_by_email("bob@email.com")
+        expect(owner.admins_nilm?(nilm)).to be true
       end
 
       it 'returns errors on invalid request' do
-        # name must be unique
-        create(:nilm, url: 'http://can/only/be/one')
-        @auth_headers = john.create_new_auth_token
+        # all user parameters must be present
+        user_params = {email: "bob@email.com", password: "password",
+                       first_name: "Bob"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
         post "/nilms.json",
-          params: {name: 'CanOnlyBeOne', url: 'http://can/only/be/one'},
-          headers: @auth_headers
+             params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response).to have_error_message
         # make sure the NILM was not built
-        expect(Nilm.where(url: 'http://can/only/be/one').count).to eq 1
+        expect(Nilm.count).to eq 0
+        expect(User.count).to eq 0
       end
     end
-
-    context 'without sign-in' do
-      it 'returns unauthorized' do
+    context 'for existing users' do
+      it 'creates a NILM' do
+        owner = create(:user)
+        NilmAuthKey.create(user: owner, key: "valid_key")
+        user_params = {auth_key: "valid_key"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
         post "/nilms.json",
-            params: {name: 'new', url: 'http://sampleurl/nilmdb'}
-        expect(response).to have_http_status(:unauthorized)
+             params: user_params.merge(nilm_params)
+        expect(response).to have_http_status(:ok)
+        #should have a warning that NILM cannot see database
+        expect(response).to have_warning_message
+        # make sure the NILM was built
+        nilm = Nilm.find_by_name('Test Node')
+        expect(nilm).to_not be nil
+        # user should be an admin
+        expect(owner.admins_nilm?(nilm)).to be true
+        # auth key should be destroyed
+        expect(NilmAuthKey.count).to eq 0
+      end
+      it 'requires auth key' do
+        create(:user)
+        user_params = {email: "bob@email.com", password: "password",
+                       first_name: "Bob", last_name: "Test"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        post "/nilms.json",
+             params: user_params.merge(nilm_params)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message /auth_key/
+        # make sure the NILM was not built
+        expect(Nilm.count).to eq 0
+        expect(User.count).to eq 1
+        expect(User.find_by_email("bob@email.com")).to be nil
+      end
+      it 'requires valid auth key' do
+        create(:user)
+        user_params = {auth_key: "invalid"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        post "/nilms.json",
+             params: user_params.merge(nilm_params)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message /authorization/
+        # make sure the NILM was not built
+        expect(Nilm.count).to eq 0
+        expect(User.count).to eq 1
+      end
+      it 'returns error on invalid request' do
+        owner = create(:user)
+        NilmAuthKey.create(user: owner, key: "valid_key")
+        user_params = {auth_key: "valid_key"}
+        nilm_params = {name: "Missing port param", api_key: "api_key", scheme: "http"}
+        post "/nilms.json",
+             params: user_params.merge(nilm_params)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
+        # make sure the NILM was not built
+        expect(Nilm.count).to eq 0
+        # user still exists and has an auth key
+        expect(User.count).to eq 1
+        expect(NilmAuthKey.count).to eq 1
       end
     end
   end

@@ -10,6 +10,19 @@ class UsersController < ApplicationController
 
   # note: update is handled by devise
 
+  # POST /users/auth_token.json
+  def auth_token
+    # To receive an auth token a user must be a current admin or there
+    # are no NILM's associated with this node
+    nilms = current_user.retrieve_nilms_by_permission
+    head :unauthorized and return if (nilms[:admin].empty? and Nilm.count > 0)
+    auth_key = NilmAuthKey.find_by_user_id(current_user.id)
+    if auth_key.nil?
+      auth_key = NilmAuthKey.create(user: current_user)
+    end
+    render json: {key: auth_key.key}
+  end
+
   # POST /users.json
   def create
     @service = StubService.new

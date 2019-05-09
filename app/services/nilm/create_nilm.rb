@@ -10,11 +10,12 @@ class CreateNilm
     @node_adapter = node_adapter
   end
 
-  def run(name:, url:, owner:, description:'')
+  def run(name:, url:, owner:, key:'', description:'')
     # note: url should be NilmDB url
     @nilm = Nilm.new(name: name,
                      description: description,
                      url: url,
+                     key: key,
                      node_type: @node_adapter.node_type)
     unless @nilm.valid?
       add_errors(@nilm.errors.full_messages)

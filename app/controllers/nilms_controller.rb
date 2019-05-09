@@ -2,12 +2,11 @@
 
 # controller for NILM objects
 class NilmsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:create]
   before_action :set_nilm, only: [:update, :show, :refresh, :destroy]
   before_action :authorize_viewer, only: [:show]
   before_action :authorize_owner, only: [:update, :refresh]
   before_action :authorize_admin, only: [:destroy]
-  before_action :create_adapter_from_url, only: [:create]
   before_action :create_adapter_from_nilm, only: [:show]
 
   # GET /nilms.json
@@ -31,14 +30,21 @@ class NilmsController < ApplicationController
 
   # POST /nilms.json
   def create
-    @service = CreateNilm.new(@node_adapter)
-    @service.run(name: nilm_params[:name],
-                 url: nilm_params[:url],
-                 description: nilm_params[:description],
-                 owner: current_user)
-    @nilm = @service.nilm
-    @role = 'owner'
-    render :show, status: @service.success? ? :ok : :unprocessable_entity
+    if User.count == 0
+      # If there are no users then create a user from the parameters
+      @service = AddNilmByUser.new
+    else
+      # Otherwise an auth_key is required to identify the user
+      @service = AddNilmByKey.new
+    end
+    @service.run(params, request.remote_ip)
+    if @service.success?
+      @nilm = @service.nilm
+      @role = 'owner'
+      render plain: "ok"
+    else
+      render plain: @service.errors.join(", "), status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /nilms/1
@@ -96,15 +102,6 @@ class NilmsController < ApplicationController
     end
     def authorize_viewer
       head :unauthorized  unless current_user.views_nilm?(@nilm)
-    end
-
-    def create_adapter_from_url
-      @node_adapter = NodeAdapterFactory.from_url(nilm_params[:url])
-      if @node_adapter.nil?
-        @service = StubService.new
-        @service.add_error("Cannot contact installation")
-        render 'helpers/empty_response', status: :unprocessable_entity
-      end
     end
 
     def create_adapter_from_nilm

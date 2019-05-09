@@ -32,7 +32,11 @@ Rails.application.routes.draw do
   devise_for :users, path: "auth", only: [:invitations],
     controllers: { invitations: 'invitations' }
 
-  resources :users, only: [:index, :create, :destroy]
+  resources :users, only: [:index, :create, :destroy] do
+    collection do
+      post 'auth_token'
+    end
+  end
   resources :user_groups, only: [:index, :update, :create, :destroy] do
     member do
       put 'create_member'
