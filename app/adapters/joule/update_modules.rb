@@ -31,7 +31,7 @@ module Joule
       attrs = schema.slice(*JouleModule.defined_attributes)
       attrs[:pid] = schema[:statistics][:pid]
       attrs[:web_interface] = schema[:has_interface]
-      attrs[:joule_id] = schema[:id]
+      attrs[:joule_id] = "m#{schema[:id]}"
       m = JouleModule.create(attrs)
       # link inputs to database streams
       schema[:inputs].each do |name, path|
