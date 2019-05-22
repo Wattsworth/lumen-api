@@ -17,8 +17,21 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+
 require 'simplecov'
-SimpleCov.start
+require 'simplecov-console'
+
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+                                                                    SimpleCov::Formatter::HTMLFormatter,
+                                                                    SimpleCov::Formatter::Console,
+                                                                ])
+SimpleCov.start 'rails' do
+  add_group "Models", "app/models"
+  add_group "Controllers", "app/controllers"
+  add_group "Services", "app/services"
+  add_group "Adapters","app/adapters"
+end
 
 require 'webmock/rspec'
 

@@ -68,6 +68,7 @@ group :local, :development, :test do
   gem 'faker'
   # Use sqlite3 as the database for Active Record
   gem 'sqlite3'
+  gem 'coveralls', require: false
 end
 
 # NOTE: install mailcatcher for development
@@ -82,6 +83,7 @@ end
 
 group :test do
   gem 'simplecov', :require => false
+  gem 'simplecov-console', :require => false
 end
 
 group :production do
