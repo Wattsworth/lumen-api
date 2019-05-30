@@ -5,7 +5,7 @@ module Nilmdb
     include HTTParty
     default_timeout 5
     open_timeout 5
-    read_timeout 5
+    read_timeout 10
 
     attr_reader :url
 

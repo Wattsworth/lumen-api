@@ -26,3 +26,4 @@ vagrant_boxes/*.log
 vagrant_boxes/.vagrant
 coverage
 .idea
+.DS_Store
