@@ -76,7 +76,7 @@ Rails.application.configure do
   # enable password recovery and e-mail invitations
   # NOTE: configure smtp.rb with SMTP server details
   #
-  config.send_emails = false
+  config.send_emails = true
 
   config.interface_url_template = lambda do |id|
     # change to subdomains for additional security
