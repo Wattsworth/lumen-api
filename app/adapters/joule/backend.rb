@@ -173,5 +173,54 @@ module Joule
       end
       { error: false, msg: 'success' }
     end
+
+    def create_annotation(annotation)
+      data = {
+          'stream_id': annotation.db_stream.joule_id,
+          'title': annotation.title,
+          'content': annotation.content,
+          'start': annotation.start_time,
+          'end': annotation.end_time}
+      begin
+        response = self.class.post("#{@url}/annotation.json",
+                                   headers: { 'Content-Type' => 'application/json' },
+                                   body: data.to_json)
+      rescue
+        return { error: true, msg: 'cannot contact Joule server' }
+      end
+      unless response.success?
+        puts "#########"
+        puts response.body
+        return { error: true, msg: "error creating annotation" }
+      end
+      annotation.id = response.parsed_response["id"]
+      { error: false, msg: 'success' }
+    end
+
+    def get_annotations(stream_id)
+      query = {'stream_id': stream_id}
+      options = { query: query}
+      begin
+        resp = self.class.get("#{@url}/annotations.json", options)
+        return {success: false, result: resp.body} unless resp.success?
+      rescue
+        return {success: false, result: "connection error"}
+      end
+      annotations = resp.parsed_response
+
+      {success: true, result: annotations}
+    end
+
+    def delete_annotation(annotation_id)
+      query = {'id': annotation_id}
+      options = { query: query}
+      begin
+        resp = self.class.delete("#{@url}/annotation.json",
+                                 options)
+        return {success: false, result: resp.body} unless resp.success?
+      rescue
+        return {success: false, result: "connection error"}
+      end
+    end
   end
 end

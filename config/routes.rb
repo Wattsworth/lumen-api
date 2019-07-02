@@ -16,10 +16,12 @@ Rails.application.routes.draw do
 
   resources :db_folders, only: [:show, :update]
   resources :db_streams, only: [:index, :update] do
+    resources :annotations, except: [:show]
     member do
       post 'data'
     end
   end
+
   resources :db_elements, only: [:index] do
     collection do
       get 'data'

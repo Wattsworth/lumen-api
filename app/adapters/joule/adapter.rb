@@ -45,7 +45,7 @@ module Joule
 #
 # raw data can be accessed using the joule cli, run:
 #
-# $> joule -u #{@backend.url} data read -s #{start_time} -e #{end_time} #{db_stream.path}
+# $> joule -n #{@backend.url} data read -s #{start_time} -e #{end_time} #{db_stream.path}
 #
 # ------------------------------------------"
     end
@@ -56,6 +56,22 @@ module Joule
 
     def module_post_interface(joule_module, req)
       @backend.module_post_interface(joule_module, req)
+    end
+
+    def create_annotation(annotation)
+      @backend.create_annotation(annotation)
+    end
+
+    def get_annotations(db_stream)
+      resp = @backend.get_annotations(db_stream.joule_id)
+      annotations = resp[:result]
+      annotations.each do |annotation|
+        annotation[:db_stream_id] = db_stream.id
+      end
+    end
+
+    def delete_annotation(annotation_id)
+      resp = @backend.delete_annotation(annotation_id)
     end
 
     def node_type
