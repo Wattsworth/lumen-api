@@ -2,7 +2,7 @@
   {
     "name": "Module3",
     "description": "a filter",
-    "has_interface": true,
+    "is_app": true,
     "inputs": {
       "input1": "/folder_1/stream_1_1",
       "input2": "/folder_1/stream_1_2"
@@ -20,7 +20,7 @@
   {
     "name": "Module2",
     "description": "a reader",
-    "has_interface": false,
+    "is_app": false,
     "inputs": {},
     "outputs": {
       "output": "/folder_1/stream_1_2"
@@ -35,7 +35,7 @@
   {
     "name": "Module1",
     "description": "a reader",
-    "has_interface": true,
+    "is_app": true,
     "inputs": {},
     "outputs": {
       "output": "/folder_1/stream_1_1"
@@ -50,7 +50,7 @@
   {
     "name": "Module4",
     "description": "a filter",
-    "has_interface": false,
+    "is_app": false,
     "inputs": {
       "input1": "/folder_1/stream_1_1",
       "input2": "/folder_2/stream_2_1"

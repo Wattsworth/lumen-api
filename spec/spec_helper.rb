@@ -24,7 +24,7 @@ require 'simplecov-console'
 
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
                                                                     SimpleCov::Formatter::HTMLFormatter,
-                                                                    SimpleCov::Formatter::Console,
+                                                                    #SimpleCov::Formatter::Console,
                                                                 ])
 SimpleCov.start 'rails' do
   add_group "Models", "app/models"

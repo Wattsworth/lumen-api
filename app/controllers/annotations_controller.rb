@@ -7,43 +7,50 @@ class AnnotationsController < ApplicationController
 
   # GET /stream/:stream_id/annotations.json
   def index
-    annotations = @node_adapter.get_annotations(@db_stream)
     @service = StubService.new
-    render json: annotations, status: @service.success? ? :ok : :unprocessable_entity
+    begin
+      @annotations = @node_adapter.get_annotations(@db_stream)
+    rescue RuntimeError => e
+      @service.add_error("Cannot retrieve annotations [#{e}]")
+      render 'helpers/empty_response', status: :unprocessable_entity
+    end
   end
 
   # POST /annotations.json
   def create
-    @annotation = Annotation.new
-    @annotation.title = params[:title]
-    @annotation.content = params[:content]
-    @annotation.db_stream = @db_stream
-    @annotation.start_time = params[:start]
-    @annotation.end_time = params[:end]
-    status = @node_adapter.create_annotation(@annotation)
-    @service = StubService.new
-    render :show, status: @service.success? ? :ok : :unprocessable_entity
-  end
+    annotation = Annotation.new
+    annotation.title = params[:title]
+    annotation.content = params[:content]
+    annotation.db_stream = @db_stream
+    annotation.start_time = params[:start].to_i
+    unless params[:end].nil?
+      annotation.end_time = params[:end].to_i
+    end
 
-  # PATCH/PUT /annotations/1.json
-  def update
-    @service = EditAnnotation.new(@node_adapter)
-    @service.run(params[:id], annotation_params)
-    render status: @service.success? ? :ok : :unprocessable_entity
+    @service = StubService.new
+    begin
+      @node_adapter.create_annotation(annotation)
+    rescue RuntimeError => e
+      @service.add_error("Cannot create annotation [#{e}]")
+      render 'helpers/empty_response', status: :unprocessable_entity and return
+    end
+    @annotations = [annotation]
+    render :index
   end
 
   # DELETE /annotations/1.json
   def destroy
-    status = @node_adapter.delete_annotation(params[:id])
     @service = StubService.new
-    render 'helpers/empty_response', status: :ok
+    begin
+      @node_adapter.delete_annotation(params[:id].to_i)
+    rescue RuntimeError => e
+      @service.add_error("Cannot delete annotation [#{e}]")
+      render 'helpers/empty_response', status: :unprocessable_entity and return
+    end
+    render 'helpers/empty_response'
   end
 
   private
-
-  def annotation_params
-    params.permit(:title, :content, :start, :end, :db_stream_id)
-  end
 
   def set_stream
     @db_stream = DbStream.find(params[:db_stream_id])

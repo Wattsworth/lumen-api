@@ -1,5 +1,6 @@
 module Joule
   class Adapter
+    attr_accessor :backend
 
     def initialize(url, key)
       @backend = Backend.new(url, key)
@@ -58,21 +59,36 @@ module Joule
       @backend.module_post_interface(joule_module, req)
     end
 
+    # === ANNOTATIONS ===
     def create_annotation(annotation)
+      # returns an Annotation object
       @backend.create_annotation(annotation)
     end
 
     def get_annotations(db_stream)
-      resp = @backend.get_annotations(db_stream.joule_id)
-      annotations = resp[:result]
-      annotations.each do |annotation|
-        annotation[:db_stream_id] = db_stream.id
+      # returns an array of Annotation objects
+      annotation_json = @backend.get_annotations(db_stream.joule_id)
+      annotations = []
+      annotation_json.each do |json|
+        annotation = Annotation.new
+        annotation.id = json["id"]
+        annotation.title = json["title"]
+        annotation.content = json["content"]
+        annotation.start_time = json["start"]
+        annotation.end_time = json["end"]
+        # ignore joule stream_id parameter
+        # use the db_stream model instead
+        annotation.db_stream = db_stream
+        annotations.push(annotation)
       end
+      annotations
     end
 
     def delete_annotation(annotation_id)
-      resp = @backend.delete_annotation(annotation_id)
+      # returns nil
+      @backend.delete_annotation(annotation_id)
     end
+    # === END ANNOTATIONS ===
 
     def node_type
       'joule'

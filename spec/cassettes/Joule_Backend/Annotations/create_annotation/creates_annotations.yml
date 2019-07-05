@@ -1,0 +1,34 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://172.34.31.8:8088/annotation.json
+    body:
+      encoding: UTF-8
+      string: '{"stream_id":2646,"title":"aut ullam tempore","content":"Accusamus
+        qui quam optio.","start":1161,"end":3182}'
+    headers:
+      X-Api-Key:
+      - cR0JqqTM8bizW73MY1IAHCPJUTwDmOdunhYK9b2VQ98
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '127'
+      Date:
+      - Thu, 04 Jul 2019 01:01:23 GMT
+      Server:
+      - Python/3.6 aiohttp/3.5.4
+    body:
+      encoding: UTF-8
+      string: '{"id": 30, "title": "aut ullam tempore", "content": "Accusamus qui
+        quam optio.", "start": 1161, "stream_id": 2646, "end": 3182}'
+    http_version: 
+  recorded_at: Thu, 04 Jul 2019 01:01:23 GMT
+recorded_with: VCR 4.0.0

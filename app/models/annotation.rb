@@ -6,4 +6,8 @@ class Annotation
   attr_accessor :start_time
   attr_accessor :end_time
   attr_accessor :db_stream
+
+  def self.json_keys
+    [:id, :title, :content]
+  end
 end

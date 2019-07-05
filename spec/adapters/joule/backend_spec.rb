@@ -44,4 +44,47 @@ describe Joule::Backend do
     expect(resp[:result][:data].count).to be > 0
     expect(resp[:result][:data].count).to be < 200
   end
+
+  describe "Annotations" do
+    let(:url) { "https://172.34.31.8:8088"}
+    let(:key) { "cR0JqqTM8bizW73MY1IAHCPJUTwDmOdunhYK9b2VQ98"}
+    describe "get_annotations" do
+      it 'loads annotations', :vcr do
+        backend = Joule::Backend.new(url, key)
+        annotations = backend.get_annotations(2646)
+        # should have 6 annotations, first one is an event
+        expect(annotations[0]["end"]).to be nil
+        expect(annotations.length).to eq 6
+      end
+
+      it 'handles errors', :vcr do
+        backend = Joule::Backend.new(url, key)
+        # server was stopped for this request
+        expect{backend.get_annotations(101)}.to raise_error(RuntimeError)
+      end
+    end
+    describe "delete_annotation" do
+      it 'deletes annotations', :vcr do
+        backend = Joule::Backend.new(url, key)
+        annotations = backend.get_annotations(2646)
+        num_annotations = annotations.length
+        backend.delete_annotation(28)
+        annotations = backend.get_annotations(2646)
+        new_num_annotations = annotations.length
+        expect(new_num_annotations).to equal num_annotations-1
+      end
+    end
+
+    describe "create_annotation" do
+      it 'creates annotations', :vcr do
+        backend = Joule::Backend.new(url, key)
+        stream = FactoryBot.create(:db_stream, name: 'test_stream')
+        stream.joule_id = 2646
+        annotation = FactoryBot.build(:annotation, db_stream: stream)
+        backend.create_annotation(annotation)
+        expect(annotation.id).to_not be nil
+      end
+    end
+  end
 end
+
