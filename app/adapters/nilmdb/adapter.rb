@@ -1,5 +1,6 @@
 module Nilmdb
   class Adapter
+    attr_accessor :backend
 
     def initialize(url)
       @backend = Backend.new(url)
@@ -49,6 +50,50 @@ module Nilmdb
       'nilmdb'
     end
 
+    # === ANNOTATIONS ===
+    def create_annotation(annotation)
+      path = annotation.db_stream.path
+      # returns an annotation object
+      annotations_json = @backend.read_annotations(path)
+      # find max id
+      if annotations_json.length > 0
+        new_id = annotations_json.map{|a| a["id"]}.max + 1
+      else
+        new_id = 1
+      end
+      annotation.id = new_id
+      annotations_json.push({
+          "id": new_id,
+          "title": annotation.title,
+          "content": annotation.content,
+          "start": annotation.start_time,
+          "end": annotation.end_time })
+      @backend.write_annotations(path, annotations_json)
+    end
 
+    def get_annotations(db_stream)
+      annotations = []
+      @backend.read_annotations(db_stream.path).
+          map do |json|
+            annotation = Annotation.new
+            annotation.id = json["id"]
+            annotation.title = json["title"]
+            annotation.content = json["content"]
+            annotation.start_time = json["start"]
+            annotation.end_time = json["end"]
+            annotation.db_stream = db_stream
+            annotations.push(annotation)
+          end
+      annotations
+    end
+
+    def delete_annotation(annotation)
+      path = annotation.db_stream.path
+      updated_annotations =
+          @backend.read_annotations(path).select do |json|
+            json["id"] != annotation.id
+          end
+      @backend.write_annotations(path, updated_annotations)
+    end
   end
 end

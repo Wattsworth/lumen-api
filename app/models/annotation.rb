@@ -10,4 +10,5 @@ class Annotation
   def self.json_keys
     [:id, :title, :content]
   end
+
 end

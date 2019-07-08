@@ -38,14 +38,14 @@ RSpec.describe AnnotationsController, type: :request do
         get "/db_streams/#{stream.id}/annotations.json", headers: user.create_new_auth_token
         expect(response.header['Content-Type']).to include('application/json')
         body = JSON.parse(response.body)
-        expect(body['messages']['errors']).to include('test')
+        expect(body['messages']['errors'].join(' ')).to include('test')
       end
       it 'returns error message if backend is not available' do
         allow(NodeAdapterFactory).to receive(:from_nilm).and_return(nil)
         get "/db_streams/#{stream.id}/annotations.json", headers: user.create_new_auth_token
         expect(response.header['Content-Type']).to include('application/json')
         body = JSON.parse(response.body)
-        expect(body['messages']['errors']).to include('Cannot contact installation')
+        expect(body['messages']['errors'].join(' ')).to include('Cannot contact installation')
       end
     end
     context 'without sign-in' do
@@ -87,7 +87,7 @@ RSpec.describe AnnotationsController, type: :request do
         post "/db_streams/#{stream.id}/annotations.json", headers: owner.create_new_auth_token
         expect(response.header['Content-Type']).to include('application/json')
         body = JSON.parse(response.body)
-        expect(body['messages']['errors']).to include('test')
+        expect(body['messages']['errors'].join(' ')).to include('test')
       end
     end
 
@@ -118,8 +118,8 @@ RSpec.describe AnnotationsController, type: :request do
     context 'with owner' do
       it 'deletes the annotation' do
         mock_adapter = instance_double(Joule::Adapter)
-        expect(mock_adapter).to receive(:delete_annotation) do |id|
-          expect(id).to eq 10
+        expect(mock_adapter).to receive(:delete_annotation) do |annotation|
+          expect(annotation.id).to eq 10
         end
         allow(NodeAdapterFactory).to receive(:from_nilm).and_return(mock_adapter)
         delete "/db_streams/#{stream.id}/annotations/10.json",
@@ -136,7 +136,7 @@ RSpec.describe AnnotationsController, type: :request do
         delete "/db_streams/#{stream.id}/annotations/10.json", headers: owner.create_new_auth_token
         expect(response.header['Content-Type']).to include('application/json')
         body = JSON.parse(response.body)
-        expect(body['messages']['errors']).to include('test')
+        expect(body['messages']['errors'].join(' ')).to include('test')
       end
     end
 

@@ -1,0 +1,69 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://127.0.0.1:8008/stream/update_metadata
+    body:
+      encoding: UTF-8
+      string: '{"path":"/pressure/internal","data":"{\"__annotations\":\"{\\\"data\\\":\\\"data\\\"}\"}"}'
+    headers:
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '4'
+      Server:
+      - CherryPy/3.5.0
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - POST
+      Date:
+      - Mon, 08 Jul 2019 17:15:55 GMT
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: 'null'
+    http_version: 
+  recorded_at: Mon, 08 Jul 2019 17:23:52 GMT
+- request:
+    method: get
+    uri: http://127.0.0.1:8008/stream/get_metadata?key=__annotations&path=/pressure/internal
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Length:
+      - '40'
+      Server:
+      - CherryPy/3.5.0
+      X-Jim-Is-Awesome:
+      - yeah
+      Allow:
+      - GET, HEAD
+      Date:
+      - Mon, 08 Jul 2019 17:15:55 GMT
+      Content-Type:
+      - application/json
+    body:
+      encoding: UTF-8
+      string: '{"__annotations": "{\"data\":\"data\"}"}'
+    http_version: 
+  recorded_at: Mon, 08 Jul 2019 17:23:52 GMT
+recorded_with: VCR 4.0.0

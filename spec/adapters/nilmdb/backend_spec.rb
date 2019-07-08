@@ -110,6 +110,7 @@ describe Nilmdb::Backend do
     end
   end
 
+
   describe 'get_intervals' do
     it 'returns array of interval line segments', :vcr do
       backend = Nilmdb::Backend.new(url)
@@ -121,4 +122,21 @@ describe Nilmdb::Backend do
     end
   end
 
+  describe 'annotations' do
+    let(:url) {"http://127.0.0.1:8008"}
+    it 'reads and writes annotation metadata', :vcr do
+      backend = Nilmdb::Backend.new(url)
+      test_data = {"data": "data"}
+      backend.write_annotations("/pressure/internal", {data: "data"})
+      resp = backend.read_annotations("/pressure/internal")
+      expect(resp.symbolize_keys).to eq (test_data)
+    end
+
+    it 'handles errors', :vcr do
+      backend = Nilmdb::Backend.new(url)
+      expect{backend.read_annotations('/bad/path')}.to raise_error(RuntimeError)
+      expect{backend.write_annotations('/bad/path', {"data": "data"})}.to raise_error(RuntimeError)
+
+    end
+  end
 end

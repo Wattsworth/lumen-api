@@ -31,13 +31,15 @@ describe Joule::Adapter do
       expect(annotation.db_stream).to be stream
     end
   end
+
   it 'deletes annotations' do
     adapter = Joule::Adapter.new("url", "key")
     mock_backend = instance_double(Joule::Backend)
     adapter.backend = mock_backend
-
+    annotation = FactoryBot.build(:annotation)
+    annotation.id = 3
     expect(mock_backend).to receive(:delete_annotation)
-    resp = adapter.delete_annotation(3)
+    adapter.delete_annotation(annotation)
   end
 
 end

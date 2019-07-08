@@ -145,6 +145,33 @@ module Nilmdb
       return nil
     end
 
+    def write_annotations(path, annotations_json)
+      data = {__annotations: annotations_json.to_json}.to_json
+      params = { path: path,
+                 data: data }.to_json
+      begin
+        resp = self.class.post("#{@url}/stream/update_metadata",
+                                   body: params,
+                                   headers: { 'Content-Type' => 'application/json' })
+      raise "error writing annotations #{resp.body}" unless resp.success?
+      rescue
+        raise "connection error"
+      end
+    end
+
+    def read_annotations(path)
+      begin
+        resp = self.class.get("#{@url}/stream/get_metadata?path=#{path}&key=__annotations")
+        raise "error reading annotations #{resp.body}" unless resp.success?
+        json = resp.parsed_response["__annotations"]
+        return [] if json.nil?
+        annotations_json = JSON.parse(json)  # annotations are JSON encoded
+      rescue
+        raise "connection error"
+      end
+      annotations_json
+    end
+
     def _set_path_metadata(path, data)
       params = { path: path,
                  data: data }.to_json

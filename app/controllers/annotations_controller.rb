@@ -40,9 +40,12 @@ class AnnotationsController < ApplicationController
 
   # DELETE /annotations/1.json
   def destroy
+    annotation = Annotation.new
+    annotation.db_stream = @db_stream
+    annotation.id = params[:id].to_i
     @service = StubService.new
     begin
-      @node_adapter.delete_annotation(params[:id].to_i)
+      @node_adapter.delete_annotation(annotation)
     rescue RuntimeError => e
       @service.add_error("Cannot delete annotation [#{e}]")
       render 'helpers/empty_response', status: :unprocessable_entity and return

@@ -84,9 +84,9 @@ module Joule
       annotations
     end
 
-    def delete_annotation(annotation_id)
+    def delete_annotation(annotation)
       # returns nil
-      @backend.delete_annotation(annotation_id)
+      @backend.delete_annotation(annotation.id)
     end
     # === END ANNOTATIONS ===
 
