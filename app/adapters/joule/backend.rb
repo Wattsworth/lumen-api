@@ -142,12 +142,13 @@ module Joule
       attrs = { name: db_stream.name,
                  description: db_stream.description,
                  elements: elements
-                }.to_json
+                }
       begin
         response = self.class.put("#{@url}/stream.json",
-                                   body: {
+                                  headers: { 'Content-Type' => 'application/json' },
+                                  body: {
                                        id: db_stream.joule_id,
-                                       stream: attrs})
+                                       stream: attrs}.to_json)
       rescue
         return { error: true, msg: 'cannot contact Joule server' }
       end
@@ -159,12 +160,13 @@ module Joule
 
     def update_folder(db_folder)
       attrs = { name: db_folder.name,
-                description: db_folder.description}.to_json
+                description: db_folder.description}
       begin
         response = self.class.put("#{@url}/folder.json",
+                                  headers: { 'Content-Type' => 'application/json' },
                                   body: {
                                       id: db_folder.joule_id,
-                                      folder: attrs})
+                                      folder: attrs}.to_json)
       rescue
         return { error: true, msg: 'cannot contact Joule server' }
       end
