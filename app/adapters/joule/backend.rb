@@ -20,19 +20,27 @@ module Joule
     def dbinfo
      begin
        resp = self.class.get("#{@url}/version")
-       return nil unless resp.success?
+       if not resp.success?
+         Rails.logger.warn "Error retrieving /version for #{@url}: [#{resp.body}]"
+        return nil
+       end
        version = resp.parsed_response
 
        resp = self.class.get("#{@url}/dbinfo")
-       return nil unless resp.success?
+       if not resp.success?
+         Rails.logger.warn "Error retrieving /dbinfo for #{@url}: [#{resp.body}]"
+         return nil
+       end
        info = resp.parsed_response
-     rescue
+     rescue StandardError => e
+       Rails.logger.warn "Error retrieving dbinfo for #{@url}: [#{e}]"
        return nil
      end
      # if the site exists but is not a nilm...
      required_keys = %w(size other free reserved)
      unless info.respond_to?(:has_key?) &&
          required_keys.all? { |s| info.key? s }
+       Rails.logger.warn "Error #{@url} is not a Joule node"
        return nil
      end
      {
@@ -47,7 +55,8 @@ module Joule
      begin
        resp = self.class.get("#{@url}/streams.json")
        return nil unless resp.success?
-     rescue
+     rescue StandardError => e
+       Rails.logger.warn "Error retrieving db_schema for #{@url}: [#{e}]"
        return nil
      end
      resp.parsed_response.deep_symbolize_keys
@@ -61,11 +70,16 @@ module Joule
        # if the site exists but is not a joule server...
        required_keys = %w(name inputs outputs)
        items.each do |item|
-         return nil unless item.respond_to?(:has_key?) &&
+         unless item.respond_to?(:has_key?) &&
                 required_keys.all? { |s| item.key? s }
+           Rails.logger.warn "Error #{@url} is not a Joule node"
+           return nil
+         end
          item.symbolize_keys!
        end
-     rescue
+
+     rescue StandardError => e
+       Rails.logger.warn "Error retrieving module_schemas for #{@url}: [#{e}]"
        return nil
      end
      items
