@@ -38,6 +38,22 @@ class AnnotationsController < ApplicationController
     render :index
   end
 
+  # PATCH/PUT /annotations/1.json
+  def update
+    @service = StubService.new
+    begin
+      annotation = @node_adapter.edit_annotation(params[:id],
+                                                 params[:title],
+                                                 params[:content],
+                                                 @db_stream)
+    rescue RuntimeError => e
+      @service.add_error("Cannot update annotation [#{e}]")
+      render 'helpers/empty_response', status: :unprocessable_entity and return
+    end
+    @annotations = [annotation]
+    render :index
+  end
+
   # DELETE /annotations/1.json
   def destroy
     annotation = Annotation.new

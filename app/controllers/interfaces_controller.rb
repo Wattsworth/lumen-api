@@ -47,7 +47,7 @@ class InterfacesController < ActionController::Base
 
   def post
     path = create_proxy_path(request.fullpath, @joule_module.id)
-    proxied_response = @node_adapter.module_post_interface(@joule_module,path)
+    proxied_response = @node_adapter.module_post_interface(@joule_module,path, request.raw_post)
 
     render plain: proxied_response.body
     proxied_response.headers.each do |key,value|

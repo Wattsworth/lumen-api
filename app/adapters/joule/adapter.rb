@@ -55,8 +55,8 @@ module Joule
       @backend.module_interface(joule_module, req)
     end
 
-    def module_post_interface(joule_module, req)
-      @backend.module_post_interface(joule_module, req)
+    def module_post_interface(joule_module, req, body)
+      @backend.module_post_interface(joule_module, req, body)
     end
 
     # === ANNOTATIONS ===
@@ -87,6 +87,20 @@ module Joule
     def delete_annotation(annotation)
       # returns nil
       @backend.delete_annotation(annotation.id)
+    end
+
+    def edit_annotation(id, title, content, stream)
+      json = @backend.edit_annotation(id, title, content)
+      annotation = Annotation.new
+      annotation.id = json["id"]
+      annotation.title = json["title"]
+      annotation.content = json["content"]
+      annotation.start_time = json["start"]
+      annotation.end_time = json["end"]
+      # ignore joule stream_id parameter
+      # use the db_stream model instead
+      annotation.db_stream = stream
+      annotation
     end
     # === END ANNOTATIONS ===
 

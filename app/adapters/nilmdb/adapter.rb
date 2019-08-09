@@ -95,5 +95,24 @@ module Nilmdb
           end
       @backend.write_annotations(path, updated_annotations)
     end
+
+    def edit_annotation(id, title, content, stream)
+      path = stream.path
+      json = @backend.read_annotations(path)
+      index = json.index{ |item| item['id']== id.to_i}
+      raise "error, invalid annotation id" if index.nil?
+      # find the specified id
+      json[index]['title'] = title
+      json[index]['content'] = content
+      @backend.write_annotations(path, json)
+      annotation = Annotation.new
+      annotation.id = json[index]["id"]
+      annotation.title = json[index]["title"]
+      annotation.content = json[index]["content"]
+      annotation.start_time = json[index]["start"]
+      annotation.end_time = json[index]["end"]
+      annotation.db_stream = stream
+      annotation
+    end
   end
 end
