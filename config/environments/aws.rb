@@ -106,7 +106,7 @@ Rails.application.configure do
     # NOTE: this requires a DNS server
     return "https://#{id}.module.cloud.wattsworth.net"
     
-    #return "/api/interfaces/#{id}/"
+    #return "/api/data_app/#{id}/"
 
   end
 

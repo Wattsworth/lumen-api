@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_05_175223) do
+ActiveRecord::Schema.define(version: 2019_08_20_005311) do
+
+  create_table "data_apps", force: :cascade do |t|
+    t.string "name"
+    t.string "joule_id"
+    t.integer "nilm_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nilm_id"], name: "index_data_apps_on_nilm_id"
+  end
 
   create_table "data_views", force: :cascade do |t|
     t.integer "user_id"
@@ -112,12 +121,12 @@ ActiveRecord::Schema.define(version: 2019_05_05_175223) do
 
   create_table "interface_auth_tokens", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "joule_module_id"
+    t.integer "data_app_id"
     t.string "value"
     t.datetime "expiration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["joule_module_id"], name: "index_interface_auth_tokens_on_joule_module_id"
+    t.index ["data_app_id"], name: "index_interface_auth_tokens_on_data_app_id"
     t.index ["user_id"], name: "index_interface_auth_tokens_on_user_id"
   end
 

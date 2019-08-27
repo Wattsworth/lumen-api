@@ -98,9 +98,9 @@ Rails.application.configure do
   config.interface_url_template = lambda do |id|
     # change to subdomains for additional security
     # NOTE: this requires a DNS server
-    # return "http://#{id}.interfaces.wattsworth.local"
+    # return "http://#{id}.data_app.wattsworth.local"
     #
-    return "/api/interfaces/#{id}/"
+    return "/api/data_app/#{id}/"
   end
 
 end

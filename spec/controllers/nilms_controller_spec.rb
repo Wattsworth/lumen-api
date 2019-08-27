@@ -125,15 +125,15 @@ RSpec.describe NilmsController, type: :request do
           expect(body['data']['root_folder']['name']).to_not be_empty
         end
       end
-      it 'returns joule modules as json' do
-        test_module = create(:joule_module, name: 'test', description: 'sample')
-        john_nilm.joule_modules << test_module
+      it 'returns data apps as json' do
+        test_app = create(:data_app, name: 'test')
+        john_nilm.data_apps << test_app
         get "/nilms/#{john_nilm.id}.json",
             headers: john.create_new_auth_token
         body = JSON.parse(response.body)
-        expect(body['data']['jouleModules'][0]['name']).to eq(test_module.name)
+        expect(body['data']['data_apps'][0]['name']).to eq(test_app.name)
         # TODO: figure out a configuration for subdomains
-        #expect(body['data']['jouleModules'][0]['url']).to start_with("http://#{test_module.joule_id}.interfaces")
+        #expect(body['data']['jouleModules'][0]['url']).to start_with("http://#{test_module.joule_id}.data_app")
       end
       it 'refreshes nilm data when requested' do
         @auth_headers = john.create_new_auth_token

@@ -13,9 +13,10 @@ json.data do
       end
     end
   end
-  json.jouleModules(@nilm.joule_modules) do |m|
-    json.extract! m, *JouleModule.json_keys
-    json.url Rails.configuration.interface_url_template.call(m.id)
+  json.data_apps(@nilm.data_apps) do |app|
+    json.id app.id
+    json.name app.name
+    json.url Rails.configuration.app_proxy_url.call(app.id)
     json.nilm_id @nilm.id
   end
 end

@@ -13,7 +13,7 @@ module Joule
       # check to make sure dbinfo and schema are set
       # if either is nil, the database is not available
       if dbinfo.nil? || schema.nil?
-        add_error("cannot contact database at #{@db.url}")
+        add_error("cannot contact node at #{@db.url}")
         @db.update_attributes(available: false)
         return self
       end

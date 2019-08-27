@@ -62,6 +62,29 @@ module Joule
       resp.parsed_response.deep_symbolize_keys
     end
 
+    def app_schemas
+      begin
+        resp = self.class.get("#{@url}/app.json")
+        return nil unless resp.success?
+        items = resp.parsed_response
+        # if the site exists but is not a joule server...
+        required_keys = %w(name id)
+        items.each do |item|
+          unless item.respond_to?(:has_key?) &&
+              required_keys.all? {|s| item.key? s}
+            Rails.logger.warn "Error #{@url} is not a Joule node"
+            return nil
+          end
+          item.symbolize_keys!
+        end
+
+      rescue StandardError => e
+        Rails.logger.warn "Error retrieving app_schemas for #{@url}: [#{e}]"
+        return nil
+      end
+      items
+    end
+
     def module_schemas
       begin
         resp = self.class.get("#{@url}/modules.json?statistics=1")
@@ -84,6 +107,7 @@ module Joule
       end
       items
     end
+
 
     def module_interface(joule_module, req)
       self.class.get("#{@url}/interface/#{joule_module.joule_id}/#{req}")

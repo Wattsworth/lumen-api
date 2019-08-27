@@ -1,5 +1,5 @@
 class InterfaceAuthToken < ApplicationRecord
-  belongs_to :joule_module
+  belongs_to :data_app
   belongs_to :user
 
   after_initialize do |auth_token|

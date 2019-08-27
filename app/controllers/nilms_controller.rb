@@ -90,7 +90,7 @@ class NilmsController < ApplicationController
       params.permit(:name, :description, :url)
     end
     def db_params
-      params.permit(:max_points_per_plot)
+      params.permit(:max_points_per_plot, :url)
     end
 
     #authorization based on nilms

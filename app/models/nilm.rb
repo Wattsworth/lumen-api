@@ -11,6 +11,7 @@ class Nilm < ApplicationRecord
   has_many :data_views_nilms
   has_many :data_views, through: :data_views_nilms
   has_many :joule_modules, dependent: :destroy
+  has_many :data_apps, dependent: :destroy
   #---Validations-----
   validates :name, presence: true, uniqueness: true
   validates :url, presence: true, uniqueness: true

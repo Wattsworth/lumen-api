@@ -12,4 +12,8 @@ class JouleModule < ApplicationRecord
     [:id, :name, :description, :web_interface, :exec_cmd,
      :status, :pid, :joule_id]
   end
+
+  def url
+    "#{nilm.url}/app/#{joule_id}"
+  end
 end

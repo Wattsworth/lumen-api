@@ -10,8 +10,9 @@ module Joule
       db_service = UpdateDb.new(nilm.db)
       result = StubService.new
       result.absorb_status(db_service.run(@backend.dbinfo, @backend.db_schema))
-      module_service = UpdateModules.new(nilm)
-      result.absorb_status(module_service.run(@backend.module_schemas))
+      return result unless result.success?
+      app_service = UpdateApps.new(nilm)
+      result.absorb_status(app_service.run(@backend.app_schemas))
       result
     end
 

@@ -54,10 +54,12 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'interfaces/:id/authenticate', to: 'interfaces#authenticate'
-  get 'interfaces/:id', to: 'interfaces#get'
-  get 'interfaces/:id/*path', to: 'interfaces#get'
-  post 'interfaces/:id/*path', to: 'interfaces#post'
+  get 'app/:id/auth', to: 'proxy#authenticate'
+  get 'app/:id.json', to: 'data_app#show'
+
+  #get 'data_app/:id', to: 'data_app#get'
+  #get 'data_app/:id/*path', to: 'data_app#get'
+  #post 'data_app/:id/*path', to: 'data_app#post'
 
   get 'index', to: 'home#index'
   root to: 'home#index'
