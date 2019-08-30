@@ -14,7 +14,7 @@ class AddNilmByUser
     #0 make  sure parameters are present
 
     required_keys =
-        [:port, :scheme, :name, :api_key] +
+        [:port, :scheme, :base_uri, :name, :api_key] +
         [:first_name, :last_name, :email, :password]
 
     request_params = request_params.permit(required_keys+[:name_is_host])
@@ -41,6 +41,7 @@ class AddNilmByUser
     url.host = host
     url.port = request_params[:port]
     url.scheme = request_params[:scheme]
+    url.path = request_params[:base_uri]
     #3 Create the Nilm
     adapter = Joule::Adapter.new(url, request_params[:api_key])
     service = CreateNilm.new(adapter)
