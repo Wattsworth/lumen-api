@@ -15,10 +15,10 @@ class DataAppController < ApplicationController
   private
 
   def _app_auth_url(token)
-    #urls = Rails.application.config_for(:urls)
-    #eg: http://3.interfaces.wattsworth.net/authenticate?token=1234
-    Rails.configuration.app_auth_url.call(
-        token.data_app.id)+"?token="+token.value
+    return "#" unless request.headers.key?("HTTP_X_APP_BASE_URI") # apps not enabled
+
+    base = request.headers["HTTP_X_APP_BASE_URI"]
+    "#{base}/#{token.data_app.id}/?auth_token=#{token.value}"
   end
 
   def authenticate_interface_user

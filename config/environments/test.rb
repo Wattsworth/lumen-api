@@ -40,20 +40,4 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  # set up interface subdomain
-  config.app_auth_url = lambda do |id|
-    # change to subdomains for additional security
-    # NOTE: this requires a DNS server
-    # return "http://#{id}.data_app.wattsworth.local"
-    #
-    return "http://127.0.0.1:3001/api/app/#{id}/auth"
-  end
-
-  config.app_proxy_url = lambda do |id|
-    # change to subdomains for additional security
-    # NOTE: this requires a DNS server
-    # return "http://#{id}.data_app.wattsworth.local"
-    #
-    return "http://127.0.0.1:3001/app/#{id}/"
-  end
 end

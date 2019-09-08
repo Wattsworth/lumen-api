@@ -13,11 +13,16 @@ json.data do
       end
     end
   end
-  json.data_apps(@nilm.data_apps) do |app|
-    json.id app.id
-    json.name app.name
-    json.url Rails.configuration.app_proxy_url.call(app.id)
-    json.nilm_id @nilm.id
+  if @apps_available
+    json.data_apps(@nilm.data_apps) do |app|
+      json.id app.id
+      json.name app.name
+      json.url "#{@base_url}/#{app.id}/"
+      json.nilm_id @nilm.id
+    end
+  else
+    json.data_apps = []
   end
+
 end
 json.partial! 'helpers/messages', service: @service

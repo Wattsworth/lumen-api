@@ -6,8 +6,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :joule_modules, only: [:show]
-
   resources :data_views do
     collection do
       get 'home' #retrieve a user's home data view

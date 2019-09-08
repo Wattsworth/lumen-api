@@ -26,6 +26,12 @@ class NilmsController < ApplicationController
     else
       @service = StubService.new
     end
+    # url's for data apps
+    @apps_available = request.headers.key?("HTTP_X_APP_BASE_URI")
+    if @apps_available
+      @base_url = request.headers["HTTP_X_APP_BASE_URI"]
+    end
+
   end
 
   # POST /nilms.json
