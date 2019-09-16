@@ -171,7 +171,8 @@ RSpec.describe NilmsController, type: :request do
       it 'creates a NILM' do
         user_params = {email: "bob@email.com", password: "password",
                        first_name: "Bob", last_name: "Test"}
-        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
           params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:ok)
@@ -187,7 +188,8 @@ RSpec.describe NilmsController, type: :request do
         # all user parameters must be present
         user_params = {email: "bob@email.com", password: "password",
                        first_name: "Bob"}
-        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
@@ -203,7 +205,8 @@ RSpec.describe NilmsController, type: :request do
         owner = create(:user)
         NilmAuthKey.create(user: owner, key: "valid_key")
         user_params = {auth_key: "valid_key"}
-        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:ok)
@@ -219,7 +222,8 @@ RSpec.describe NilmsController, type: :request do
         create(:user)
         user_params = {email: "bob@email.com", password: "password",
                        first_name: "Bob", last_name: "Test"}
-        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
@@ -232,7 +236,8 @@ RSpec.describe NilmsController, type: :request do
       it 'requires valid auth key' do
         create(:user)
         user_params = {auth_key: "invalid"}
-        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+        nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)
@@ -245,7 +250,8 @@ RSpec.describe NilmsController, type: :request do
         owner = create(:user)
         NilmAuthKey.create(user: owner, key: "valid_key")
         user_params = {auth_key: "valid_key"}
-        nilm_params = {name: "Missing port param", api_key: "api_key", scheme: "http"}
+        nilm_params = {name: "Missing port param", api_key: "api_key",
+                       scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
         expect(response).to have_http_status(:unprocessable_entity)

@@ -9,7 +9,8 @@ RSpec.describe 'AddNilmByKey' do
       key.save!
 
       user_params = {auth_key: "random_key"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
 
       service = AddNilmByKey.new
@@ -17,7 +18,7 @@ RSpec.describe 'AddNilmByKey' do
       expect(service.success?).to be true
       # creates the nilm
       nilm = service.nilm
-      expect(nilm.url).to eq "http://127.0.0.1:8088"
+      expect(nilm.url).to eq "http://127.0.0.1:8088/joule"
       expect(nilm.name).to eq "Test Node"
       expect(nilm.key).to eq "api_key"
       # owner is an admin for the nilm
@@ -31,7 +32,8 @@ RSpec.describe 'AddNilmByKey' do
     it 'requires valid auth key' do
       service = AddNilmByKey.new
       user_params = {auth_key: "invalid"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
       service.run(request_params,"127.0.0.1")
       expect(service.success?).to be false
@@ -43,14 +45,15 @@ RSpec.describe 'AddNilmByKey' do
 
     it 'forwards nilm errors' do
       nilm = create(:nilm)
-      nilm.url = "http://127.0.0.1:8088"
+      nilm.url = "http://127.0.0.1:8088/joule"
       nilm.save!
       owner = create(:user)
       key = NilmAuthKey.new(key: "random_key", user: owner)
       key.save!
 
       user_params = {auth_key: "random_key"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
 
       service = AddNilmByKey.new

@@ -7,14 +7,15 @@ RSpec.describe 'AddNilmByUser' do
       service = AddNilmByUser.new
       user_params = {email: "bob@email.com", password: "password",
                      first_name: "Bob", last_name: "Test"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
 
       service.run(request_params,"127.0.0.1")
       expect(service.success?).to be true
       # creates the nilm
       nilm = service.nilm
-      expect(nilm.url).to eq "http://127.0.0.1:8088"
+      expect(nilm.url).to eq "http://127.0.0.1:8088/joule"
       expect(nilm.name).to eq "Test Node"
       expect(nilm.key).to eq "api_key"
       # creates the user associated with the nilm
@@ -27,7 +28,8 @@ RSpec.describe 'AddNilmByUser' do
       service = AddNilmByUser.new
       user_params = {password: "missing_email",
                      first_name: "Bob", last_name: "Test"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
       service.run(request_params,"127.0.0.1")
       expect(service.success?).to be false
@@ -42,7 +44,8 @@ RSpec.describe 'AddNilmByUser' do
       service = AddNilmByUser.new
       user_params = {email: "bob@email.com", password: "short",
                      first_name: "Bob", last_name: "Test"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
       service.run(request_params,"127.0.0.1")
       expect(service.success?).to be false
@@ -56,13 +59,14 @@ RSpec.describe 'AddNilmByUser' do
 
     it 'forwards nilm errors' do
       nilm = create(:nilm)
-      nilm.url = "http://127.0.0.1:8088"
+      nilm.url = "http://127.0.0.1:8088/joule"
       nilm.save!
 
       service = AddNilmByUser.new
       user_params = {email: "bob@email.com", password: "password",
                      first_name: "Bob", last_name: "Test"}
-      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088, scheme: "http"}
+      nilm_params = {name: "Test Node", api_key: "api_key", port: 8088,
+                     scheme: "http", base_uri: "/joule"}
       request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
       service.run(request_params,"127.0.0.1")
 
