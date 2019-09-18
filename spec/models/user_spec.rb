@@ -8,12 +8,20 @@ RSpec.describe User, type: :model do
     specify { expect(user).to respond_to(:last_name) }
     specify { expect(user).to respond_to(:email) }
     specify { expect(user).to respond_to(:home_data_view)}
+
   end
 
   it 'responds to name' do
     u = build(:user, first_name: 'Bill', last_name: 'Test')
     expect(u.name).to match('Bill Test')
+    u.first_name=nil
+    u.last_name=nil
+    u.email="test@email.com"
+    expect(u.name).to match('test@email.com')
+    u.email=nil
+    expect(u.name).to match("UNKNOWN NAME")
   end
+
 
   describe
   describe "permission management" do
@@ -24,6 +32,7 @@ RSpec.describe User, type: :model do
         @nicky = create(:user, first_name: "Nicky")
         @pete = create(:user, first_name: "Pete")
         @leeb = create(:user, first_name: "Leeb")
+        @other_user = create(:user, first_name: "Other")
         #groups
         @donnals = create(:user_group, name: "Donnals", members: [@john, @nicky])
         @labmates = create(:user_group, name: "Labmates", members: [@john, @pete, @leeb])
@@ -38,6 +47,7 @@ RSpec.describe User, type: :model do
         expect(@john.get_nilm_permission(@donnal_house)).to eq('admin')
         expect(@pete.get_nilm_permission(@lab)).to eq('owner')
         expect(@nicky.get_nilm_permission(@lab)).to eq('viewer')
+        expect(@other_user.get_nilm_permission(@donnal_house)).to eq ('none')
       end
       it "lets John admin his house and the lab" do
         expect(@john.admins_nilm?(@donnal_house)).to eq(true)
@@ -71,6 +81,7 @@ RSpec.describe User, type: :model do
         expect(@leeb.owns_nilm?(@lab)).to eq(true)
         expect(@leeb.views_nilm?(@lab)).to eq(true)
       end
+
     end
   end
 end

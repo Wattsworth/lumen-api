@@ -8,7 +8,7 @@ RSpec.describe 'Nilm' do
     specify { expect(nilm).to respond_to(:description) }
     specify { expect(nilm).to respond_to(:url) }
     specify { expect(nilm).to respond_to(:db) }
-    specify { expect(nilm).to respond_to(:joule_modules) }
+    specify { expect(nilm).to respond_to(:data_apps) }
 
   end
 

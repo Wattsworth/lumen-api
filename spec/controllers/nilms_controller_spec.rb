@@ -149,6 +149,13 @@ RSpec.describe NilmsController, type: :request do
           expect(response.header['Content-Type']).to include('application/json')
         end
       end
+      it 'returns error if installation type cannot be determined' do
+        expect(NodeAdapterFactory).to receive(:from_nilm).and_return nil
+        get "/nilms/#{lab_nilm.id}.json",
+            headers: john.create_new_auth_token
+        expect(response).to have_http_status(:unprocessable_entity)
+
+      end
     end
     context 'with anyone else' do
       it 'returns unauthorized' do

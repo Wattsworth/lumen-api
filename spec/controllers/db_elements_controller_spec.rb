@@ -86,6 +86,28 @@ RSpec.describe DbElementsController, type: :request do
             headers: @auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
+      it 'auto calculates time bounds if not specified' do
+        @service_data = [{ id: @elem1.id, data: 'mock1' },
+                         { id: @elem2.id, data: 'mock2' }]
+        @mock_service = instance_double(LoadElementData,
+                                        run: StubService.new,
+                                        start_time: 985,
+                                        end_time: 10001,
+                                        success?: true, notices: [], warnings: [], errors: [],
+                                        data: @service_data)
+        allow(LoadElementData).to receive(:new).and_return(@mock_service)
+
+        @auth_headers = user1.create_new_auth_token
+        get '/db_elements/data.json',
+            params: { elements: [@elem1.id, @elem2.id].to_json },
+            headers: @auth_headers
+        expect(response).to have_http_status(:ok)
+        # check to make sure JSON renders the elements
+        body = JSON.parse(response.body)
+        expect(body['data'].count).to eq(2)
+        expect(body['data'][0]['start_time']).to eq(985)
+        expect(body['data'][0]['end_time']).to eq(10001)
+      end
     end
     context 'without sign-in' do
       it 'returns unauthorized' do

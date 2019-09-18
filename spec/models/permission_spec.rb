@@ -52,4 +52,26 @@ RSpec.describe Permission, type: :model do
     p.user = nil; p.user_group = g
     expect(p.target_name).to match('a group')
   end
+
+  it 'uses user e-mail if name is blank' do
+    u = build(:user, first_name: nil, last_name: nil, email: "test@email.com")
+    # simulate user invited by e-mail who hasn't created their account yet
+    u.save!(validate: false) # skip validation
+    p = build(:permission, user: u)
+    expect(p.target_name).to match('test@email.com')
+  end
+  it 'provides target_type' do
+    p = build(:permission)
+    p.user_id = nil
+    p.user_group_id = nil
+    expect(p.target_type).to eq 'unknown'
+    p.user = create(:user)
+    expect(p.target_type).to eq 'user'
+    p.user=nil
+    p.user_group = create(:user_group)
+    expect(p.target_type).to eq 'group'
+
+
+
+  end
 end

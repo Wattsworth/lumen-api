@@ -16,17 +16,11 @@ class Permission < ApplicationRecord
   end
 
   def target_name
-    if self.user_id?
-      if self.user.name.empty?
-        return self.user.email
-      else
-        return self.user.name
-      end
-    elsif self.user_group_id?
-      return self.user_group.name
-    else
-      return "[no target set]"
-    end
+    return self.user.name if self.user_id?
+    return self.user_group.name if self.user_group_id?
+
+    "[no target set]"
+
   end
 
   def target_type

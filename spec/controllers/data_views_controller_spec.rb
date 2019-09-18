@@ -169,6 +169,16 @@ RSpec.describe DataViewsController, type: :request do
         expect(response).to have_http_status(:ok)
         expect(response).to have_notice_message
       end
+      it 'returns error with invalid parameters' do
+        view = create(:data_view, name: 'old name', owner: viewer)
+        @auth_headers = viewer.create_new_auth_token
+        put "/data_views/#{view.id}.json",
+            params: {
+                name: '', home: false
+            }, headers: @auth_headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(DataView.find(view.id).name).to eq "old name"
+      end
     end
     context 'with anybody else' do
       it 'returns unauthorized' do

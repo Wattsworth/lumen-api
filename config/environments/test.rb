@@ -40,4 +40,13 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
+  # display custom label in page header
+  #
+  config.node_name = "Test Environment"
+
+  # enable password recovery and e-mail invitations
+  # NOTE: configure smtp.rb with SMTP server details
+  #
+  config.send_emails = false
+
 end

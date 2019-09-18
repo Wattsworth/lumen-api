@@ -22,8 +22,4 @@ class Db < ApplicationRecord
     nilm.url
   end
 
-  def self.json_keys
-    [:id, :url, :size_total, :size_db, :available,
-     :size_other, :version, :max_points_per_plot]
-  end
 end

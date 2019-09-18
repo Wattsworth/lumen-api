@@ -4,5 +4,6 @@ FactoryBot.define do
     content { Faker::Lorem.sentence }
     start_time { Faker::Number.between(1000,2000) }
     end_time { Faker::Number.between(3000,4000)}
+    id { Faker::Number.unique.number.to_i}
   end
 end

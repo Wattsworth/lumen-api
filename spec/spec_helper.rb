@@ -31,6 +31,15 @@ SimpleCov.start 'rails' do
   add_group "Controllers", "app/controllers"
   add_group "Services", "app/services"
   add_group "Adapters","app/adapters"
+  # ignore the top level controller
+  add_filter "app/controllers/application_controller.rb"
+  # ignore devise-provided files
+  add_filter "app/controllers/invitations_controller.rb"
+  add_filter "app/controllers/concerns/invitable_methods.rb"
+  # ignore interface permission model (not currently used)
+  add_filter "app/models/interface_permission.rb"
+
+
 end
 
 require 'webmock/rspec'

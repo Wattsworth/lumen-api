@@ -202,6 +202,16 @@ RSpec.describe UserGroupsController, type: :request do
         members = JSON.parse(response.body)['data']['members']
         expect(members.select { |u| u['id'] == user.id }).to_not be_empty
       end
+      it 'returns error if service call fails' do
+        failed_service = InviteUser.new
+        failed_service.add_error("test message")
+        expect(InviteUser).to receive(:new).and_return failed_service
+        put "/user_groups/#{group.id}/invite_member.json",
+            params: { email: 'test@test.com', redirect_url: 'localhost' },
+            headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
+      end
     end
     context 'with anyone else' do
       it 'returns unauthorized' do

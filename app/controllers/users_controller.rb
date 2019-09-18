@@ -23,20 +23,4 @@ class UsersController < ApplicationController
     render json: {key: auth_key.key}
   end
 
-  # POST /users.json
-  def create
-    @service = StubService.new
-  end
-
-  private
-
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def nilm_params
-    params.permit(:first_name,
-                  :last_name,
-                  :email,
-                  :password,
-                  :password_confirmation)
-  end
-
 end

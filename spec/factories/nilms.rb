@@ -9,6 +9,7 @@ FactoryBot.define do
     description { Faker::Lorem.sentence }
     url {Faker::Internet.unique.url}
     node_type { 'nilmdb' }
+    key {Faker::Lorem.characters(20)}
     transient do
       admins { [] }
       owners { [] }

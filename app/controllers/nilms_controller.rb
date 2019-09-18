@@ -64,16 +64,12 @@ class NilmsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /nilms/1/refresh.json
-  def refresh
-
-  end
-
   # DELETE /nilms/1.json
   def destroy
     @service = StubService.new
     @nilm.destroy
     @service.set_notice('removed nilm')
+    render 'helpers/empty_response', status: :ok
   end
 
 

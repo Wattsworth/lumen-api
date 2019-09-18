@@ -40,6 +40,13 @@ RSpec.describe DbStreamsController, type: :request do
           headers: @auth_headers
         expect(response).to have_http_status(:unauthorized)
       end
+      it 'requires streams parameter' do
+        @auth_headers = viewer.create_new_auth_token
+        get "/db_streams.json",
+            params: {},
+            headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
     context 'without permissions' do
       it 'returns unauthorized' do

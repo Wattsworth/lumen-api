@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :nilms, only: [:index, :show, :create, :update, :destroy] do
-    member do
-      put 'refresh'
-    end
-  end
+  resources :nilms, only: [:index, :show, :create, :update, :destroy]
 
   resources :data_views do
     collection do
@@ -32,7 +28,7 @@ Rails.application.routes.draw do
   devise_for :users, path: "auth", only: [:invitations],
     controllers: { invitations: 'invitations' }
 
-  resources :users, only: [:index, :create, :destroy] do
+  resources :users, only: [:index] do
     collection do
       post 'auth_token'
     end

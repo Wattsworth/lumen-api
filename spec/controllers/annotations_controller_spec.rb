@@ -113,6 +113,66 @@ RSpec.describe AnnotationsController, type: :request do
     end
   end
 
+  describe 'PUT #annotations' do
+    # updates specified annotation
+    context 'with owner' do
+      it 'updates the annotation' do
+        my_annotation= build(:annotation, db_stream: stream)
+        mock_adapter = instance_double(Joule::Adapter)
+        expect(mock_adapter).to(receive(:edit_annotation) do |id, title, content, stream|
+          expect(id.to_i).to eq my_annotation.id
+          expect(title).to eq "new title"
+          expect(content).to eq "new content"
+        end).and_return(my_annotation)
+        allow(NodeAdapterFactory).to receive(:from_nilm).and_return(mock_adapter)
+        put "/db_streams/#{stream.id}/annotations/#{my_annotation.id}.json",
+               headers: owner.create_new_auth_token,
+               params: {title: "new title", content: "new content"}
+        expect(response).to have_http_status(:ok)
+        expect(response.header['Content-Type']).to include('application/json')
+        body = JSON.parse(response.body)
+        # returns the updated annotation
+        expect(body['data'][0]['id']).to eq my_annotation.id
+      end
+      it 'returns error if backend fails' do
+        my_annotation= build(:annotation, db_stream: stream)
+        mock_adapter = instance_double(Joule::Adapter)
+        expect(mock_adapter).to(receive(:edit_annotation) do |id, title, content, stream|
+          expect(id.to_i).to eq my_annotation.id
+          expect(title).to eq "new title"
+          expect(content).to eq "new content"
+        end).and_raise(RuntimeError.new("test error"))
+        allow(NodeAdapterFactory).to receive(:from_nilm).and_return(mock_adapter)
+        put "/db_streams/#{stream.id}/annotations/#{my_annotation.id}.json",
+            headers: owner.create_new_auth_token,
+            params: {title: "new title", content: "new content"}
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.header['Content-Type']).to include('application/json')
+        expect(response).to have_error_message
+      end
+    end
+
+    context 'with viewer' do
+      it 'returns unauthorized' do
+        put "/db_streams/#{stream.id}/annotations/10.json", headers: viewer.create_new_auth_token
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'with anyone else' do
+      it 'returns unauthorized' do
+        put "/db_streams/#{stream.id}/annotations/10.json", headers: user.create_new_auth_token
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+    context 'without sign-in' do
+      it 'returns unauthorized' do
+        put "/db_streams/#{stream.id}/annotations/10.json"
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
+
   describe 'DESTROY #annotations' do
     # deletes specified annotation
     context 'with owner' do

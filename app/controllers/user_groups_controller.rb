@@ -66,9 +66,11 @@ class UserGroupsController < ApplicationController
       current_user,
       params[:email],
       params[:redirect_url])
+
     unless invitation_service.success?
       @service = invitation_service
       render 'helpers/empty_response', status: :unprocessable_entity
+      return
     end
     user = invitation_service.user
     @service = AddGroupMember.new

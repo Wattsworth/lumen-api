@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_20_005311) do
+ActiveRecord::Schema.define(version: 2019_09_18_011239) do
 
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
@@ -139,33 +139,6 @@ ActiveRecord::Schema.define(version: 2019_08_20_005311) do
     t.string "role"
     t.integer "precedence"
     t.index ["interface_id"], name: "index_interface_permissions_on_interface_id"
-  end
-
-  create_table "joule_modules", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.boolean "web_interface"
-    t.string "exec_cmd"
-    t.string "status"
-    t.integer "pid"
-    t.string "joule_id"
-    t.integer "nilm_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["nilm_id"], name: "index_joule_modules_on_nilm_id"
-  end
-
-  create_table "joule_pipes", force: :cascade do |t|
-    t.integer "joule_pipe_id"
-    t.integer "joule_module_id"
-    t.integer "db_stream_id"
-    t.string "name"
-    t.string "direction"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["db_stream_id"], name: "index_joule_pipes_on_db_stream_id"
-    t.index ["joule_module_id"], name: "index_joule_pipes_on_joule_module_id"
-    t.index ["joule_pipe_id"], name: "index_joule_pipes_on_joule_pipe_id"
   end
 
   create_table "memberships", force: :cascade do |t|

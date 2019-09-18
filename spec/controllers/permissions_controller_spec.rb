@@ -212,6 +212,21 @@ RSpec.describe PermissionsController, type: :request do
         data = JSON.parse(response.body)['data']
         expect(data['target_name']).to eq 'sam davy'
       end
+      it 'returns error if service call fails' do
+        failed_service = InviteUser.new
+        failed_service.add_error("test message")
+        expect(InviteUser).to receive(:new).and_return failed_service
+
+        put '/permissions/invite_user.json',
+            params: { nilm_id: john_nilm.id,
+                      role: 'owner',
+                      email: 'test@test.com',
+                      redirect_url: 'localhost' },
+            headers: @auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_error_message
+
+      end
     end
     context 'with anyone else' do
       it 'returns unauthorized' do
