@@ -5,11 +5,11 @@ FactoryBot.define do
 
   factory :nilm do
     db
-    name {Faker::Lorem.unique.words(3).join(' ')}
+    name {Faker::Lorem.unique.words(number: 3).join(' ')}
     description { Faker::Lorem.sentence }
     url {Faker::Internet.unique.url}
     node_type { 'nilmdb' }
-    key {Faker::Lorem.characters(20)}
+    key {Faker::Lorem.characters(number: 20)}
     transient do
       admins { [] }
       owners { [] }

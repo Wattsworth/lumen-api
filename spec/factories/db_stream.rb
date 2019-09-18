@@ -3,14 +3,14 @@
 # generic DbStream
 FactoryBot.define do
   factory :db_stream do
-    name { Faker::Lorem.words(3).join(' ') }
+    name { Faker::Lorem.words(number: 3).join(' ') }
     name_abbrev { Faker::Lorem.word }
     description { Faker::Lorem.sentence }
     delete_locked { false }
-    start_time { Faker::Number.number(6).to_i}
-    end_time { start_time + Faker::Number.number(5).to_i }
+    start_time { Faker::Number.number(digits: 6).to_i}
+    end_time { start_time + Faker::Number.number(digits: 5).to_i }
     total_time {end_time - start_time}
-    size_on_disk { Faker::Number.number(6).to_i }
+    size_on_disk { Faker::Number.number(digits: 6).to_i }
     hidden { false }
     path { "/root/streams/#{Faker::Lorem.unique.word}" }
     data_type { "float32_#{elements_count}" }
