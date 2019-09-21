@@ -14,6 +14,11 @@ describe 'InviteUser service' do
       expect(@invitee).to be_invited_to_sign_up
       expect(@invitee.invited_by).to eq inviter
     end
+    it 'returns error on invalid parameters' do
+      service.run(inviter,"","http://redirect.url")
+      expect(service.errors?).to be true
+
+    end
     it 'sends the user an invitation' do
       invitation = ActionMailer::Base.deliveries.last
       expect(invitation.to).to eq [@invitee.email]

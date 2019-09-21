@@ -34,15 +34,4 @@ class EditStream
     set_notice("Stream updated")
     self
   end
-
-  def __parse_element_attribs(attribs)
-    if !attribs.nil? && attribs.length>=1
-      attribs.map { |element|
-        {id: element[:id],
-        name: element[:name]}
-      }
-    else
-      []
-    end
-  end
 end

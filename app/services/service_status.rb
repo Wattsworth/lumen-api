@@ -91,11 +91,4 @@ module ServiceStatus
     true
   end
 
-  def as_json(_options = {})
-    {
-      notices: @notices,
-      errors: @errors,
-      warnings: @warnings
-    }
- end
 end

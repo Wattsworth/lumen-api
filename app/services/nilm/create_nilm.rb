@@ -26,13 +26,9 @@ class CreateNilm
     # pass NILM url onto database since we are using
     # a single endpoint (eventually this will be joule)
     db = Db.new(nilm: @nilm, url: url)
-    unless db.valid?
-      add_errors(db.errors.full_messages.map{|msg| "Database: #{msg}"})
-      return self
-    end
     #everything is valid, save the objects
-    nilm.save
-    db.save
+    nilm.save!
+    db.save!
     #give the owner 'admin' permissions on the nilm
     Permission.create(user: owner, nilm: nilm, role: 'admin')
     #update the database

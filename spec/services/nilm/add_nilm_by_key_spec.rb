@@ -29,6 +29,26 @@ RSpec.describe 'AddNilmByKey' do
       expect(NilmAuthKey.count).to eq 0
     end
 
+    it 'uses name in URL when requested' do
+      owner = create(:user)
+      key = NilmAuthKey.new(key: "random_key", user: owner)
+      key.save!
+
+      user_params = {auth_key: "random_key"}
+      nilm_params = {name: "secure.node", api_key: "api_key", port: 8088,
+                     scheme: "https", base_uri: "/joule", name_is_host: true,
+                     }
+      request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
+
+      service = AddNilmByKey.new
+      service.run(request_params,"127.0.0.1")
+      expect(service.success?).to be true
+      # creates the nilm
+      nilm = service.nilm
+      expect(nilm.url).to eq "https://secure.node:8088/joule"
+      expect(nilm.name).to eq "secure.node"
+      expect(nilm.key).to eq "api_key"
+    end
     it 'requires valid auth key' do
       service = AddNilmByKey.new
       user_params = {auth_key: "invalid"}

@@ -24,6 +24,22 @@ RSpec.describe 'AddNilmByUser' do
       # forwards warnings (can't contact made up installation)
       expect(service.warnings?).to be true
     end
+    it 'uses name in URL when requested' do
+      service = AddNilmByUser.new
+      user_params = {email: "bob@email.com", password: "password",
+                     first_name: "Bob", last_name: "Test"}
+      nilm_params = {name: "secure.node", api_key: "api_key", port: 8088,
+                     scheme: "https", base_uri: "/joule", name_is_host: true}
+      request_params = ActionController::Parameters.new(user_params.merge(nilm_params))
+
+      service.run(request_params,"127.0.0.1")
+      expect(service.success?).to be true
+      # creates the nilm
+      nilm = service.nilm
+      expect(nilm.url).to eq "https://secure.node:8088/joule"
+      expect(nilm.name).to eq "secure.node"
+      expect(nilm.key).to eq "api_key"
+    end
     it 'requires all parameters' do
       service = AddNilmByUser.new
       user_params = {password: "missing_email",

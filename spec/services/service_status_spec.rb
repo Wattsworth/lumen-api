@@ -39,6 +39,17 @@ describe 'ServiceStatus' do
     expect { x.run }.to raise_error(RuntimeError)
   end
 
+  it 'resets messages' do
+    x = ModuleTester.new
+    x.add_error('error')
+    x.add_warning('warning')
+    x.add_notice('notice')
+    x.reset_messages
+    expect(x.errors).to eq []
+    expect(x.warnings).to eq []
+    expect(x.notices).to eq []
+  end
+
   describe 'absorb_status' do
     let(:parent) { ModuleTester.new }
     let(:child) { ModuleTester.new }

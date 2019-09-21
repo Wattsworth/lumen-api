@@ -13,6 +13,7 @@ class CreateDataView
     @data_view = DataView.new(data_view_params.merge({owner: user}))
 
     #resize thumbnail because client can upload any dimension
+    # :nocov:
     if(!@data_view.image.nil? && !@data_view.image.empty?)
       metadata = "data:image/png;base64,"
       base64_string = @data_view.image[metadata.size..-1]
@@ -23,6 +24,7 @@ class CreateDataView
       scaled_image_bytes = image.to_blob
       @data_view.image = metadata+Base64.strict_encode64(scaled_image_bytes)
     end
+    #:nocov:
 
     # build nilm associations for permissions
     begin
