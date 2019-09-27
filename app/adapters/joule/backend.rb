@@ -3,9 +3,9 @@ module Joule
   # Wrapper around Joule HTTP service
   class Backend
     include HTTParty
-    default_timeout 5
-    open_timeout 5
-    read_timeout 5
+    default_timeout 15
+    open_timeout 15
+    read_timeout 15
 
     attr_reader :url
 
