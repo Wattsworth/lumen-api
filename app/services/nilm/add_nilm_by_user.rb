@@ -14,10 +14,14 @@ class AddNilmByUser
     #0 make  sure parameters are present
 
     required_keys =
-        [:port, :scheme, :base_uri, :name, :api_key] +
+        [:port, :scheme, :name, :api_key] +
         [:first_name, :last_name, :email, :password]
 
-    request_params = request_params.permit(required_keys+[:name_is_host])
+    request_params = request_params.permit(required_keys+[:name_is_host, :base_uri])
+    # since we're not explicitly checking for base_uri, give it a default value
+    # it should always be present but may be "" which causes the require action to fail
+    request_params[:base_uri]="" if request_params[:base_uri].nil?
+
     begin
       required_keys.each{|key| request_params.require(key)}
     rescue ActionController::ParameterMissing => e
