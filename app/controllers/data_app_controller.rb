@@ -10,16 +10,32 @@ class DataAppController < ApplicationController
     InterfaceAuthToken.where(user: current_user, data_app: @app).destroy_all
 
     @auth_url = _app_auth_url
+    if @auth_url.nil?
+      head :not_availble and return
+    end
   end
 
   private
 
   def _app_auth_url
-    return "#" unless request.headers.key?("HTTP_X_APP_BASE_URI") # apps not enabled
-    token = InterfaceAuthToken.create(data_app: @app,
-                                      user: current_user, expiration: 5.minutes.from_now)
-    base = request.headers["HTTP_X_APP_BASE_URI"]
-    "#{base}/#{token.data_app.id}/?auth_token=#{token.value}"
-  end
+    # apps require a proxy server (like nginx)
+    return nil unless (
+          request.headers.key?("HTTP_X_APP_BASE_URI") or
+          request.headers.key?("HTTP_X_APP_SERVER_NAME"))
 
+          # try to use the server name header, otherwise try the base_uri
+    token = InterfaceAuthToken.create(data_app: @app,
+                                      user: current_user,
+                                      expiration: 5.minutes.from_now)
+    # proxy supports subdomains (preferred because more secure and flexible)
+    if request.headers.key?("HTTP_X_APP_SERVER_NAME")
+      server = request.headers["HTTP_X_APP_SERVER_NAME"]
+      scheme = request.headers["HTTP_X_APP_SERVER_SCHEME"]
+      "#{scheme}://#{token.data_app.id}.app.#{server}?auth_token=#{token.value}"
+    # fall back on hosting apps relative to the base url
+    else
+      base = request.headers["HTTP_X_APP_BASE_URI"]
+      "#{base}/#{token.data_app.id}/?auth_token=#{token.value}"
+    end
+  end
 end
