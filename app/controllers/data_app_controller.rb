@@ -6,12 +6,13 @@ class DataAppController < ApplicationController
     @app = DataApp.find(params[:id])
     @nilm = @app.nilm
     head :unauthorized and return unless current_user.views_nilm?(@nilm)
+
     # destroy any existing tokens
     InterfaceAuthToken.where(user: current_user, data_app: @app).destroy_all
 
     @auth_url = _app_auth_url
     if @auth_url.nil?
-      head :not_availble and return
+      head :not_implemented and return
     end
   end
 
