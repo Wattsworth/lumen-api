@@ -6,15 +6,15 @@ RSpec.describe DataViewsController, type: :request do
   let(:nilm) { create(:nilm, name: 'my_nilm', viewers: [viewer]) }
   let(:db) { create(:db, nilm: nilm)}
   let(:viewed_streams) { [
-    create(:db_stream, db: db),
-    create(:db_stream, db: db)]}
+    create(:db_stream, db: db, db_folder: db.root_folder),
+    create(:db_stream, db: db, db_folder: db.root_folder)]}
 
   describe 'GET index' do
     context 'with authenticated user' do
       it 'returns all loadable data views' do
         other_nilm = create(:nilm, name: 'other_nilm')
         other_db = create(:db, nilm: other_nilm)
-        other_stream = create(:db_stream, db: other_db)
+        other_stream = create(:db_stream, db: other_db, db_folder: other_db.root_folder)
         other_user = create(:user)
         service = CreateDataView.new
         service.run(
@@ -49,10 +49,10 @@ RSpec.describe DataViewsController, type: :request do
     context 'with authenticated user' do
       it 'returns user home data view' do
         user1 = create(:user)
-        dv1 = create(:data_view)
+        dv1 = create(:data_view, owner: user1)
         user1.update(home_data_view: dv1)
         user2 = create(:user)
-        dv2 = create(:data_view)
+        dv2 = create(:data_view, owner: user2)
         user2.update(home_data_view: dv2)
         #user1 gets his view
         @auth_headers = user1.create_new_auth_token

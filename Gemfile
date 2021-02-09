@@ -35,7 +35,6 @@ gem 'httparty'
 gem 'rack-cors'
 gem 'devise_token_auth'
 gem 'devise_invitable'
-gem 'omniauth'
 gem 'oj'  # fast json
 gem 'mini_magick'
 gem 'bootsnap'

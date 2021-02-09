@@ -4,7 +4,9 @@ require 'rails_helper'
 
 describe 'EditStream service' do
   let(:mock_adapter) { instance_double(Nilmdb::Adapter) }
-  let(:stream) { FactoryBot.create(:db_stream, path: '/stream/path', name: 'old') }
+  let(:nilm) {create(:nilm, name: "test")}
+  let(:stream) { FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                                   path: '/stream/path', name: 'old') }
   let(:element) { stream.db_elements.first}
   let(:service) { EditStream.new(mock_adapter) }
   # db backend return values

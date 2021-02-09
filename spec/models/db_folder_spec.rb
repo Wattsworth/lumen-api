@@ -36,8 +36,9 @@ RSpec.describe 'DbFolder' do
   end
 
   describe 'insert_stream' do
-    let(:db_folder) { FactoryBot.create(:db_folder) }
-    let(:new_stream) { FactoryBot.create(:db_stream) }
+    let(:nilm) { FactoryBot.create(:nilm)}
+    let(:db_folder) { FactoryBot.create(:db_folder, db: nilm.db) }
+    let(:new_stream) { FactoryBot.build(:db_stream) }
 
     it 'adds the stream to the folder' do
       db_folder.insert_stream(stream: new_stream)
@@ -46,7 +47,8 @@ RSpec.describe 'DbFolder' do
   end
 
   describe 'validation' do
-    let(:db_folder) { FactoryBot.create(:db_folder) }
+    let(:nilm) { FactoryBot.create(:nilm)}
+    let(:db_folder) { FactoryBot.create(:db_folder, db: nilm.db) }
     it 'forbids an empty name' do
       db_folder.name = ''
       expect(db_folder.valid?).to be false

@@ -18,7 +18,9 @@ describe Nilmdb::Backend do
 
   it 'retrieves stream specific schema', :vcr do
     backend = Nilmdb::Backend.new(url)
-    entries = backend.stream_info(create(:db_stream,path:"/tutorial/pump-prep"))
+    nilm = FactoryBot.create(:nilm, name: "test")
+    entries = backend.stream_info(create(:db_stream,db: nilm.db, db_folder: nilm.db.root_folder,
+                                         path:"/tutorial/pump-prep"))
     expect(entries[:base_entry][:path]).to eq "/tutorial/pump-prep"
     #TODO: support decimation lookup, need HTTP API to process wild cards
     expect(entries[:decimation_entries].length).to eq 0

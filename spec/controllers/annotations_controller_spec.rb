@@ -10,7 +10,7 @@ RSpec.describe AnnotationsController, type: :request do
                         admins: [admin], owners: [owner], viewers: [viewer])
   end
   let(:db) {create(:db, nilm: nilm)}
-  let(:stream) {create(:db_stream, db: db)}
+  let(:stream) {create(:db_stream, db: db, db_folder: db.root_folder)}
 
   describe 'GET #annotations' do
     # retrieve annotations for a given stream

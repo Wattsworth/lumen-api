@@ -26,7 +26,7 @@ module Nilmdb
       # update the folder attributes from metadata
       info = __read_info_entry(@entries) || {}
       # if metadata is corrupt, use default values instead
-      unless @folder.update_attributes(
+      unless @folder.update(
         info.slice(*DbFolder.defined_attributes))
         @folder.use_default_attributes
         Rails.logger.warn("corrupt metadata: #{@folder.path}")

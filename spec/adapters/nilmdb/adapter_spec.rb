@@ -6,7 +6,9 @@ describe Nilmdb::Adapter do
 
 
   it 'creates annotations' do
-    stream = FactoryBot.create(:db_stream, name: 'test_stream')
+    nilm = FactoryBot.create(:nilm, name: "test")
+    stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                               name: 'test_stream')
     annotation = FactoryBot.build(:annotation, title: 'test', db_stream: stream)
 
     adapter = Nilmdb::Adapter.new("url")
@@ -23,7 +25,9 @@ describe Nilmdb::Adapter do
     expect(annotation.id).to eq 251
   end
   it 'creates first annotation' do
-    stream = FactoryBot.create(:db_stream, name: 'test_stream')
+    nilm = FactoryBot.create(:nilm, name: "test")
+    stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                               name: 'test_stream')
     annotation = FactoryBot.build(:annotation, title: 'test', db_stream: stream)
 
     adapter = Nilmdb::Adapter.new("url")
@@ -44,7 +48,9 @@ describe Nilmdb::Adapter do
     json = JSON.parse(raw)
     expect(mock_backend).to receive(:read_annotations) { json }
 
-    stream = FactoryBot.create(:db_stream, name: 'test_stream')
+    nilm = FactoryBot.create(:nilm, name: "test")
+    stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                               name: 'test_stream')
     annotations = adapter.get_annotations(stream)
     expect(annotations.length).to eq 6
     annotations.each do | annotation |
@@ -52,7 +58,9 @@ describe Nilmdb::Adapter do
     end
   end
   it 'deletes annotations' do
-    stream = FactoryBot.create(:db_stream, name: 'test_stream')
+    nilm = FactoryBot.create(:nilm, name: "test")
+    stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                               name: 'test_stream')
     annotation = FactoryBot.build(:annotation, title: 'test', db_stream: stream)
     adapter = Nilmdb::Adapter.new("url")
     mock_backend = instance_double(Nilmdb::Backend)

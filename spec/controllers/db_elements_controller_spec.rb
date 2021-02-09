@@ -12,10 +12,8 @@ RSpec.describe DbElementsController, type: :request do
         stream = create(:db_stream, elements_count: 0,
                                     db: nilm.db,
                                     db_folder: nilm.db.root_folder)
-        @elem1 = create(:db_element)
-        @elem2 = create(:db_element)
-        stream.db_elements << @elem1
-        stream.db_elements << @elem2
+        @elem1 = create(:db_element, db_stream: stream)
+        @elem2 = create(:db_element, db_stream: stream)
       end
       it "returns elements with data" do
         @service_data = [{ id: @elem1.id, data: 'mock1' },
@@ -76,8 +74,7 @@ RSpec.describe DbElementsController, type: :request do
         stream2 = create(:db_stream, elements_count: 0,
                                      db: nilm2.db,
                                      db_folder: nilm2.db.root_folder)
-        @elem3 = create(:db_element)
-        stream2.db_elements << @elem3
+        @elem3 = create(:db_element, db_stream: stream2)
 
         @auth_headers = user1.create_new_auth_token
         get '/db_elements/data.json',

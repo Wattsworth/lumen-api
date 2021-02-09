@@ -4,7 +4,8 @@ require 'rails_helper'
 
 describe 'EditFolder service' do
   let(:mock_adapter) { instance_double(Nilmdb::Adapter) }
-  let(:folder) { DbFolder.new(path: '/folder/path', name: 'old') }
+  let(:nilm) { create(:nilm, name: "test")}
+  let(:folder) { DbFolder.new(path: '/folder/path', db:nilm.db, name: 'old') }
   let(:service) { EditFolder.new(mock_adapter) }
   # mock_adapter return values
   let(:success) { { error: false, msg: '' } }

@@ -3,12 +3,13 @@ require 'rails_helper'
 
 
 RSpec.describe 'LoadElementData' do
-  let(:db) { create(:db, max_points_per_plot: 100) }
+  let(:nilm) {create(:nilm, name: 'test')}
+  let(:db) { create(:db, nilm: nilm, max_points_per_plot: 100) }
 
   describe 'when elements are from the same stream' do
     before do
-      db  = create(:db, url: 'http://test/nilmdb')
-      @db_stream = create(:db_stream, db: db, elements_count: 0)
+      db  = create(:db, nilm: nilm, url: 'http://test/nilmdb')
+      @db_stream = create(:db_stream, db_folder: db.root_folder, db: db, elements_count: 0)
       @elem0 = create(:db_element, column: 0, db_stream: @db_stream)
       @elem1 = create(:db_element, column: 1, db_stream: @db_stream)
       @elem2 = create(:db_element, column: 2, db_stream: @db_stream)
@@ -30,13 +31,13 @@ RSpec.describe 'LoadElementData' do
 
   describe 'when elements are from different streams' do
     before do
-      db  = create(:db, url: 'http://test/nilmdb')
-      @db_stream1 = create(:db_stream, db: db, elements_count: 0)
+      db  = create(:db, nilm: nilm, url: 'http://test/nilmdb')
+      @db_stream1 = create(:db_stream, db_folder: db.root_folder, db: db, elements_count: 0)
       @elem0 = create(:db_element, column: 0, db_stream: @db_stream1)
       @elem1 = create(:db_element, column: 1, db_stream: @db_stream1)
       @stream1_data = [{id: @elem0.id, values: 'mock0'},
                        {id: @elem1.id, values: 'mock1'}]
-      @db_stream2 = create(:db_stream, db: db, elements_count: 0)
+      @db_stream2 = create(:db_stream, db_folder: db.root_folder, db: db, elements_count: 0)
       @elem2 = create(:db_element, column: 2, db_stream: @db_stream2)
       @elem3 = create(:db_element, column: 3, db_stream: @db_stream2)
       @stream2_data = [{id: @elem2.id, values: 'mock2'},
@@ -61,7 +62,7 @@ RSpec.describe 'LoadElementData' do
 
   describe 'when a nilm does not respond' do
     before do
-      db  = create(:db, url: 'http://test/nilmdb')
+      db  = create(:db, nilm: nilm, url: 'http://test/nilmdb')
       @db_stream1 = create(:db_stream, db: db, db_folder: db.root_folder,
         elements_count: 0)
       @elem0 = create(:db_element, column: 0, db_stream: @db_stream1)

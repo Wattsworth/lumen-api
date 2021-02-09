@@ -24,7 +24,9 @@ describe Joule::Adapter do
     json = JSON.parse(raw)
     expect(mock_backend).to receive(:get_annotations) { json }
 
-    stream = FactoryBot.create(:db_stream, name: 'test_stream')
+    nilm = FactoryBot.create(:nilm, name: "test")
+    stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                               name: 'test_stream')
     annotations = adapter.get_annotations(stream)
     expect(annotations.length).to eq 6
     annotations.each do | annotation |

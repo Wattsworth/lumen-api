@@ -7,8 +7,8 @@ describe 'CreateDataView service' do
   let(:nilm) { create(:nilm, viewers: [viewer]) }
   let(:db) { create(:db, nilm: nilm)}
   let(:viewed_streams) { [
-    create(:db_stream, db: db),
-    create(:db_stream, db: db)]}
+    create(:db_stream, db: db, db_folder: db.root_folder),
+    create(:db_stream, db: db, db_folder: db.root_folder)]}
 
   describe 'successfully' do
     before do

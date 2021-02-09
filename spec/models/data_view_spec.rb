@@ -13,7 +13,8 @@ RSpec.describe DataView, type: :model do
   it 'is deleted when nilm is destroyed' do
       nilm1 = create(:nilm)
       nilm2 = create(:nilm)
-      dv = create(:data_view)
+      owner = create(:user)
+      dv = create(:data_view, owner: owner)
       dv.nilms = [nilm1, nilm2]
       expect(DataView.count).to eq 1
       expect(DataViewsNilm.count).to eq 2
@@ -25,8 +26,9 @@ RSpec.describe DataView, type: :model do
   it 'does not delete nilm when destroyed' do
     nilm1 = create(:nilm)
     nilm2 = create(:nilm)
-    dv1 = create(:data_view)
-    dv2 = create(:data_view)
+    owner = create(:user)
+    dv1 = create(:data_view, owner: owner)
+    dv2 = create(:data_view, owner: owner)
     dv1.nilms = [nilm1, nilm2]
     dv2.nilms = [nilm1 , nilm2]
     expect(DataView.count).to eq 2

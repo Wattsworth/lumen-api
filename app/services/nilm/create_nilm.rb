@@ -26,9 +26,11 @@ class CreateNilm
     # pass NILM url onto database since we are using
     # a single endpoint (eventually this will be joule)
     db = Db.new(nilm: @nilm, url: url)
+    db.root_folder = DbFolder.new(db: db, name: 'root')
     #everything is valid, save the objects
     nilm.save!
     db.save!
+    db.root_folder.save!
     #give the owner 'admin' permissions on the nilm
     Permission.create(user: owner, nilm: nilm, role: 'admin')
     #update the database

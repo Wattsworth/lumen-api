@@ -16,11 +16,11 @@ RSpec.describe DbStreamsController, type: :request do
     let(:viewer) {create(:user)}
     let(:nilm) {create(:nilm, viewers: [viewer])}
     let(:db) {create(:db, nilm: nilm)}
-    let(:stream2) {create(:db_stream, db: db)}
-    let(:stream1) {create(:db_stream, db: db)}
+    let(:stream2) {create(:db_stream, db: db, db_folder: db.root_folder)}
+    let(:stream1) {create(:db_stream, db: db, db_folder: db.root_folder)}
     let(:other_nilm) {create(:nilm)}
     let(:other_db) {create(:db, nilm: other_nilm)}
-    let(:other_stream) {create(:db_stream, db: other_db)}
+    let(:other_stream) {create(:db_stream, db: other_db, db_folder: other_db.root_folder)}
 
     context 'with viewer permissions' do
       it 'returns array of requested streams' do

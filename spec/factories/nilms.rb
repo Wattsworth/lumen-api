@@ -4,12 +4,13 @@ FactoryBot.define do
 
 
   factory :nilm do
-    db
+    #db
     name {Faker::Lorem.unique.words(number: 3).join(' ')}
     description { Faker::Lorem.sentence }
     url {Faker::Internet.unique.url}
     node_type { 'nilmdb' }
     key {Faker::Lorem.characters(number: 20)}
+
     transient do
       admins { [] }
       owners { [] }
@@ -17,6 +18,9 @@ FactoryBot.define do
     end
 
     after(:create) do |nilm, evaluator|
+      #root_folder = build :db_folder
+      create :db, nilm: nilm
+
       evaluator.admins.each do |admin|
         if admin.instance_of? User
           create(:permission, user: admin, user_group: nil, nilm: nilm, role: "admin")

@@ -25,9 +25,10 @@ simple_db = [
 
 describe 'UpdateDb' do
   let(:dbinfo) { {} }
+  let(:nilm) { create(:nilm, name: "test")}
   describe '*run*' do
     def update_with_schema(schema, db: nil)
-      @db = db || Db.new
+      @db = db || create(:db, nilm: nilm)
       @service = Nilmdb::UpdateDb.new(@db)
       @service.run(dbinfo, schema) #ignore dbinfo
       @root = @db.root_folder

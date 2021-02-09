@@ -24,14 +24,16 @@ RSpec.describe 'DbStream' do
       expect(stream.errors[:name].any?).to be true
     end
     it 'requires a unique name' do
-      folder = DbFolder.create(name: 'parent')
-      DbStream.create(name: 'stream', db_folder: folder)
-      stream2 = DbStream.new(name: 'stream', db_folder: folder)
+      nilm = create(:nilm, name: "Test")
+      DbStream.create(name: 'stream', db: nilm.db, db_folder: nilm.db.root_folder)
+      stream2 = DbStream.new(name: 'stream', db: nilm.db, db_folder: nilm.db.root_folder)
       stream2.validate
       expect(stream2.errors[:name].any?).to be true
     end
     it 'requires a valid data type' do
-      my_stream = create(:db_stream, name: 'invalid')
+      nilm = create(:nilm, name: "Test")
+      my_stream = create(:db_stream, db: nilm.db,
+                         db_folder: nilm.db.root_folder, name: 'invalid')
       my_stream.data_type = "float32_5"
       expect(my_stream).to_not be_valid
       expect(my_stream.errors.full_messages[0]).to include "5 elements"
@@ -49,13 +51,17 @@ RSpec.describe 'DbStream' do
 
   describe 'meta_attributes' do
     it 'parses data format' do
-      my_stream = create(:db_stream, name: 'invalid')
+      nilm = create(:nilm, name: "Test")
+      my_stream = create(:db_stream, db: nilm.db,
+                         db_folder: nilm.db.root_folder, name: 'invalid')
       my_stream.data_type="uint8_4"
       expect(my_stream).to be_valid
       expect(my_stream.data_format).to eq "uint8"
     end
     it 'parses column count' do
-      my_stream = create(:db_stream, name: 'invalid', elements_count: 8)
+      nilm = create(:nilm, name: "Test")
+      my_stream = create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                         name: 'invalid', elements_count: 8)
       expect(my_stream.column_count).to eq 8
     end
   end

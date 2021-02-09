@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 describe 'UpdateStream service' do
-  let(:db) { Db.new }
+  let(:nilm) {create(:nilm, name: "test")}
+  let(:db) { create(:db, nilm: nilm)}
   let(:service) { Nilmdb::UpdateDb.new(db) }
   let(:helper) { DbSchemaHelper.new }
   let(:mock_dbinfo) { {} }

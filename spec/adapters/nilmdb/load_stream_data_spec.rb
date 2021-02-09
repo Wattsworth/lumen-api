@@ -2,7 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe 'LoadStreamData' do
-  let(:db) { create(:db, max_points_per_plot: 100) }
+  let(:nilm) { create(:nilm, name: "test")}
+  let(:db) { create(:db, nilm: nilm, max_points_per_plot: 100) }
 
   describe 'rapid decimation algorithm' do
     it 'computes decimation level' do
@@ -27,12 +28,13 @@ RSpec.describe 'LoadStreamData' do
                  nil,
                  [50,0,1,2,-1,0,1,1,2,3]]
         @db_stream = create(:db_stream, elements_count: 0,
-                            db: db, decimations_count: 3, # lvl64
+                            db: db, db_folder: db.root_folder,
+                            decimations_count: 3, # lvl64
                             start_time: 0, end_time: 100)
         #create the db elements
         types = ['discrete','continuous','event']
         3.times do |i|
-          @db_stream.db_elements << create(:db_element,
+          @db_stream.db_elements << build(:db_element,
             column: i, offset: i+1, scale_factor:i+2, display_type: types[i])
         end
 
@@ -108,11 +110,12 @@ RSpec.describe 'LoadStreamData' do
                  nil,
                  [110,0],[115,0]]
         @db_stream = create(:db_stream, elements_count: 0,
-                            db: db, decimations_count: 1, # lvl4
+                            db: db, db_folder: db.root_folder,
+                            decimations_count: 1, # lvl4
                             start_time: 0, end_time: 100)
         #create the db elements
         3.times do |i|
-          @db_stream.db_elements << create(:db_element,
+          @db_stream.db_elements << build(:db_element,
             column: i, offset: i+1, scale_factor:i+2)
         end
         @mockAdapter = MockDataDbAdapter.new(
@@ -143,11 +146,12 @@ RSpec.describe 'LoadStreamData' do
     before do
       @data = [[40,0,1,2],nil,[50,0,1,2]]
       @db_stream = create(:db_stream, elements_count: 0,
-                          db: db, decimations_count: 3, # lvl64
+                          db: db, db_folder: db.root_folder,
+                          decimations_count: 3, # lvl64
                           start_time: 0, end_time: 100)
       #create the db elements
       3.times do |i|
-        @db_stream.db_elements << create(:db_element,
+        @db_stream.db_elements << build(:db_element,
           column: i, offset: i+1, scale_factor:i+2)
       end
       @mockAdapter = MockDataDbAdapter.new(
@@ -194,12 +198,13 @@ RSpec.describe 'LoadStreamData' do
   describe 'when data is not present' do
     before do
       @data = [1, 2, 3]
-      @db_stream = create(:db_stream, elements_count: 0,
+      @db_stream = create(:db_stream, db_folder: db.root_folder,
+                          elements_count: 0,
                           db: db, decimations_count: 4, # lvl64
                           start_time: 100, end_time: 200)
       #create the db elements
       3.times do |i|
-        @db_stream.db_elements << create(:db_element,
+        @db_stream.db_elements << build(:db_element,
           column: i, offset: i+1, scale_factor:i+2)
       end
       @mockAdapter = MockDataDbAdapter.new(

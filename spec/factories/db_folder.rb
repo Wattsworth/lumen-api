@@ -10,5 +10,7 @@ FactoryBot.define do
     size_on_disk { Faker::Number.number(digits: 6) }
     hidden { false }
     path { "/root/#{Faker::Lorem.word}/#{Faker::Number.unique.number(digits: 4)}" }
+
+
   end
 end

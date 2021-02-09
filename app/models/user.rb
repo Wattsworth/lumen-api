@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
   #---Attributes------
   devise :database_authenticatable, :registerable,
-          :recoverable, :rememberable, :trackable, :validatable,
-          :omniauthable, :invitable
+          :recoverable, :rememberable, :trackable, :validatable, :invitable
   include DeviseTokenAuth::Concerns::User
 
   #---Associations----
@@ -13,7 +12,7 @@ class User < ActiveRecord::Base
   has_many :data_views
   has_one  :nilm_auth_key
   belongs_to :home_data_view, class_name: "DataView",
-    foreign_key: "home_data_view_id", dependent: :destroy
+    foreign_key: "home_data_view_id", dependent: :destroy, optional: true
 
   #---Validations-----
   validates :first_name, :last_name, :email, :presence => true

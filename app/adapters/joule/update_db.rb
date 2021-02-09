@@ -14,7 +14,7 @@ module Joule
       # if either is nil, the database is not available
       if dbinfo.nil? || schema.nil?
         add_error("cannot contact node at #{@db.url}")
-        @db.update_attributes(available: false)
+        @db.update(available: false)
         return self
       end
       # go through the schema and update the database
@@ -35,7 +35,7 @@ module Joule
       end
       attrs[:joule_id] = schema[:id]
       attrs[:hidden] = false
-      db_folder.update_attributes(attrs)
+      db_folder.update(attrs)
       #puts db_folder.parent.id
       # update or create subfolders
       updated_ids = []
@@ -114,7 +114,7 @@ module Joule
       attrs[:total_time] = schema[:data_info][:total_time]
       attrs[:size_on_disk] = schema[:data_info][:bytes]
 
-      db_stream.update_attributes(attrs)
+      db_stream.update(attrs)
       #db_stream.db_elements.destroy_all
       schema[:elements].each do |element_config|
         element = db_stream.db_elements.find_by_column(element_config[:index])
@@ -124,7 +124,7 @@ module Joule
         attrs[:display_type] = element_config[:display_type].downcase
         attrs[:column] = element_config[:index]
         attrs[:plottable] = true
-        element.update_attributes(attrs)
+        element.update(attrs)
       end
     end
 

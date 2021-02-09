@@ -31,7 +31,7 @@ module Nilmdb
     # specified path.
     def __update_stream(stream, base_entry, decimation_entries)
       # use default attributes if metadata is corrupt
-      unless stream.update_attributes(base_entry[:attributes])
+      unless stream.update(base_entry[:attributes])
         stream.use_default_attributes
         Rails.logger.warn("corrupt metadata: #{stream.path}")
       end
@@ -58,7 +58,7 @@ module Nilmdb
         level = entry[:path].match(UpdateStream.decimation_tag)[1].to_i
         decim = stream.db_decimations.find_by_level(level)
         decim ||= DbDecimation.new(db_stream: stream, level: level)
-        decim.update_attributes(entry[:attributes])
+        decim.update(entry[:attributes])
 
         #decim.save!
       end
@@ -74,7 +74,7 @@ module Nilmdb
         # check if there is stream metadata for column x
         entry = stream_data.select { |meta| meta[:column] == x }
         # use the metadata if present
-        unless element.update_attributes(entry[0] || {})
+        unless element.update(entry[0] || {})
           element.use_default_attributes
           element.save!
           Rails.logger.warn(stream_data)

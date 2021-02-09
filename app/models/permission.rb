@@ -1,7 +1,7 @@
 class Permission < ApplicationRecord
   #---Associations----
-  belongs_to :user
-  belongs_to :user_group
+  belongs_to :user, optional: true
+  belongs_to :user_group, optional: true
   belongs_to :nilm
 
   #---Validations---

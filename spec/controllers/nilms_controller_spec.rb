@@ -126,8 +126,8 @@ RSpec.describe NilmsController, type: :request do
         end
       end
       it 'returns data apps as json' do
-        test_app = create(:data_app, name: 'test')
-        john_nilm.data_apps << test_app
+        test_app = create(:data_app, name: 'test', nilm: john_nilm)
+        #john_nilm.data_apps << test_app
         get "/nilms/#{john_nilm.id}.json",
             headers: john.create_new_auth_token
         body = JSON.parse(response.body)

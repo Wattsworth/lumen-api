@@ -78,7 +78,9 @@ describe Joule::Backend do
     describe "create_annotation" do
       it 'creates annotations', :vcr do
         backend = Joule::Backend.new(url, key)
-        stream = FactoryBot.create(:db_stream, name: 'test_stream')
+        nilm = FactoryBot.create(:nilm, name: "test")
+        stream = FactoryBot.create(:db_stream, db: nilm.db, db_folder: nilm.db.root_folder,
+                                   name: 'test_stream')
         stream.joule_id = 2646
         annotation = FactoryBot.build(:annotation, db_stream: stream)
         backend.create_annotation(annotation)

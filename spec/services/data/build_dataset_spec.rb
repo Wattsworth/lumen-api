@@ -2,8 +2,9 @@
 require 'rails_helper'
 
 RSpec.describe 'BuildDataset' do
-  let(:db) { create(:db, max_points_per_plot: 100) }
-  let(:db_stream) { create(:db_stream, db: db, elements_count: 0) }
+  let(:nilm) {create(:nilm, name: 'test')}
+  let(:db) { create(:db, nilm: nilm,  max_points_per_plot: 100) }
+  let(:db_stream) { create(:db_stream, db_folder: db.root_folder, db: db, elements_count: 0) }
   let(:elem0) { create(:db_element, name: 'e0_continuous', display_type: 'continuous', column: 0, units: 'c', db_stream: db_stream) }
   let(:elem1) { create(:db_element, name: 'e1_discrete',   display_type: 'discrete',   column: 1, units: 'd', db_stream: db_stream) }
   let(:elem2) { create(:db_element, name: 'e2_event',      display_type: 'event',      column: 2, units: nil, db_stream: db_stream) }
