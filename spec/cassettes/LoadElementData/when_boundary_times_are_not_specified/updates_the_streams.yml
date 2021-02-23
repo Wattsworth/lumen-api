@@ -520,7 +520,7 @@ http_interactions:
   recorded_at: Tue, 06 Jun 2017 16:35:20 GMT
 - request:
     method: get
-    uri: http://localhost:8080/nilmdb/stream/extract?count=1&end=1435438182000001&path=/tutorial/ac-power&start=1360017784000000
+    uri: http://localhost:8080/nilmdb/stream/extract?count=1&path=/tutorial/ac-power
     body:
       encoding: US-ASCII
       string: ''
@@ -557,7 +557,44 @@ http_interactions:
   recorded_at: Tue, 06 Jun 2017 16:35:20 GMT
 - request:
     method: get
-    uri: http://localhost:8080/nilmdb/stream/extract?end=1435438182000001&markup=1&path=/tutorial/ac-power~decim-256&start=1360017784000000
+    uri: http://localhost:8080/nilmdb/stream/extract?count=1&path=/tutorial/ac-power~decim-256
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+        - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+        - "*/*"
+      User-Agent:
+        - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+        - Tue, 06 Jun 2017 16:35:20 GMT
+      Server:
+        - Apache/2.4.18 (Ubuntu)
+      X-Jim-Is-Awesome:
+        - yeah
+      Allow:
+        - GET, HEAD
+      Content-Length:
+        - '7'
+      Content-Type:
+        - text/plain;charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '506
+
+'
+    http_version:
+  recorded_at: Tue, 06 Jun 2017 16:35:20 GMT
+- request:
+    method: get
+    uri: http://localhost:8080/nilmdb/stream/extract?markup=1&path=/tutorial/ac-power~decim-256
     body:
       encoding: US-ASCII
       string: ''
@@ -2580,7 +2617,7 @@ http_interactions:
   recorded_at: Tue, 06 Jun 2017 16:35:20 GMT
 - request:
     method: get
-    uri: http://localhost:8080/nilmdb/stream/extract?count=1&end=1435438182000001&path=/tutorial/pump-events&start=1360017784000000
+    uri: http://localhost:8080/nilmdb/stream/extract?count=1&path=/tutorial/pump-events
     body:
       encoding: US-ASCII
       string: ''
@@ -2617,7 +2654,7 @@ http_interactions:
   recorded_at: Tue, 06 Jun 2017 16:35:20 GMT
 - request:
     method: get
-    uri: http://localhost:8080/nilmdb/stream/extract?end=1435438182000001&markup=1&path=/tutorial/pump-events&start=1360017784000000
+    uri: http://localhost:8080/nilmdb/stream/extract?markup=1&path=/tutorial/pump-events
     body:
       encoding: US-ASCII
       string: ''

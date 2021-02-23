@@ -119,8 +119,10 @@ RSpec.describe 'LoadElementData' do
       service = LoadElementData.new
       service.run([elem1,elem2], nil, nil)
       #bounds taken from test nilm on vagrant instance
-      # expect(service.start_time).to eq(1360017784000000)
-      # expect(service.end_time).to eq(1435438182000001)
+      # ac-power: [1434408933000000 - 1435437553316406]
+      # pump: [1360018080779512 - 1361579475621010]
+      expect(service.start_time).to eq(1360018080779512)
+      expect(service.end_time).to eq(1435437553316406)
       #make sure decimations are still here
       expect(elem1.db_stream.reload.db_decimations.count).to eq ndecims1
       expect(elem2.db_stream.reload.db_decimations.count).to eq ndecims2

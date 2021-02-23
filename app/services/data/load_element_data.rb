@@ -93,6 +93,45 @@ class LoadElementData
     #5 extract requested elements from the stream datasets
     req_element_ids = elements.pluck(:id)
     @data = combined_data.select{|d| req_element_ids.include? d[:id] }
+    #6 set the time boundaries if they were nil
+    @start_time = @start_time.nil? ? _data_start : @start_time
+    @end_time = @end_time.nil? ? _data_end : @end_time
     self
+  end
+
+  def _data_start
+    min_start = nil
+    @data.each do |data|
+      # find the first row of data (interval boundaries are nil)
+      start_idx = 0
+      while start_idx < data[:values].count
+        break unless data[:values][start_idx].nil?
+        start_idx +=1
+      end
+      start_row=data[:values][start_idx]
+      unless start_row.nil?
+        data_start = start_row[0]
+        min_start = min_start.nil? ? data_start : [data_start,min_start].min
+      end
+    end
+    min_start
+  end
+
+  def _data_end
+    max_end = nil
+    @data.each do |data|
+      # find the last row of data (interval boundaries are nil)
+      end_idx = data[:values].count-1
+      while end_idx >=0
+        break unless data[:values][end_idx].nil?
+        end_idx -=1
+      end
+      last_row=data[:values][end_idx]
+      unless last_row.nil?
+        data_end = last_row[0]
+        max_end = max_end.nil? ? data_end : [data_end,max_end].max
+      end
+    end
+    max_end
   end
 end
