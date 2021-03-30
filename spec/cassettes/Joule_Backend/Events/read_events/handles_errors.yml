@@ -1,0 +1,35 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://127.0.0.1:3030/annotations.json?stream_id=101
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - AAX8ItOxNSyrBOOYL7zfuaPOHqTXxzspD6LVJAIa9-I
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 403
+      message: Forbidden
+    headers:
+      Content-Type:
+      - text/plain; charset=utf-8
+      Content-Length:
+      - '14'
+      Date:
+      - Wed, 03 Mar 2021 18:06:11 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: '403: Forbidden'
+  recorded_at: Wed, 03 Mar 2021 18:06:11 GMT
+recorded_with: VCR 6.0.0

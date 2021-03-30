@@ -1,0 +1,381 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://localhost:3030/version
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - text/plain; charset=utf-8
+      Content-Length:
+      - '23'
+      Date:
+      - Mon, 08 Mar 2021 21:26:05 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: 0.9.23+7.g0f55fb2.dirty
+  recorded_at: Mon, 08 Mar 2021 21:26:42 GMT
+- request:
+    method: get
+    uri: https://localhost:3030/dbinfo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '107'
+      Date:
+      - Mon, 08 Mar 2021 21:26:05 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: '{"path": "/opt/data/db", "other": 6817153024, "reserved": 16777216,
+        "free": 34010734592, "size": 723193856}'
+  recorded_at: Mon, 08 Mar 2021 21:26:42 GMT
+- request:
+    method: get
+    uri: https://localhost:3030/streams.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '12699'
+      Date:
+      - Mon, 08 Mar 2021 21:26:05 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: '{"id": 2, "name": "root", "description": null, "locked": true, "children":
+        [{"id": 3, "name": "basic", "description": null, "locked": false, "children":
+        [{"id": 4, "name": "aux", "description": null, "locked": false, "children":
+        [], "streams": [{"id": 1, "name": "Encoder", "description": "", "datatype":
+        "float32", "layout": "float32_3", "keep_us": 604800000000, "is_configured":
+        false, "is_source": false, "is_destination": false, "locked": false, "active":
+        false, "decimate": true, "elements": [{"id": 352, "index": 0, "name": "X",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        353, "index": 1, "name": "Y", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 354, "index": 2, "name": "Z", "units": null, "plottable": true,
+        "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}], "data_info": {"start": null, "end": null, "rows":
+        0, "bytes": 0, "total_time": 0}}, {"id": 3, "name": "Accel", "description":
+        "", "datatype": "float32", "layout": "float32_3", "keep_us": 604800000000,
+        "is_configured": false, "is_source": false, "is_destination": false, "locked":
+        false, "active": false, "decimate": true, "elements": [{"id": 358, "index":
+        0, "name": "X", "units": null, "plottable": true, "display_type": "CONTINUOUS",
+        "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min": null},
+        {"id": 359, "index": 1, "name": "Y", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 360, "index": 2, "name": "Z", "units": null, "plottable": true,
+        "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}], "data_info": {"start": null, "end": null, "rows":
+        0, "bytes": 0, "total_time": 0}}], "event_streams": [{"id": 1, "name": "events0",
+        "description": "", "data_info": {"start": null, "end": null, "event_count":
+        0, "bytes": 0, "total_time": 0}}, {"id": 2, "name": "events1", "description":
+        "", "data_info": {"start": 1611421200000000, "end": 1611422190000000, "event_count":
+        100, "bytes": 0, "total_time": 990000000}}]}, {"id": 5, "name": "sensors",
+        "description": null, "locked": false, "children": [], "streams": [{"id": 2,
+        "name": "Gyro", "description": "", "datatype": "float32", "layout": "float32_3",
+        "keep_us": 604800000000, "is_configured": false, "is_source": false, "is_destination":
+        false, "locked": false, "active": false, "decimate": true, "elements": [{"id":
+        355, "index": 0, "name": "Roll", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 356, "index": 1, "name": "Pitch", "units": null, "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 357, "index": 2, "name": "Yaw", "units":
+        null, "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}], "data_info": {"start": null,
+        "end": null, "rows": 0, "bytes": 0, "total_time": 0}}], "event_streams": []},
+        {"id": 6, "name": "event", "description": null, "locked": false, "children":
+        [], "streams": [], "event_streams": [{"id": 3, "name": "events2", "description":
+        "", "data_info": {"start": null, "end": null, "event_count": 0, "bytes": 0,
+        "total_time": 0}}]}], "streams": [], "event_streams": []}, {"id": 7, "name":
+        "Homes", "description": null, "locked": false, "children": [{"id": 8, "name":
+        "Donnal", "description": null, "locked": false, "children": [], "streams":
+        [{"id": 4, "name": "prep breakers", "description": "", "datatype": "float32",
+        "layout": "float32_27", "keep_us": -1, "is_configured": false, "is_source":
+        false, "is_destination": false, "locked": false, "active": false, "decimate":
+        true, "elements": [{"id": 361, "index": 0, "name": "A P1", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 362, "index": 1, "name": "A Q1", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 363, "index": 2, "name":
+        "A P3", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        364, "index": 3, "name": "A Q3", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 365, "index": 4, "name": "A P5", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 366, "index": 5, "name": "A Q5", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 367, "index": 6, "name":
+        "A P7", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        368, "index": 7, "name": "A Q7", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 369, "index": 8, "name": "B P1", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 370, "index": 9, "name": "B Q1", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 371, "index": 10, "name":
+        "B P3", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        372, "index": 11, "name": "B Q3", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 373, "index": 12, "name": "B P5", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 374, "index": 13, "name": "B Q5", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 375, "index": 14, "name":
+        "B P7", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        376, "index": 15, "name": "B Q7", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 377, "index": 16, "name": "Breaker 1", "units": null, "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 378, "index": 17, "name": "Breaker 2",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        379, "index": 18, "name": "Breaker 3", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 380, "index": 19, "name": "Breaker 4", "units": null, "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 381, "index": 20, "name": "Breaker 5",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        382, "index": 21, "name": "Breaker 6", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 383, "index": 22, "name": "Breaker 7", "units": null, "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 384, "index": 23, "name": "Breaker 8",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        385, "index": 24, "name": "Breaker 9", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 386, "index": 25, "name": "Breaker 10", "units": null, "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 387, "index": 26, "name": "Breaker 11",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}], "data_info":
+        {"start": null, "end": null, "rows": 0, "bytes": 0, "total_time": 0}}, {"id":
+        5, "name": "prep", "description": "", "datatype": "float32", "layout": "float32_16",
+        "keep_us": -1, "is_configured": false, "is_source": false, "is_destination":
+        false, "locked": false, "active": false, "decimate": true, "elements": [{"id":
+        388, "index": 0, "name": "A P1", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 389, "index": 1, "name": "A Q1", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 390, "index": 2, "name": "A P3", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 391, "index": 3, "name":
+        "A Q3", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        392, "index": 4, "name": "A P5", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 393, "index": 5, "name": "A Q5", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 394, "index": 6, "name": "A P7", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 395, "index": 7, "name":
+        "A Q7", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        396, "index": 8, "name": "B P1", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 397, "index": 9, "name": "B Q1", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 398, "index": 10, "name": "B P3", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 399, "index": 11, "name":
+        "B Q3", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
+        400, "index": 12, "name": "B P5", "units": "W", "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 401, "index": 13, "name": "B Q5", "units": "W", "plottable":
+        true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
+        null, "default_min": null}, {"id": 402, "index": 14, "name": "B P7", "units":
+        "W", "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}, {"id": 403, "index": 15, "name":
+        "B Q7", "units": "W", "plottable": true, "display_type": "CONTINUOUS", "offset":
+        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}], "data_info":
+        {"start": 1564632000015712, "end": 1564718399984547, "rows": 5183534, "bytes":
+        718782248, "total_time": 86399968835}}], "event_streams": []}], "streams":
+        [], "event_streams": [{"id": 4, "name": "AB Transients", "description": "",
+        "data_info": {"start": 1564632656344436, "end": 1564637216605171, "event_count":
+        21, "bytes": 0, "total_time": 4560260735}}]}], "streams": [], "event_streams":
+        []}'
+  recorded_at: Mon, 08 Mar 2021 21:26:42 GMT
+- request:
+    method: get
+    uri: https://localhost:3030/app.json
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '2'
+      Date:
+      - Mon, 08 Mar 2021 21:26:05 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: "[]"
+  recorded_at: Mon, 08 Mar 2021 21:26:43 GMT
+- request:
+    method: get
+    uri: https://localhost:3030/event/data.json?id=4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '2205'
+      Date:
+      - Mon, 08 Mar 2021 21:26:14 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: '[{"start_time": 1564632656344436, "end_time": 1564632656677838, "content":
+        {"height": -1035.986328125}}, {"start_time": 1564633036204735, "end_time":
+        1564633036387967, "content": {"height": 6926.97314453125}}, {"start_time":
+        1564633036437944, "end_time": 1564633036621268, "content": {"height": -5936.91064453125}},
+        {"start_time": 1564633038670642, "end_time": 1564633039720308, "content":
+        {"height": -89.4991455078125}}, {"start_time": 1564633756433779, "end_time":
+        1564633756667042, "content": {"height": -1036.0643310546875}}, {"start_time":
+        1564634056246046, "end_time": 1564634056412608, "content": {"height": 6632.29296875}},
+        {"start_time": 1564634056462585, "end_time": 1564634056645909, "content":
+        {"height": -5657.3984375}}, {"start_time": 1564634058611871, "end_time": 1564634059561528,
+        "content": {"height": -85.935791015625}}, {"start_time": 1564634736455192,
+        "end_time": 1564634736721911, "content": {"height": -1044.8843994140625}},
+        {"start_time": 1564635216240969, "end_time": 1564635216457549, "content":
+        {"height": 6597.31884765625}}, {"start_time": 1564635216507543, "end_time":
+        1564635216674242, "content": {"height": -5600.0048828125}}, {"start_time":
+        1564635218574144, "end_time": 1564635219674081, "content": {"height": -95.8353271484375}},
+        {"start_time": 1564635636352540, "end_time": 1564635636719351, "content":
+        {"height": -1035.0323486328125}}, {"start_time": 1564635976300502, "end_time":
+        1564635976483720, "content": {"height": 6778.779296875}}, {"start_time": 1564635976533694,
+        "end_time": 1564635976717003, "content": {"height": -5801.759765625}}, {"start_time":
+        1564635978566280, "end_time": 1564635979765811, "content": {"height": -99.0074462890625}},
+        {"start_time": 1564636376510544, "end_time": 1564636376793794, "content":
+        {"height": -1031.2080078125}}, {"start_time": 1564636816265054, "end_time":
+        1564636816514950, "content": {"height": 7447.22265625}}, {"start_time": 1564636816564935,
+        "end_time": 1564636816748270, "content": {"height": -6458.548828125}}, {"start_time":
+        1564636818664500, "end_time": 1564636819780905, "content": {"height": -98.5048828125}},
+        {"start_time": 1564637216605171, "end_time": 1564637216855134, "content":
+        {"height": -1028.9400634765625}}]'
+  recorded_at: Mon, 08 Mar 2021 21:26:52 GMT
+- request:
+    method: get
+    uri: https://localhost:3030/event/data.json?id=1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - EuOjCqFd4lpin7U-oPApNiQTReO6HaQUxfnkLZglkYQ
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '2'
+      Date:
+      - Mon, 08 Mar 2021 21:26:14 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: "[]"
+  recorded_at: Mon, 08 Mar 2021 21:26:52 GMT
+recorded_with: VCR 6.0.0

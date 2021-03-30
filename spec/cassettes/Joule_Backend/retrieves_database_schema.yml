@@ -2,11 +2,13 @@
 http_interactions:
 - request:
     method: get
-    uri: http://nuc:8088/streams.json
+    uri: https://localhost:3030/streams.json
     body:
       encoding: US-ASCII
       string: ''
     headers:
+      X-Api-Key:
+      - apkQ3_tvTo-bCzFrIADW2uvlZ6nboISwC6tvsoH64mc
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Accept:
@@ -21,60 +23,59 @@ http_interactions:
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '3683'
+      - '3663'
       Date:
-      - Wed, 11 Jul 2018 14:58:33 GMT
+      - Wed, 03 Mar 2021 18:12:28 GMT
       Server:
-      - Python/3.6 aiohttp/3.2.1
+      - Python/3.8 aiohttp/3.7.3
     body:
       encoding: UTF-8
-      string: '{"id": 1, "name": "root", "description": null, "children": [{"id":
-        2, "name": "folder_2", "description": null, "children": [], "streams": [{"id":
-        1, "name": "stream_2_1", "description": "", "datatype": "INT16", "keep_us":
-        -1, "decimate": true, "elements": [{"id": 12, "index": 0, "name": "top", "units":
-        null, "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
-        1.0, "default_max": null, "default_min": null}, {"id": 13, "index": 1, "name":
-        "bottom", "units": null, "plottable": true, "display_type": "CONTINUOUS",
-        "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}]}]},
-        {"id": 3, "name": "folder_1", "description": null, "children": [], "streams":
-        [{"id": 2, "name": "stream_1_2", "description": "", "datatype": "UINT8", "keep_us":
-        -1, "decimate": true, "elements": [{"id": 14, "index": 0, "name": "a", "units":
-        null, "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
-        1.0, "default_max": null, "default_min": null}, {"id": 15, "index": 1, "name":
-        "b", "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
+      string: '{"id": 2, "name": "root", "description": null, "locked": true, "children":
+        [{"id": 3, "name": "basic", "description": null, "locked": false, "children":
+        [{"id": 4, "name": "aux", "description": null, "locked": false, "children":
+        [], "streams": [{"id": 1, "name": "Encoder", "description": "", "datatype":
+        "float32", "layout": "float32_3", "keep_us": 604800000000, "is_configured":
+        false, "is_source": false, "is_destination": false, "locked": false, "active":
+        false, "decimate": true, "elements": [{"id": 352, "index": 0, "name": "X",
+        "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
         0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
-        16, "index": 2, "name": "c", "units": null, "plottable": true, "display_type":
+        353, "index": 1, "name": "Y", "units": null, "plottable": true, "display_type":
         "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
-        null}]}, {"id": 3, "name": "stream_1_1", "description": "", "datatype": "FLOAT32",
-        "keep_us": -1, "decimate": true, "elements": [{"id": 17, "index": 0, "name":
-        "x", "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
-        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}, {"id":
-        18, "index": 1, "name": "y", "units": null, "plottable": true, "display_type":
-        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
-        null}, {"id": 19, "index": 2, "name": "z", "units": null, "plottable": true,
+        null}, {"id": 354, "index": 2, "name": "Z", "units": null, "plottable": true,
         "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
-        null, "default_min": null}]}]}, {"id": 4, "name": "folder_3", "description":
-        null, "children": [{"id": 5, "name": "folder_3_1", "description": null, "children":
-        [], "streams": [{"id": 4, "name": "stream_3_1_1", "description": "", "datatype":
-        "INT32", "keep_us": -1, "decimate": true, "elements": [{"id": 20, "index":
-        0, "name": "a", "units": null, "plottable": true, "display_type": "CONTINUOUS",
+        null, "default_min": null}], "data_info": {"start": null, "end": null, "rows":
+        0, "bytes": 0, "total_time": 0}}, {"id": 3, "name": "Accel", "description":
+        "", "datatype": "float32", "layout": "float32_3", "keep_us": 604800000000,
+        "is_configured": false, "is_source": false, "is_destination": false, "locked":
+        false, "active": false, "decimate": true, "elements": [{"id": 358, "index":
+        0, "name": "X", "units": null, "plottable": true, "display_type": "CONTINUOUS",
         "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min": null},
-        {"id": 21, "index": 1, "name": "b", "units": null, "plottable": true, "display_type":
+        {"id": 359, "index": 1, "name": "Y", "units": null, "plottable": true, "display_type":
         "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
-        null}, {"id": 22, "index": 2, "name": "c", "units": null, "plottable": true,
+        null}, {"id": 360, "index": 2, "name": "Z", "units": null, "plottable": true,
         "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
-        null, "default_min": null}]}]}], "streams": [{"id": 5, "name": "stream_3_1",
-        "description": "", "datatype": "UINT16", "keep_us": -1, "decimate": true,
-        "elements": [{"id": 23, "index": 0, "name": "a", "units": null, "plottable":
+        null, "default_min": null}], "data_info": {"start": null, "end": null, "rows":
+        0, "bytes": 0, "total_time": 0}}], "event_streams": [{"id": 1, "name": "events0",
+        "description": "", "data_info": {"start": null, "end": null, "event_count":
+        0, "bytes": 0, "total_time": 0}}, {"id": 2, "name": "events1", "description":
+        "", "data_info": {"start": 1611421200000000, "end": 1611422190000000, "event_count":
+        100, "bytes": 0, "total_time": 990000000}}]}, {"id": 5, "name": "sensors",
+        "description": null, "locked": false, "children": [], "streams": [{"id": 2,
+        "name": "Gyro", "description": "", "datatype": "float32", "layout": "float32_3",
+        "keep_us": 604800000000, "is_configured": false, "is_source": false, "is_destination":
+        false, "locked": false, "active": false, "decimate": true, "elements": [{"id":
+        355, "index": 0, "name": "Roll", "units": null, "plottable": true, "display_type":
+        "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max": null, "default_min":
+        null}, {"id": 356, "index": 1, "name": "Pitch", "units": null, "plottable":
         true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor": 1.0, "default_max":
-        null, "default_min": null}, {"id": 24, "index": 1, "name": "b", "units": null,
-        "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
-        1.0, "default_max": null, "default_min": null}, {"id": 25, "index": 2, "name":
-        "c", "units": null, "plottable": true, "display_type": "CONTINUOUS", "offset":
-        0.0, "scale_factor": 1.0, "default_max": null, "default_min": null}]}]}, {"id":
-        6, "name": "folder_4", "description": null, "children": [{"id": 7, "name":
-        "folder_4_1", "description": null, "children": [], "streams": []}], "streams":
-        []}], "streams": []}'
-    http_version: 
-  recorded_at: Wed, 11 Jul 2018 14:58:33 GMT
-recorded_with: VCR 4.0.0
+        null, "default_min": null}, {"id": 357, "index": 2, "name": "Yaw", "units":
+        null, "plottable": true, "display_type": "CONTINUOUS", "offset": 0.0, "scale_factor":
+        1.0, "default_max": null, "default_min": null}], "data_info": {"start": null,
+        "end": null, "rows": 0, "bytes": 0, "total_time": 0}}], "event_streams": []},
+        {"id": 6, "name": "event", "description": null, "locked": false, "children":
+        [], "streams": [], "event_streams": [{"id": 3, "name": "events2", "description":
+        "", "data_info": {"start": null, "end": null, "event_count": 0, "bytes": 0,
+        "total_time": 0}}]}], "streams": [], "event_streams": []}], "streams": [],
+        "event_streams": []}'
+  recorded_at: Wed, 03 Mar 2021 18:12:28 GMT
+recorded_with: VCR 6.0.0

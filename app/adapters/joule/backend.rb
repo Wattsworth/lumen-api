@@ -214,6 +214,20 @@ module Joule
       {error: false, msg: 'success'}
     end
 
+    # === EVENT METHODS ===
+    def read_events(stream_id, start_time, end_time)
+      query = {'id': stream_id}
+      query['start'] = start_time unless start_time.nil?
+      query['end'] = end_time unless end_time.nil?
+      options = {query: query}
+      begin
+        resp = self.class.get("#{@url}/event/data.json", options)
+        raise "error reading events #{resp.body}" unless resp.success?
+      rescue
+        raise "connection error"
+      end
+      resp.parsed_response.map{|event| event.deep_symbolize_keys}
+    end
     # === ANNOTATION METHODS ===
     def create_annotation(annotation)
       data = {
@@ -244,6 +258,21 @@ module Joule
         raise "connection error"
       end
       resp.parsed_response
+    end
+
+    # === EVENT METHODS ===
+    def read_events(stream_id, start_time, end_time)
+      query = {'id': stream_id}
+      query['start'] = start_time unless start_time.nil?
+      query['end'] = end_time unless end_time.nil?
+      options = {query: query}
+      begin
+        resp = self.class.get("#{@url}/event/data.json", options)
+        raise "error reading events #{resp.body}" unless resp.success?
+      rescue
+        raise "connection error"
+      end
+      resp.parsed_response.map{|event| event.deep_symbolize_keys}
     end
 
     def delete_annotation(annotation_id)

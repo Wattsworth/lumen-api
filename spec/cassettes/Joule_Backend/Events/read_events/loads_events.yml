@@ -1,0 +1,38 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://127.0.0.1:3030/event/data.json?end=1611421235000000&id=2&start=1611421210000000
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      X-Api-Key:
+      - apkQ3_tvTo-bCzFrIADW2uvlZ6nboISwC6tvsoH64mc
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '303'
+      Date:
+      - Wed, 03 Mar 2021 18:31:31 GMT
+      Server:
+      - Python/3.8 aiohttp/3.7.3
+    body:
+      encoding: UTF-8
+      string: '[{"start_time": 1611421210000000, "end_time": 1611421215000000, "content":
+        {"name": "test event 1"}}, {"start_time": 1611421220000000, "end_time": 1611421225000000,
+        "content": {"name": "test event 2"}}, {"start_time": 1611421230000000, "end_time":
+        1611421235000000, "content": {"name": "test event 3"}}]'
+  recorded_at: Wed, 03 Mar 2021 18:31:31 GMT
+recorded_with: VCR 6.0.0

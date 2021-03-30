@@ -10,6 +10,8 @@ require 'json'
 # │   └── stream_1_2: uint8_3
 # ├── folder_2
 # │   └── stream_2_1: int16_2
+# │   └── transients (event stream)
+# │   └── loads (event stream)
 # ├── folder_3
 # │   ├── folder_3_1
 # │   │   └── stream_3_1_1: int32_3
@@ -52,11 +54,18 @@ describe Joule::UpdateDb do
         expect(z.display_type).to eq 'discrete'
         expect(z.column).to eq 2
         expect(z.units).to eq "watts"
+        # check for event streams in Folder 2
+        folder_2 = @db.root_folder.subfolders.where(name: 'folder_2').first
+        expect(folder_2.event_streams.count).to eq 2
+        events_2_1 = folder_2.event_streams.where(name: 'events_2_1').first
+        expect(events_2_1.path).to eq '/folder_2/events_2_1'
+        expect(events_2_1.joule_id).to eq 100
 
         # quick checks
         expect(DbElement.count).to eq 14
         expect(DbStream.count).to eq 5
         expect(DbFolder.count).to eq 7
+        expect(EventStream.count).to eq 2
       end
     end
   end

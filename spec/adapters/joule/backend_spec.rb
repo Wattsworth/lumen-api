@@ -7,12 +7,14 @@ describe Joule::Backend do
   let (:url) {'http://nuc:8088'}
   let (:key) {'api_key'}
   it 'retrieves database schema', :vcr do
+    url = 'https://localhost:3030'
+    key = 'apkQ3_tvTo-bCzFrIADW2uvlZ6nboISwC6tvsoH64mc'
     backend = Joule::Backend.new(url, key)
     schema = backend.db_schema
     # make sure keys are symbolized
     expect(schema).to include(:name, :id, :streams, :children)
     # should be a tree structure
-    expect(schema[:children][0]).to include(:name, :id, :streams, :children)
+    expect(schema[:children][0]).to include(:name, :id, :streams, :event_streams, :children)
   end
   it 'retrieves module schema', :vcr do
     backend = Joule::Backend.new(url, key)
@@ -43,6 +45,32 @@ describe Joule::Backend do
     expect(resp[:result][:decimated]).to be true
     expect(resp[:result][:data].count).to be > 0
     expect(resp[:result][:data].count).to be < 200
+  end
+
+  describe "Events" do
+    let(:url) { "https://127.0.0.1:3030"}
+    let(:key) { "apkQ3_tvTo-bCzFrIADW2uvlZ6nboISwC6tvsoH64mc"}
+    describe "read_events" do
+      it 'loads events', :vcr do
+        backend = Joule::Backend.new(url, key)
+        start_time = 1611421210000000
+        end_time = 1611421235000000
+        events = backend.read_events(2, start_time, end_time)
+        # should have 3 events
+        expect(events.length).to eq 3
+        expected_event = {
+            "start_time":1611421210000000,
+            "end_time":1611421215000000,
+            "content":{
+                "name":"test event 1"}}
+        expect(events[0]).to eq expected_event
+      end
+      it 'handles errors', :vcr do
+        backend = Joule::Backend.new(url, key)
+        # server was stopped for this request
+        expect{backend.get_annotations(101)}.to raise_error(RuntimeError)
+      end
+    end
   end
 
   describe "Annotations" do

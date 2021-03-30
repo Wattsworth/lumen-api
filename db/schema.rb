@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_011239) do
+ActiveRecord::Schema.define(version: 2021_03_03_014945) do
 
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
@@ -117,6 +117,25 @@ ActiveRecord::Schema.define(version: 2019_09_18_011239) do
     t.string "version"
     t.integer "max_points_per_plot", default: 3600
     t.boolean "available"
+  end
+
+  create_table "event_streams", force: :cascade do |t|
+    t.integer "db_folder_id"
+    t.integer "db_id"
+    t.string "path"
+    t.integer "start_time", limit: 8
+    t.integer "end_time", limit: 8
+    t.integer "total_rows", limit: 8
+    t.integer "total_time", limit: 8
+    t.integer "size_on_disk", limit: 8
+    t.integer "joule_id"
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["db_folder_id"], name: "index_event_streams_on_db_folder_id"
+    t.index ["db_id"], name: "index_event_streams_on_db_id"
+    t.index ["joule_id"], name: "index_event_streams_on_joule_id"
   end
 
   create_table "interface_auth_tokens", force: :cascade do |t|

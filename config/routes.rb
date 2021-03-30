@@ -22,6 +22,11 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :events, only: [:index, :show, :update] do
+    collection do
+      get 'data'
+    end
+  end
   # fix for devise invitable from:
   #http://gabrielhilal.com/2015/11/07/integrating-devise_invitable-into-devise_token_auth/
   mount_devise_token_auth_for 'User', at: 'auth', skip: [:invitations]

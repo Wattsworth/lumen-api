@@ -68,7 +68,7 @@ module Joule
       # remove any subfolders that are no longer on the folder
       db_folder.subfolders.where.not(joule_id: updated_ids).destroy_all
 
-      # update or create streams
+      # update or create data streams
       updated_ids=[]
       schema[:streams].each do |stream_schema|
         stream = db_folder.db_streams.find_by_joule_id(stream_schema[:id])
@@ -94,6 +94,34 @@ module Joule
       end
       # remove any streams that are no longer in the folder
       db_folder.db_streams.where.not(joule_id: updated_ids).destroy_all
+
+      # update or create event streams
+      updated_ids=[]
+      schema[:event_streams] ||= []
+      schema[:event_streams].each do |stream_schema|
+        stream = db_folder.event_streams.find_by_joule_id(stream_schema[:id])
+        stream ||= EventStream.new(db_folder: db_folder, db: db_folder.db)
+        __update_event_stream(stream, stream_schema, db_folder.path)
+        size_on_disk+=stream.size_on_disk
+        unless stream.start_time.nil?
+          if start_time.nil?
+            start_time = stream.start_time
+          else
+            start_time = [stream.start_time, start_time].min
+          end
+        end
+        unless stream.end_time.nil?
+          if end_time.nil?
+            end_time = stream.end_time
+          else
+            end_time = [stream.end_time, end_time].max
+          end
+        end
+        updated_ids << stream_schema[:id]
+      end
+      # remove any streams that are no longer in the folder
+      db_folder.event_streams.where.not(joule_id: updated_ids).destroy_all
+
       # save the new disk size
       db_folder.size_on_disk = size_on_disk
       db_folder.start_time = start_time
@@ -126,6 +154,20 @@ module Joule
         attrs[:plottable] = true
         element.update(attrs)
       end
+    end
+
+    def __update_event_stream(event_stream, schema, parent_path)
+      attrs = schema.slice(*EventStream.defined_attributes)
+      # add in extra attributes that require conversion
+      attrs[:path] = "#{parent_path}/#{schema[:name]}"
+      attrs[:joule_id] = schema[:id]
+      attrs[:start_time] = schema[:data_info][:start_time]
+      attrs[:end_time] = schema[:data_info][:end_time]
+      attrs[:total_rows] = schema[:data_info][:rows]
+      attrs[:total_time] = schema[:data_info][:total_time]
+      attrs[:size_on_disk] = schema[:data_info][:bytes]
+
+      event_stream.update(attrs)
     end
 
 

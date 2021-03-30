@@ -10,6 +10,32 @@
       "children": [
 
       ],
+      "event_streams":[
+        {
+          "id":100,
+          "name":"events_2_1",
+          "description":"",
+          "data_info":{
+            "start":null,
+            "end":null,
+            "event_count":0,
+            "bytes":0,
+            "total_time":0
+          }
+        },
+        {
+          "id":101,
+          "name":"events_2_2",
+          "description":"",
+          "data_info":{
+            "start":1611421200000000,
+            "end":1611422190000000,
+            "event_count":100,
+            "bytes":0,
+            "total_time":990000000
+          }
+        }
+      ],
       "streams": [
         {
           "id": 1,

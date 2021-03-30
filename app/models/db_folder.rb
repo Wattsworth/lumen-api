@@ -16,6 +16,9 @@ class DbFolder < ApplicationRecord
   has_many :db_streams,
            dependent: :destroy
 
+  has_many :event_streams,
+          dependent: :destroy
+
   validates_presence_of :name
   # validates_with DbFolderValidator
   validates :name, uniqueness: { scope: :parent_id,

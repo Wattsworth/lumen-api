@@ -105,6 +105,12 @@ module Joule
     end
     # === END ANNOTATIONS ===
 
+    # === BEGIN EVENTS ===
+    def read_events(stream, start_time, end_time)
+      events = @backend.read_events(stream.joule_id, start_time, end_time)
+      {id: stream.id, valid: true, events: events}
+    end
+
     def node_type
       'joule'
     end
