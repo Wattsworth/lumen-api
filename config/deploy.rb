@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock "3.11.1"
+lock "3.15.0"
 
 set :application, "lumen-api"
 set :repo_url, "git@git.wattsworth.net:wattsworth/control-api.git"

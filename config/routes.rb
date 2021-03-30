@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   # fix for devise invitable from:
   #http://gabrielhilal.com/2015/11/07/integrating-devise_invitable-into-devise_token_auth/
   mount_devise_token_auth_for 'User', at: 'auth', skip: [:invitations]
-  devise_for :users, path: "auth", only: [:invitations],
+  devise_for :users, defaults: {format: :json}, path: "auth", only: [:invitations],
     controllers: { invitations: 'invitations' }
 
   resources :users, only: [:index] do

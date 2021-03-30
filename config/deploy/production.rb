@@ -3,7 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server "beta.wattsworth.net", user: "rails", roles: %w{app db web}, port: 2222
+server "cloud.wattsworth.net", user: "rails", roles: %w{app db web}, port: 22
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
 
@@ -13,8 +13,11 @@ set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rben
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all # default value
 
-append :linked_files, "db/production.sqlite3"
-set :deploy_to, "/opt/rails/lumen"
+append :linked_files, "config/database.yml", "config/initializers/smtp.rb",
+       "config/environments/production.rb", "config/secrets.yml"
+
+#append :linked_files, "db/production.sqlite3"
+set :deploy_to, "/opt/api_capistrano"
 # role-based syntax
 # ==================
 
