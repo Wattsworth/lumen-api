@@ -21,11 +21,11 @@ class ReadEvents
     @data = []
     event_streams.each do |stream|
       adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
-      result = adapter.read_events(stream, @start_time, @end_time)
+      result = adapter.read_events(stream, stream.db.max_events_per_plot, @start_time, @end_time)
       if not result.nil?
         @data.append(result)
       else
-        @data.append({id: stream.id, valid: false, events: nil})
+        @data.append({id: stream.id, valid: false, count: 0, events: nil})
         add_warning("unable to retrieve events for #{stream.path}")
       end
     end

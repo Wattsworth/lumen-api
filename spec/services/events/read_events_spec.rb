@@ -48,7 +48,7 @@ RSpec.describe 'ReadEvents' do
       expect(service.warnings.length).to eq 1
       expect(service.data).to eq [
                                      @event_stream1_data,
-                                     {id: @event_stream2.id, valid: false, events: nil}
+                                     {id: @event_stream2.id, valid: false, events: nil, count: 0}
                                  ]
       expect(@mock_adapter.event_run_count).to eq 2
     end

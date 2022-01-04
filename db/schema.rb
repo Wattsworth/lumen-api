@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_03_014945) do
+ActiveRecord::Schema.define(version: 2022_01_04_010931) do
 
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_014945) do
     t.string "version"
     t.integer "max_points_per_plot", default: 3600
     t.boolean "available"
+    t.integer "max_events_per_plot", default: 200
   end
 
   create_table "event_streams", force: :cascade do |t|

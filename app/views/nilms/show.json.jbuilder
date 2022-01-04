@@ -4,6 +4,7 @@ json.data do
   json.role @role
   if @nilm.db != nil
     json.max_points_per_plot @nilm.db.max_points_per_plot
+    json.max_events_per_plot @nilm.db.max_events_per_plot
     json.available @nilm.db.available
     json.root_folder do
       if @nilm.db.root_folder != nil

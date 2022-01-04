@@ -55,15 +55,16 @@ describe Joule::Backend do
         backend = Joule::Backend.new(url, key)
         start_time = 1611421210000000
         end_time = 1611421235000000
-        events = backend.read_events(2, start_time, end_time)
+        result = backend.read_events(2, 200, start_time, end_time)
         # should have 3 events
-        expect(events.length).to eq 3
+        expect(result[:count]).to eq 3
+        expect(result[:events].length).to eq 3
         expected_event = {
             "start_time":1611421210000000,
             "end_time":1611421215000000,
             "content":{
                 "name":"test event 1"}}
-        expect(events[0]).to eq expected_event
+        expect(result[:events][0]).to eq expected_event
       end
       it 'handles errors', :vcr do
         backend = Joule::Backend.new(url, key)
