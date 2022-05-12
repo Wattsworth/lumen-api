@@ -102,21 +102,6 @@ module Joule
         stream = db_folder.event_streams.find_by_joule_id(stream_schema[:id])
         stream ||= EventStream.new(db_folder: db_folder, db: db_folder.db)
         __update_event_stream(stream, stream_schema, db_folder.path)
-        size_on_disk+=stream.size_on_disk
-        unless stream.start_time.nil?
-          if start_time.nil?
-            start_time = stream.start_time
-          else
-            start_time = [stream.start_time, start_time].min
-          end
-        end
-        unless stream.end_time.nil?
-          if end_time.nil?
-            end_time = stream.end_time
-          else
-            end_time = [stream.end_time, end_time].max
-          end
-        end
         updated_ids << stream_schema[:id]
       end
       # remove any streams that are no longer in the folder
@@ -161,12 +146,10 @@ module Joule
       # add in extra attributes that require conversion
       attrs[:path] = "#{parent_path}/#{schema[:name]}"
       attrs[:joule_id] = schema[:id]
-      attrs[:start_time] = schema[:data_info][:start_time]
-      attrs[:end_time] = schema[:data_info][:end_time]
-      attrs[:total_rows] = schema[:data_info][:rows]
-      attrs[:total_time] = schema[:data_info][:total_time]
-      attrs[:size_on_disk] = schema[:data_info][:bytes]
-
+      attrs[:start_time] = schema[:data_info][:start]
+      attrs[:end_time] = schema[:data_info][:end]
+      attrs[:event_count] = schema[:data_info][:event_count]
+      attrs[:event_fields_json] = schema[:event_fields].to_json
       event_stream.update(attrs)
     end
 

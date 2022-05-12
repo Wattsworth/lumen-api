@@ -11,8 +11,12 @@ class EventStream < ApplicationRecord
   def self.defined_attributes
     [:name, :description]
   end
+  def event_fields
+    return {} if event_fields_json.nil? or event_fields_json.empty?
+    JSON.parse(event_fields_json)
+  end
   def self.json_keys
     [:id, :name, :description, :path, :start_time,
-     :end_time, :size_on_disk, :total_rows, :total_time]
+     :end_time, :event_count, :event_fields]
   end
 end

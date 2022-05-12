@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_04_010931) do
+ActiveRecord::Schema.define(version: 2022_05_05_173955) do
 
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
@@ -126,14 +126,13 @@ ActiveRecord::Schema.define(version: 2022_01_04_010931) do
     t.string "path"
     t.integer "start_time", limit: 8
     t.integer "end_time", limit: 8
-    t.integer "total_rows", limit: 8
-    t.integer "total_time", limit: 8
-    t.integer "size_on_disk", limit: 8
     t.integer "joule_id"
     t.string "name"
     t.string "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "event_count"
+    t.string "event_fields_json"
     t.index ["db_folder_id"], name: "index_event_streams_on_db_folder_id"
     t.index ["db_id"], name: "index_event_streams_on_db_id"
     t.index ["joule_id"], name: "index_event_streams_on_joule_id"
