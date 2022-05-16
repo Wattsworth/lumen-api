@@ -55,7 +55,7 @@ describe Joule::Backend do
         backend = Joule::Backend.new(url, key)
         start_time = 1611421210000000
         end_time = 1611421235000000
-        result = backend.read_events(2, 200, start_time, end_time)
+        result = backend.read_events(2, 200, start_time, end_time, [])
         # should have 3 events
         expect(result[:count]).to eq 3
         expect(result[:events].length).to eq 3

@@ -22,7 +22,10 @@ RSpec.describe 'ReadEvents' do
     end
     it 'makes one request per stream' do
       service = ReadEvents.new
-      service.run([@event_stream1, @event_stream2],0,100)
+      service.run([{
+                       stream: @event_stream1, filter: []},
+                       stream: @event_stream2, filter:[]],
+                  0,100)
       expect(service.success?).to be true
       expect(service.data).to eq [@event_stream1_data, @event_stream2_data]
       expect(@mock_adapter.event_run_count).to eq 2
@@ -44,11 +47,12 @@ RSpec.describe 'ReadEvents' do
     end
     it 'fills in the data that is available' do
       service = ReadEvents.new
-      service.run([@event_stream1, @event_stream2],0,100)
+      service.run([{stream: @event_stream1, filter: []},
+                   stream: @event_stream2, filter:[]],0,100)
       expect(service.warnings.length).to eq 1
       expect(service.data).to eq [
                                      @event_stream1_data,
-                                     {id: @event_stream2.id, valid: false, events: nil, count: 0}
+                                     {id: @event_stream2.id, valid: false, tag: nil, events: nil, count: 0}
                                  ]
       expect(@mock_adapter.event_run_count).to eq 2
     end
@@ -71,7 +75,7 @@ RSpec.describe 'ReadEvents' do
       events1 = EventStream.find_by_path("/Homes/AB Transients")
       events2 = EventStream.find_by_path("/basic/aux/events0")
       service = ReadEvents.new
-      service.run([events1, events2], nil, nil)
+      service.run([{stream:events1, filter:[]}, {stream:events2, filter:[]}], nil, nil)
       #bounds taken from test joule on vagrant instance
       # AB Transients: [1564632656344436 - 1564637216855134]
       # events 0 - no events

@@ -215,10 +215,13 @@ module Joule
     end
 
     # === EVENT METHODS ===
-    def read_events(stream_id, start_time, end_time)
+    def read_events(stream_id, max_events, start_time, end_time, filter)
       query = {'id': stream_id}
       query['start'] = start_time unless start_time.nil?
       query['end'] = end_time unless end_time.nil?
+      query['limit'] = max_events
+      query['filter'] = filter.to_json unless filter.nil?
+
       options = {query: query}
       begin
         resp = self.class.get("#{@url}/event/data.json", options)
@@ -226,7 +229,14 @@ module Joule
       rescue
         raise "connection error"
       end
-      resp.parsed_response.map{|event| event.deep_symbolize_keys}
+      if resp.parsed_response.is_a?(Hash)
+        resp.parsed_response.deep_symbolize_keys!
+        resp
+      else # backwards compatibility
+        events = resp.parsed_response.map{|event| event.deep_symbolize_keys}
+        count = if events.nil? then 0 else events.length end
+        {count: count, events: events}
+      end
     end
     # === ANNOTATION METHODS ===
     def create_annotation(annotation)
@@ -258,29 +268,6 @@ module Joule
         raise "connection error"
       end
       resp.parsed_response
-    end
-
-    # === EVENT METHODS ===
-    def read_events(stream_id, max_events, start_time, end_time)
-      query = {'id': stream_id}
-      query['start'] = start_time unless start_time.nil?
-      query['end'] = end_time unless end_time.nil?
-      query['limit'] = max_events
-      options = {query: query}
-      begin
-        resp = self.class.get("#{@url}/event/data.json", options)
-        raise "error reading events #{resp.body}" unless resp.success?
-      rescue
-        raise "connection error"
-      end
-      if resp.parsed_response.is_a?(Hash)
-        resp.parsed_response.deep_symbolize_keys!
-        resp
-      else # backwards compatibility
-        events = resp.parsed_response.map{|event| event.deep_symbolize_keys}
-        count = if events.nil? then 0 else events.length end
-        {count: count, events: events}
-      end
     end
 
     def delete_annotation(annotation_id)

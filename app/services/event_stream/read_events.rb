@@ -10,7 +10,8 @@ class ReadEvents
 
   end
 
-  def run(event_streams, start_time, end_time)
+  def run(requested_streams, start_time, end_time)
+    # requested_streams is an array [{stream: EventStream, filter: array},...]
     @start_time = start_time
     @end_time = end_time
     if (not @start_time.nil?) and (not @end_time.nil?) and (@start_time > @end_time)
@@ -19,13 +20,21 @@ class ReadEvents
     end
     # pull data from streams
     @data = []
-    event_streams.each do |stream|
+    requested_streams.each do |requested_stream|
+      stream = requested_stream[:stream]
+      filter = requested_stream[:filter]
+      tag = requested_stream[:tag]
       adapter = NodeAdapterFactory.from_nilm(stream.db.nilm)
-      result = adapter.read_events(stream, stream.db.max_events_per_plot, @start_time, @end_time)
+      result = adapter.read_events(stream,
+                                   stream.db.max_events_per_plot,
+                                   @start_time, @end_time,
+                                   filter)
       if not result.nil?
+        result[:tag] = tag
         @data.append(result)
       else
-        @data.append({id: stream.id, valid: false, count: 0, events: nil})
+        @data.append({id: stream.id, valid: false, count: 0, events: nil,
+                      tag: tag})
         add_warning("unable to retrieve events for #{stream.path}")
       end
     end

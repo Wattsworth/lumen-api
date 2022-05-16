@@ -15,10 +15,18 @@ class EventsController < ApplicationController
   end
 
   def data
-    req_streams = EventStream.find(JSON.parse(params[:streams]))
+    # streams parameters is a JSON array
+    # [{id, filter},{id, filter},...]
+    stream_param = JSON.parse(params[:streams])
+    req_streams = stream_param.map do |param|
+      { stream: EventStream.find(param["id"]),
+        filter: param["filter"],
+        tag: param["tag"]
+      }
+    end
     # make sure the user is allowed to view these elements
-    req_streams.each do |stream|
-      unless current_user.views_nilm?(stream.db.nilm)
+    req_streams.each do |req_stream|
+      unless current_user.views_nilm?(req_stream[:stream].db.nilm)
         head :unauthorized
         return
       end

@@ -16,7 +16,7 @@ class MockAdapter
     end
     {data: data, decimation_factor: 1}
   end
-  def read_events(event_stream,max_events, start_time, end_time)
+  def read_events(event_stream,max_events, start_time, end_time, filter)
     data = @events.select{|d| d[:event_stream]==event_stream}.first[:data]
     @event_run_count += 1
     data
