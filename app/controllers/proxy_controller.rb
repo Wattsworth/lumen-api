@@ -1,6 +1,6 @@
 class ProxyController < ActionController::Base
 
-  skip_before_action :verify_authenticity_token
+  #skip_before_action :verify_authenticity_token
 
 
   # /app/id.json is DataApp#show

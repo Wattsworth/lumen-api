@@ -8,7 +8,7 @@ class DbDataTypeValidator < ActiveModel::Validator
     return if record.db_elements.count.zero?
     # TODO: check for valid format strings (float32, uint8, etc)
     unless record.db_elements.count == record.column_count
-      record.errors[:base] << "must have #{record.column_count} elements for format #{record.data_type}"
+      record.errors.add(:base, "must have #{record.column_count} elements for format #{record.data_type}")
     end
   end
 end
