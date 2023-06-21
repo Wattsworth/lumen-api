@@ -12,7 +12,8 @@ class AddNilmByKey
     required_keys =
         [:port, :scheme, :name, :api_key, :auth_key]
 
-
+    # sanitize parameters so the next line doesn't raise an exception:
+    request_params.slice!(*required_keys+[:name_is_host, :base_uri])
     joule_params = request_params.permit(required_keys+[:name_is_host, :base_uri])
     # since we're not explicitly checking for base_uri, give it a default value
     # it should always be present but may be "" which causes the require action to fail
