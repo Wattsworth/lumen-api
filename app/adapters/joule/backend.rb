@@ -53,7 +53,7 @@ module Joule
 
     def db_schema
       begin
-        resp = self.class.get("#{@url}/streams.json")
+        resp = self.class.get("#{@url}/folders.json")
         return nil unless resp.success?
       rescue StandardError => e
         Rails.logger.warn "Error retrieving db_schema for #{@url}: [#{e}]"

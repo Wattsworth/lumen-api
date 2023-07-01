@@ -1,0 +1,345 @@
+{
+  "id": 1,
+  "name": "root",
+  "description": null,
+  "locked": true,
+  "updated_at": "2023-07-01T01:00:46.825436",
+  "children": [
+    {
+      "id": 214,
+      "name": "folder_1",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:00:46.712913",
+      "children": [],
+      "streams": [
+        {
+          "id": 210,
+          "name": "stream_1_1",
+          "description": "",
+          "datatype": "float32",
+          "layout": "float32_3",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:00:46.648129",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 569,
+              "index": 0,
+              "name": "x",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": 100.0,
+              "default_min": null
+            },
+            {
+              "id": 570,
+              "index": 1,
+              "name": "y",
+              "units": "",
+              "plottable": true,
+              "display_type": "EVENT",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": -6.0
+            },
+            {
+              "id": 571,
+              "index": 2,
+              "name": "z",
+              "units": "watts",
+              "plottable": true,
+              "display_type": "DISCRETE",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        },
+        {
+          "id": 211,
+          "name": "stream_1_2",
+          "description": "",
+          "datatype": "uint8",
+          "layout": "uint8_3",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:00:46.712913",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 572,
+              "index": 0,
+              "name": "0",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            },
+            {
+              "id": 573,
+              "index": 1,
+              "name": "1",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            },
+            {
+              "id": 574,
+              "index": 2,
+              "name": "2",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        }
+      ],
+      "event_streams": []
+    },
+    {
+      "id": 216,
+      "name": "folder_3",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:00:46.789432",
+      "children": [
+        {
+          "id": 217,
+          "name": "folder_3_1",
+          "description": null,
+          "locked": false,
+          "updated_at": "2023-07-01T01:00:46.789432",
+          "children": [],
+          "streams": [
+            {
+              "id": 214,
+              "name": "stream_3_1_1",
+              "description": "",
+              "datatype": "int32",
+              "layout": "int32_3",
+              "keep_us": -1,
+              "is_configured": false,
+              "is_source": false,
+              "is_destination": false,
+              "updated_at": "2023-07-01T01:00:46.789432",
+              "locked": false,
+              "active": false,
+              "decimate": true,
+              "elements": [
+                {
+                  "id": 580,
+                  "index": 0,
+                  "name": "0",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                },
+                {
+                  "id": 581,
+                  "index": 1,
+                  "name": "1",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                },
+                {
+                  "id": 582,
+                  "index": 2,
+                  "name": "2",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                }
+              ]
+            }
+          ],
+          "event_streams": []
+        }
+      ],
+      "streams": [
+        {
+          "id": 213,
+          "name": "stream_3_1",
+          "description": "",
+          "datatype": "uint16",
+          "layout": "uint16_3",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:00:46.781562",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 577,
+              "index": 0,
+              "name": "0",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            },
+            {
+              "id": 578,
+              "index": 1,
+              "name": "1",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            },
+            {
+              "id": 579,
+              "index": 2,
+              "name": "2",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        }
+      ],
+      "event_streams": []
+    },
+    {
+      "id": 215,
+      "name": "folder_2",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:00:46.806925",
+      "children": [],
+      "streams": [
+        {
+          "id": 212,
+          "name": "stream_2_1",
+          "description": "",
+          "datatype": "int16",
+          "layout": "int16_2",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:00:46.770594",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 575,
+              "index": 0,
+              "name": "0",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            },
+            {
+              "id": 576,
+              "index": 1,
+              "name": "1",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        }
+      ],
+      "event_streams": [
+        {
+          "id": 19,
+          "name": "transients",
+          "description": "",
+          "event_fields": {},
+          "updated_at": "2023-07-01T01:00:46.797384"
+        },
+        {
+          "id": 20,
+          "name": "loads",
+          "description": "",
+          "event_fields": {},
+          "updated_at": "2023-07-01T01:00:46.806925"
+        }
+      ]
+    },
+    {
+      "id": 218,
+      "name": "folder_4",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:00:46.825436",
+      "children": [
+        {
+          "id": 219,
+          "name": "folder_4_1",
+          "description": null,
+          "locked": false,
+          "updated_at": "2023-07-01T01:00:46.825436",
+          "children": [],
+          "streams": [],
+          "event_streams": []
+        }
+      ],
+      "streams": [],
+      "event_streams": []
+    }
+  ],
+  "streams": [],
+  "event_streams": []
+}

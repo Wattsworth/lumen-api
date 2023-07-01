@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_19_150859) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_23_142722) do
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
     t.string "joule_id"
@@ -79,6 +79,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_150859) do
     t.integer "size_on_disk", limit: 8
     t.integer "joule_id"
     t.boolean "locked"
+    t.datetime "last_update", default: "1970-01-01 00:00:00"
     t.index ["joule_id"], name: "index_db_folders_on_joule_id"
   end
 
@@ -101,6 +102,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_150859) do
     t.integer "db_id"
     t.integer "joule_id"
     t.boolean "locked"
+    t.datetime "last_update", default: "1970-01-01 00:00:00"
     t.index ["joule_id"], name: "index_db_streams_on_joule_id"
   end
 
@@ -132,6 +134,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_19_150859) do
     t.datetime "updated_at", null: false
     t.integer "event_count"
     t.string "event_fields_json"
+    t.datetime "last_update", default: "1970-01-01 00:00:00"
     t.index ["db_folder_id"], name: "index_event_streams_on_db_folder_id"
     t.index ["db_id"], name: "index_event_streams_on_db_id"
     t.index ["joule_id"], name: "index_event_streams_on_joule_id"

@@ -1,0 +1,283 @@
+{
+  "id": 1,
+  "name": "root",
+  "description": null,
+  "locked": true,
+  "updated_at": "2023-07-01T01:04:54.865609",
+  "children": [
+    {
+      "id": 214,
+      "name": "folder_1",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:04:06.201445",
+      "children": [],
+      "streams": [
+        {
+          "id": 210,
+          "name": "stream_1_1",
+          "description": "",
+          "datatype": "float32",
+          "layout": "float32_3",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:00:46.648129",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 569,
+              "index": 0,
+              "name": "x",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": 100.0,
+              "default_min": null
+            },
+            {
+              "id": 570,
+              "index": 1,
+              "name": "y",
+              "units": "",
+              "plottable": true,
+              "display_type": "EVENT",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": -6.0
+            },
+            {
+              "id": 571,
+              "index": 2,
+              "name": "z",
+              "units": "watts",
+              "plottable": true,
+              "display_type": "DISCRETE",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        }
+      ],
+      "event_streams": []
+    },
+    {
+      "id": 218,
+      "name": "folder_4",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:04:37.485771",
+      "children": [
+        {
+          "id": 219,
+          "name": "folder_4_1",
+          "description": null,
+          "locked": false,
+          "updated_at": "2023-07-01T01:04:37.435366",
+          "children": [],
+          "streams": [
+            {
+              "id": 211,
+              "name": "stream_1_2",
+              "description": "updated_description",
+              "datatype": "uint8",
+              "layout": "uint8_3",
+              "keep_us": -1,
+              "is_configured": false,
+              "is_source": false,
+              "is_destination": false,
+              "updated_at": "2023-07-01T01:04:06.201445",
+              "locked": false,
+              "active": false,
+              "decimate": true,
+              "elements": [
+                {
+                  "id": 572,
+                  "index": 0,
+                  "name": "0",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                },
+                {
+                  "id": 573,
+                  "index": 1,
+                  "name": "1",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                },
+                {
+                  "id": 574,
+                  "index": 2,
+                  "name": "2",
+                  "units": "",
+                  "plottable": true,
+                  "display_type": "CONTINUOUS",
+                  "offset": 0.0,
+                  "scale_factor": 1.0,
+                  "default_max": null,
+                  "default_min": null
+                }
+              ]
+            }
+          ],
+          "event_streams": [
+            {
+              "id": 20,
+              "name": "loads",
+              "description": "",
+              "event_fields": {},
+              "updated_at": "2023-07-01T01:00:46.806925"
+            }
+          ]
+        },
+        {
+          "id": 216,
+          "name": "folder_3",
+          "description": null,
+          "locked": false,
+          "updated_at": "2023-07-01T01:04:37.485771",
+          "children": [
+            {
+              "id": 217,
+              "name": "folder_3_1",
+              "description": null,
+              "locked": false,
+              "updated_at": "2023-07-01T01:01:52.331388",
+              "children": [],
+              "streams": [
+                {
+                  "id": 214,
+                  "name": "stream_3_1_1",
+                  "description": "",
+                  "datatype": "int32",
+                  "layout": "int32_3",
+                  "keep_us": -1,
+                  "is_configured": false,
+                  "is_source": false,
+                  "is_destination": false,
+                  "updated_at": "2023-07-01T01:01:52.331388",
+                  "locked": false,
+                  "active": false,
+                  "decimate": true,
+                  "elements": [
+                    {
+                      "id": 580,
+                      "index": 0,
+                      "name": "0",
+                      "units": "updated_units",
+                      "plottable": true,
+                      "display_type": "CONTINUOUS",
+                      "offset": 0.0,
+                      "scale_factor": 1.0,
+                      "default_max": null,
+                      "default_min": null
+                    },
+                    {
+                      "id": 581,
+                      "index": 1,
+                      "name": "1",
+                      "units": "",
+                      "plottable": true,
+                      "display_type": "CONTINUOUS",
+                      "offset": 0.0,
+                      "scale_factor": 1.0,
+                      "default_max": null,
+                      "default_min": null
+                    },
+                    {
+                      "id": 582,
+                      "index": 2,
+                      "name": "2",
+                      "units": "",
+                      "plottable": true,
+                      "display_type": "CONTINUOUS",
+                      "offset": 0.0,
+                      "scale_factor": 1.0,
+                      "default_max": null,
+                      "default_min": null
+                    }
+                  ]
+                }
+              ],
+              "event_streams": []
+            }
+          ],
+          "streams": [],
+          "event_streams": []
+        }
+      ],
+      "streams": [],
+      "event_streams": []
+    },
+    {
+      "id": 220,
+      "name": "new",
+      "description": null,
+      "locked": false,
+      "updated_at": "2023-07-01T01:04:54.865609",
+      "children": [],
+      "streams": [
+        {
+          "id": 216,
+          "name": "new_data_stream",
+          "description": "",
+          "datatype": "float32",
+          "layout": "float32_1",
+          "keep_us": -1,
+          "is_configured": false,
+          "is_source": false,
+          "is_destination": false,
+          "updated_at": "2023-07-01T01:04:54.865609",
+          "locked": false,
+          "active": false,
+          "decimate": true,
+          "elements": [
+            {
+              "id": 586,
+              "index": 0,
+              "name": "0",
+              "units": "",
+              "plottable": true,
+              "display_type": "CONTINUOUS",
+              "offset": 0.0,
+              "scale_factor": 1.0,
+              "default_max": null,
+              "default_min": null
+            }
+          ]
+        }
+      ],
+      "event_streams": [
+        {
+          "id": 21,
+          "name": "new_event_stream",
+          "description": "",
+          "event_fields": {
+            "test": "string"
+          },
+          "updated_at": "2023-07-01T01:04:54.851513"
+        }
+      ]
+    }
+  ],
+  "streams": [],
+  "event_streams": []
+}

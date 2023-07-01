@@ -6,10 +6,17 @@ module Joule
 
     def initialize(db)
       @db = db
+      @deleted_folders = []
+      @deleted_db_streams = []
+      @deleted_event_streams = []
       super()
     end
 
     def run(dbinfo, schema)
+      # reset the accumulator arrays
+      @deleted_event_streams = []
+      @deleted_db_streams = []
+      @deleted_folders = []
       # check to make sure dbinfo and schema are set
       # if either is nil, the database is not available
       if dbinfo.nil? || schema.nil?
@@ -20,6 +27,10 @@ module Joule
       # go through the schema and update the database
       @db.root_folder ||= DbFolder.create(db: @db)
       __update_folder(@db.root_folder, schema, '')
+      DbFolder.destroy(@deleted_folders)
+      DbStream.destroy(@deleted_db_streams)
+      EventStream.destroy(@deleted_event_streams)
+
       @db.available = true
       @db.save
       self
@@ -27,6 +38,17 @@ module Joule
 
     def __update_folder(db_folder, schema, parent_path)
       attrs = schema.slice(*DbFolder.defined_attributes)
+      # check to see if this db_folder has changed since last update
+      attrs[:last_update] = schema[:updated_at].to_datetime
+      if db_folder.last_update >= attrs[:last_update]
+        return puts "ignoring #{db_folder.name}:#{db_folder.id}, #{db_folder.last_update}>#{schema[:updated_at]} "
+      end
+      if db_folder.id.nil?
+        puts "creating #{schema[:name]}"
+      else
+        puts "updating #{db_folder.name}:#{db_folder.id}"
+      end
+
       # add in extra attributes that require conversion
       if db_folder.parent.nil?
         attrs[:path] = ""
@@ -45,9 +67,17 @@ module Joule
       locked = false
       schema[:children].each do |child_schema|
         child = db_folder.subfolders.find_by_joule_id(child_schema[:id])
+        if child.nil? # check to see if this folder has been moved from a different location
+          child = DbFolder.find_by_joule_id(child_schema[:id])
+          if not child.nil?
+            child.parent = db_folder
+            puts "moved #{child.name} to #{db_folder.name}"
+            @deleted_folders = @deleted_folders - [child.id]
+          end
+        end
         child ||= DbFolder.new(parent: db_folder, db: db_folder.db)
         __update_folder(child, child_schema, db_folder.path)
-        size_on_disk+=child.size_on_disk
+        size_on_disk+=child.size_on_disk unless child.size_on_disk.nil?
         unless child.start_time.nil?
           if start_time.nil?
             start_time = child.start_time
@@ -65,16 +95,24 @@ module Joule
         updated_ids << child_schema[:id]
         locked = true if child.locked?
       end
-      # remove any subfolders that are no longer on the folder
-      db_folder.subfolders.where.not(joule_id: updated_ids).destroy_all
+      # mark any subfolders that are no longer on the folder for deletion
+      @deleted_folders += db_folder.subfolders.where.not(joule_id: updated_ids).pluck(:id)
 
       # update or create data streams
       updated_ids=[]
       schema[:streams].each do |stream_schema|
         stream = db_folder.db_streams.find_by_joule_id(stream_schema[:id])
+        if stream.nil? # check to see if this stream has been moved from a different location
+          stream = DbStream.find_by_joule_id(stream_schema[:id])
+          if not stream.nil?
+            stream.db_folder = db_folder
+            puts "moved #{stream.name} to #{db_folder.name}"
+            @deleted_db_streams = @deleted_db_streams - [stream.id]
+          end
+        end
         stream ||= DbStream.new(db_folder: db_folder, db: db_folder.db)
         __update_stream(stream, stream_schema, db_folder.path)
-        size_on_disk+=stream.size_on_disk
+        size_on_disk+=stream.size_on_disk unless stream.size_on_disk.nil?
         unless stream.start_time.nil?
           if start_time.nil?
             start_time = stream.start_time
@@ -92,20 +130,30 @@ module Joule
         locked=true if stream.locked?
         updated_ids << stream_schema[:id]
       end
-      # remove any streams that are no longer in the folder
-      db_folder.db_streams.where.not(joule_id: updated_ids).destroy_all
+      # mark any db streams that are no longer on the folder for deletion
+      @deleted_db_streams += db_folder.db_streams.where.not(joule_id: updated_ids).pluck(:id)
 
       # update or create event streams
       updated_ids=[]
       schema[:event_streams] ||= []
       schema[:event_streams].each do |stream_schema|
         stream = db_folder.event_streams.find_by_joule_id(stream_schema[:id])
+        if stream.nil? # check to see if this stream has been moved from a different location
+          stream = EventStream.find_by_joule_id(stream_schema[:id])
+          if not stream.nil?
+            stream.db_folder = db_folder
+            puts "moved #{stream.name} to #{db_folder.name}"
+            @deleted_event_streams = @deleted_event_streams - [stream.id]
+          end
+        end
         stream ||= EventStream.new(db_folder: db_folder, db: db_folder.db)
+
         __update_event_stream(stream, stream_schema, db_folder.path)
         updated_ids << stream_schema[:id]
       end
-      # remove any streams that are no longer in the folder
-      db_folder.event_streams.where.not(joule_id: updated_ids).destroy_all
+
+      # mark any event streams that are no longer in the folder for deletion
+      @deleted_event_streams += db_folder.event_streams.where.not(joule_id: updated_ids).pluck(:id)
 
       # save the new disk size
       db_folder.size_on_disk = size_on_disk
@@ -121,13 +169,14 @@ module Joule
       attrs[:path] = "#{parent_path}/#{schema[:name]}"
       attrs[:data_type] = "#{schema[:datatype].downcase}_#{schema[:elements].count}"
       attrs[:joule_id] = schema[:id]
-      attrs[:start_time] = schema[:data_info][:start]
-      attrs[:end_time] = schema[:data_info][:end]
-      attrs[:total_rows] = schema[:data_info][:rows]
-      attrs[:total_time] = schema[:data_info][:total_time]
-      attrs[:size_on_disk] = schema[:data_info][:bytes]
-
-      db_stream.update(attrs)
+      if schema.has_key?(:data_info)
+        attrs[:start_time] = schema[:data_info][:start]
+        attrs[:end_time] = schema[:data_info][:end]
+        attrs[:total_rows] = schema[:data_info][:rows]
+        attrs[:total_time] = schema[:data_info][:total_time]
+        attrs[:size_on_disk] = schema[:data_info][:bytes]
+      end
+      db_stream.update!(attrs)
       #db_stream.db_elements.destroy_all
       schema[:elements].each do |element_config|
         element = db_stream.db_elements.find_by_column(element_config[:index])
@@ -146,9 +195,11 @@ module Joule
       # add in extra attributes that require conversion
       attrs[:path] = "#{parent_path}/#{schema[:name]}"
       attrs[:joule_id] = schema[:id]
-      attrs[:start_time] = schema[:data_info][:start]
-      attrs[:end_time] = schema[:data_info][:end]
-      attrs[:event_count] = schema[:data_info][:event_count]
+      if schema.has_key?(:data_info)
+        attrs[:start_time] = schema[:data_info][:start]
+        attrs[:end_time] = schema[:data_info][:end]
+        attrs[:event_count] = schema[:data_info][:event_count]
+      end
       attrs[:event_fields_json] = schema[:event_fields].to_json
       event_stream.update(attrs)
     end
