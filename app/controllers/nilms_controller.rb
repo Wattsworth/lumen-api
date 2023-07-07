@@ -67,6 +67,13 @@ class NilmsController < ApplicationController
   # DELETE /nilms/1.json
   def destroy
     @service = StubService.new
+    @db = @nilm.db
+    DbStream.where(db_id: @db.id).each do |stream|
+      DbElement.where(db_stream_id: stream.id).delete_all
+    end
+    DbStream.where(db_id: @db.id).delete_all
+    DbFolder.where(db_id: @db.id).delete_all
+    EventStream.where(db_id: @db.id).delete_all
     @nilm.destroy
     @service.set_notice('removed nilm')
     render 'helpers/empty_response', status: :ok
