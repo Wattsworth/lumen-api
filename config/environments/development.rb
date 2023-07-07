@@ -77,6 +77,8 @@ Rails.application.configure do
     end
   end
 
+  config.web_console.permissions = '192.168.64.1'
+
   # ------- Lumen Custom Settings ----------
   #
 

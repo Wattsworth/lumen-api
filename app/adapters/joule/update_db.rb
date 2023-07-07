@@ -39,9 +39,12 @@ module Joule
     def __update_folder(db_folder, schema, parent_path)
       attrs = schema.slice(*DbFolder.defined_attributes)
       # check to see if this db_folder has changed since last update
-      attrs[:last_update] = schema[:updated_at].to_datetime
-      if db_folder.last_update >= attrs[:last_update]
-        return puts "ignoring #{db_folder.name}:#{db_folder.id}, #{db_folder.last_update}>#{schema[:updated_at]} "
+      # only do this if the joule node supports timestamps
+      if not schema[:updated_at].nil?
+        attrs[:last_update] = schema[:updated_at].to_datetime
+        if db_folder.last_update >= attrs[:last_update]
+          return puts "ignoring #{db_folder.name}:#{db_folder.id}, #{db_folder.last_update}>#{schema[:updated_at]} "
+        end
       end
       if db_folder.id.nil?
         puts "creating #{schema[:name]}"
@@ -111,6 +114,7 @@ module Joule
           end
         end
         stream ||= DbStream.new(db_folder: db_folder, db: db_folder.db)
+        puts "Updating #{stream.name}"
         __update_stream(stream, stream_schema, db_folder.path)
         size_on_disk+=stream.size_on_disk unless stream.size_on_disk.nil?
         unless stream.start_time.nil?
@@ -165,6 +169,14 @@ module Joule
 
     def __update_stream(db_stream, schema, parent_path)
       attrs = schema.slice(*DbStream.defined_attributes)
+      # check to see if this stream has changed since last update
+      # only do this if the joule node supports timestamps
+      if not schema[:updated_at].nil?
+        attrs[:last_update] = schema[:updated_at].to_datetime
+        if db_stream.last_update >= attrs[:last_update]
+          return puts "ignoring Stream #{db_stream.name}:#{db_stream.id}, #{db_stream.last_update}>#{schema[:updated_at]} "
+        end
+      end
       # add in extra attributes that require conversion
       attrs[:path] = "#{parent_path}/#{schema[:name]}"
       attrs[:data_type] = "#{schema[:datatype].downcase}_#{schema[:elements].count}"

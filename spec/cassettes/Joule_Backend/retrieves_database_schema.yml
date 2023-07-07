@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://localhost:3030/streams.json
+    uri: https://localhost:3030/folders.json
     body:
       encoding: US-ASCII
       string: ''

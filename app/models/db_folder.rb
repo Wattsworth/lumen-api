@@ -5,7 +5,7 @@
 # a folder in the database, may contain one or more DbFiles as files
 # and one or more DbFolders as subfolders
 class DbFolder < ApplicationRecord
-  belongs_to :parent, class_name: 'DbFolder', optional: true
+  belongs_to :parent, class_name: 'DbFolder', optional: true, dependent: :destroy
   belongs_to :db, optional: false
 
   has_many :subfolders,
