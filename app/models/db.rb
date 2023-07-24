@@ -10,6 +10,8 @@ class Db < ApplicationRecord
              dependent: :destroy
   belongs_to :nilm
   has_many :db_streams #flat map of all streams in database
+  has_many :db_folders
+  has_many :event_streams
   #---Validations
   validates :max_points_per_plot, numericality: { only_integer: true }
 

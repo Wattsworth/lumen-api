@@ -71,7 +71,7 @@ module Joule
       schema[:children].each do |child_schema|
         child = db_folder.subfolders.find_by_joule_id(child_schema[:id])
         if child.nil? # check to see if this folder has been moved from a different location
-          child = DbFolder.find_by_joule_id(child_schema[:id])
+          child = @db.db_folders.find_by_joule_id(child_schema[:id])
           if not child.nil?
             child.parent = db_folder
             puts "moved #{child.name} to #{db_folder.name}"
@@ -106,7 +106,7 @@ module Joule
       schema[:streams].each do |stream_schema|
         stream = db_folder.db_streams.find_by_joule_id(stream_schema[:id])
         if stream.nil? # check to see if this stream has been moved from a different location
-          stream = DbStream.find_by_joule_id(stream_schema[:id])
+          stream = @db.db_streams.find_by_joule_id(stream_schema[:id])
           if not stream.nil?
             stream.db_folder = db_folder
             puts "moved #{stream.name} to #{db_folder.name}"
@@ -143,7 +143,7 @@ module Joule
       schema[:event_streams].each do |stream_schema|
         stream = db_folder.event_streams.find_by_joule_id(stream_schema[:id])
         if stream.nil? # check to see if this stream has been moved from a different location
-          stream = EventStream.find_by_joule_id(stream_schema[:id])
+          stream = @db.event_streams.find_by_joule_id(stream_schema[:id])
           if not stream.nil?
             stream.db_folder = db_folder
             puts "moved #{stream.name} to #{db_folder.name}"
