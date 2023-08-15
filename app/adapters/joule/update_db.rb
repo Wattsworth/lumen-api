@@ -27,9 +27,9 @@ module Joule
       # go through the schema and update the database
       @db.root_folder ||= DbFolder.create(db: @db)
       __update_folder(@db.root_folder, schema, '')
-      DbFolder.destroy(@deleted_folders)
       DbStream.destroy(@deleted_db_streams)
       EventStream.destroy(@deleted_event_streams)
+      DbFolder.destroy(@deleted_folders)
 
       @db.available = true
       @db.save
@@ -98,7 +98,7 @@ module Joule
         updated_ids << child_schema[:id]
         locked = true if child.locked?
       end
-      # mark any subfolders that are no longer on the folder for deletion
+      # mark any subfolders that are no longer in the folder for deletion
       @deleted_folders += db_folder.subfolders.where.not(joule_id: updated_ids).pluck(:id)
 
       # update or create data streams
