@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_23_142722) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_16_022450) do
   create_table "data_apps", force: :cascade do |t|
     t.string "name"
     t.string "joule_id"
@@ -103,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_23_142722) do
     t.integer "joule_id"
     t.boolean "locked"
     t.datetime "last_update", default: "1970-01-01 00:00:00"
+    t.boolean "active", default: false
     t.index ["joule_id"], name: "index_db_streams_on_joule_id"
   end
 

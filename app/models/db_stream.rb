@@ -28,7 +28,7 @@ class DbStream < ApplicationRecord
   validates_with DbDataTypeValidator
 
   def self.defined_attributes
-     [:name, :name_abbrev, :description, :hidden, :data_type, :locked]
+     [:name, :name_abbrev, :description, :hidden, :data_type, :locked, :active]
   end
 
   def data_format
@@ -47,7 +47,7 @@ class DbStream < ApplicationRecord
   end
 
   def self.json_keys
-    [:id, :name, :description, :path, :start_time,
+    [:id, :name, :description, :path, :start_time, :active,
      :end_time, :size_on_disk, :total_rows, :total_time,
      :data_type, :name_abbrev, :delete_locked, :locked, :hidden]
   end

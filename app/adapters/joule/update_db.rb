@@ -27,6 +27,13 @@ module Joule
       # go through the schema and update the database
       @db.root_folder ||= DbFolder.create(db: @db)
       __update_folder(@db.root_folder, schema, '')
+      if not schema[:active_data_streams].nil?
+        active_stream_ids = schema[:active_data_streams]
+        # activate currently inactive streams
+        DbStream.where(db_id: @db.id, active: false, joule_id: active_stream_ids).update(active: true)
+        # deactivate streams that are no longer active
+        DbStream.where(db_id: @db.id, active: true).where.not(joule_id: active_stream_ids).update(active: false)
+      end
       DbStream.destroy(@deleted_db_streams)
       EventStream.destroy(@deleted_event_streams)
       DbFolder.destroy(@deleted_folders)
