@@ -1,20 +1,20 @@
 {
-  "id": 1,
+  "id": 2,
   "name": "root",
   "description": null,
   "locked": true,
-  "updated_at": "2023-07-01T01:04:54.865609",
+  "updated_at": "2023-08-17T15:56:02.781566",
   "children": [
     {
-      "id": 214,
+      "id": 52,
       "name": "folder_1",
       "description": null,
       "locked": false,
-      "updated_at": "2023-07-01T01:04:06.201445",
+      "updated_at": "2023-08-17T15:56:02.295146",
       "children": [],
       "streams": [
         {
-          "id": 210,
+          "id": 52,
           "name": "stream_1_1",
           "description": "",
           "datatype": "float32",
@@ -23,13 +23,13 @@
           "is_configured": false,
           "is_source": false,
           "is_destination": false,
-          "updated_at": "2023-07-01T01:00:46.648129",
+          "updated_at": "2023-08-17T15:56:01.605319",
           "locked": false,
           "active": false,
           "decimate": true,
           "elements": [
             {
-              "id": 569,
+              "id": 129,
               "index": 0,
               "name": "x",
               "units": "",
@@ -41,7 +41,7 @@
               "default_min": null
             },
             {
-              "id": 570,
+              "id": 130,
               "index": 1,
               "name": "y",
               "units": "",
@@ -53,7 +53,7 @@
               "default_min": -6.0
             },
             {
-              "id": 571,
+              "id": 131,
               "index": 2,
               "name": "z",
               "units": "watts",
@@ -70,22 +70,22 @@
       "event_streams": []
     },
     {
-      "id": 218,
+      "id": 56,
       "name": "folder_4",
       "description": null,
       "locked": false,
-      "updated_at": "2023-07-01T01:04:37.485771",
+      "updated_at": "2023-08-17T15:56:02.616925",
       "children": [
         {
-          "id": 219,
+          "id": 57,
           "name": "folder_4_1",
           "description": null,
           "locked": false,
-          "updated_at": "2023-07-01T01:04:37.435366",
+          "updated_at": "2023-08-17T15:56:02.526587",
           "children": [],
           "streams": [
             {
-              "id": 211,
+              "id": 53,
               "name": "stream_1_2",
               "description": "updated_description",
               "datatype": "uint8",
@@ -94,13 +94,13 @@
               "is_configured": false,
               "is_source": false,
               "is_destination": false,
-              "updated_at": "2023-07-01T01:04:06.201445",
+              "updated_at": "2023-08-17T15:56:02.295146",
               "locked": false,
               "active": false,
               "decimate": true,
               "elements": [
                 {
-                  "id": 572,
+                  "id": 132,
                   "index": 0,
                   "name": "0",
                   "units": "",
@@ -112,7 +112,7 @@
                   "default_min": null
                 },
                 {
-                  "id": 573,
+                  "id": 133,
                   "index": 1,
                   "name": "1",
                   "units": "",
@@ -124,7 +124,7 @@
                   "default_min": null
                 },
                 {
-                  "id": 574,
+                  "id": 134,
                   "index": 2,
                   "name": "2",
                   "units": "",
@@ -140,31 +140,31 @@
           ],
           "event_streams": [
             {
-              "id": 20,
+              "id": 23,
               "name": "loads",
               "description": "",
               "event_fields": {},
-              "updated_at": "2023-07-01T01:00:46.806925"
+              "updated_at": "2023-08-17T15:56:01.800255"
             }
           ]
         },
         {
-          "id": 216,
+          "id": 54,
           "name": "folder_3",
           "description": null,
           "locked": false,
-          "updated_at": "2023-07-01T01:04:37.485771",
+          "updated_at": "2023-08-17T15:56:02.616925",
           "children": [
             {
-              "id": 217,
+              "id": 55,
               "name": "folder_3_1",
               "description": null,
               "locked": false,
-              "updated_at": "2023-07-01T01:01:52.331388",
+              "updated_at": "2023-08-17T15:56:02.040790",
               "children": [],
               "streams": [
                 {
-                  "id": 214,
+                  "id": 56,
                   "name": "stream_3_1_1",
                   "description": "",
                   "datatype": "int32",
@@ -173,13 +173,13 @@
                   "is_configured": false,
                   "is_source": false,
                   "is_destination": false,
-                  "updated_at": "2023-07-01T01:01:52.331388",
+                  "updated_at": "2023-08-17T15:56:02.040790",
                   "locked": false,
                   "active": false,
                   "decimate": true,
                   "elements": [
                     {
-                      "id": 580,
+                      "id": 140,
                       "index": 0,
                       "name": "0",
                       "units": "updated_units",
@@ -191,7 +191,7 @@
                       "default_min": null
                     },
                     {
-                      "id": 581,
+                      "id": 141,
                       "index": 1,
                       "name": "1",
                       "units": "",
@@ -203,7 +203,7 @@
                       "default_min": null
                     },
                     {
-                      "id": 582,
+                      "id": 142,
                       "index": 2,
                       "name": "2",
                       "units": "",
@@ -228,15 +228,15 @@
       "event_streams": []
     },
     {
-      "id": 220,
+      "id": 58,
       "name": "new",
       "description": null,
       "locked": false,
-      "updated_at": "2023-07-01T01:04:54.865609",
+      "updated_at": "2023-08-17T15:56:02.781566",
       "children": [],
       "streams": [
         {
-          "id": 216,
+          "id": 58,
           "name": "new_data_stream",
           "description": "",
           "datatype": "float32",
@@ -245,13 +245,13 @@
           "is_configured": false,
           "is_source": false,
           "is_destination": false,
-          "updated_at": "2023-07-01T01:04:54.865609",
+          "updated_at": "2023-08-17T15:56:02.781566",
           "locked": false,
           "active": false,
           "decimate": true,
           "elements": [
             {
-              "id": 586,
+              "id": 146,
               "index": 0,
               "name": "0",
               "units": "",
@@ -267,17 +267,18 @@
       ],
       "event_streams": [
         {
-          "id": 21,
+          "id": 24,
           "name": "new_event_stream",
           "description": "",
           "event_fields": {
             "test": "string"
           },
-          "updated_at": "2023-07-01T01:04:54.851513"
+          "updated_at": "2023-08-17T15:56:02.757111"
         }
       ]
     }
   ],
   "streams": [],
-  "event_streams": []
+  "event_streams": [],
+  "active_data_streams": []
 }

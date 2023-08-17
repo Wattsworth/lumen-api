@@ -68,6 +68,14 @@ module Joule
       attrs[:joule_id] = schema[:id]
       attrs[:hidden] = false
       db_folder.update(attrs)
+      unless db_folder.valid?
+        if db_folder.errors.messages.keys.include?(:name) \
+          and db_folder.errors.messages[:name][0].include?("already used")
+          db_folder.parent.subfolders.where(name: db_folder.name).update(name: "#{db_folder.name}__#{rand}")
+          # try to save again
+          db_folder.update!(attrs)
+        end
+      end
       #puts db_folder.parent.id
       # update or create subfolders
       updated_ids = []
@@ -195,7 +203,17 @@ module Joule
         attrs[:total_time] = schema[:data_info][:total_time]
         attrs[:size_on_disk] = schema[:data_info][:bytes]
       end
-      db_stream.update!(attrs)
+      db_stream.update(attrs)
+      # check if model has a unique name, if not rename the conflicting
+      # stream which should be flagged for deletion later
+      unless db_stream.valid?
+        if db_stream.errors.messages.keys.include?(:name) \
+          and db_stream.errors.messages[:name][0].include?("already used")
+          db_stream.db_folder.db_streams.where(name: db_stream.name).update(name: "#{db_stream.name}__#{rand}")
+          # try to save again
+          db_stream.update!(attrs)
+        end
+      end
       #db_stream.db_elements.destroy_all
       schema[:elements].each do |element_config|
         element = db_stream.db_elements.find_by_column(element_config[:index])
@@ -221,6 +239,16 @@ module Joule
       end
       attrs[:event_fields_json] = schema[:event_fields].to_json
       event_stream.update(attrs)
+      # check if model has a unique name, if not rename the conflicting
+      # stream which should be flagged for deletion later
+      unless event_stream.valid?
+        if event_stream.errors.messages.keys.include?(:name) \
+          and event_stream.errors.messages[:name][0].include?("already used")
+          event_stream.db_folder.event_streams.where(name: event_stream.name).update(name: "#{event_stream.name}__#{rand}")
+          # try to save again
+          event_stream.update!(attrs)
+        end
+      end
     end
 
 

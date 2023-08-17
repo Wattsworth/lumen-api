@@ -160,6 +160,33 @@ describe Joule::UpdateDb do
         new_folder = DbFolder.find_by_name("new")
         expect(new_folder.db_streams.count).to eq 1
         expect(new_folder.event_streams.count).to eq 1
+        new_event_stream_id = EventStream.find_by_name("new_event_stream").id
+        folder_4_id = DbFolder.find_by_name("folder_4").id
+        folder_3_id = DbFolder.find_by_name("folder_3").id
+        #################################
+        ### Now update the schema (5) ###
+        #################################
+        puts "##### remove and add new with same name #######"
+        service.run({}, load_schema('5_modified_schema'))
+        # aggregate checks
+        expect(@db.root_folder.subfolders.count).to eq 3
+        expect(DbFolder.count).to eq 8
+        expect(EventStream.count).to eq 4
+        expect(DbElement.count).to eq 13
+        expect(DbStream.count).to eq 5
+        # expect things that moved to have the same id...
+        expect(DbFolder.find_by_name("folder_4").id).to eq folder_4_id
+        expect(DbFolder.find_by_name("folder_3").id).to eq folder_3_id
+        # ...but be in a new location...
+        expect(DbFolder.find(folder_4_id).parent.name).to eq "folder_1"
+        expect(DbFolder.find(folder_3_id).parent.name).to eq "folder_1"
+        expect(EventStream.find(new_event_stream_id).db_folder.name).to eq "folder_4"
+        # ...and have the same attributes as before
+        expect(EventStream.find(new_event_stream_id).name).to eq "new_event_stream"
+        # expect new items to be added
+        expect(DbFolder.where(name:"new").first.event_streams.first.name).to eq "new_event_stream"
+        expect(DbFolder.where(name:"folder_1").first.db_streams.first.name).to eq "stream_1_1"
+        expect(@db.root_folder.subfolders.where(name: "folder_4").first).not_to be_nil
       end
     end
   end
