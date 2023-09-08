@@ -4,6 +4,7 @@ require 'resolv'
 
 class AddNilmByUser
   include ServiceStatus
+  include VerifyUrl
   attr_reader :nilm
 
   def run(request_params, remote_ip)
@@ -46,6 +47,8 @@ class AddNilmByUser
     url.port = request_params[:port]
     url.scheme = request_params[:scheme]
     url.path = request_params[:base_uri]
+    # check to see if this is a valid URL for Joule
+    url = verify_url(url,request_params[:api_key])
     #3 Create the Nilm
     adapter = Joule::Adapter.new(url, request_params[:api_key])
     service = CreateNilm.new(adapter)
