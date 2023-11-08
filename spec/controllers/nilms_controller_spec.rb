@@ -182,7 +182,9 @@ RSpec.describe NilmsController, type: :request do
                        scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
           params: user_params.merge(nilm_params)
-        expect(response).to have_http_status(:ok)
+        # since there is no NILM at this address the response is a 422 error
+        expect(response.body).to include("cannot contact node at")
+        expect(response).to have_http_status(:unprocessable_entity)
         # make sure the NILM was built
         nilm = Nilm.find_by_name('Test Node')
         expect(nilm).to_not be nil
@@ -216,7 +218,9 @@ RSpec.describe NilmsController, type: :request do
                        scheme: "http", base_uri: "/joule"}
         post "/nilms.json",
              params: user_params.merge(nilm_params)
-        expect(response).to have_http_status(:ok)
+        # since there is no NILM at this address the response is a 422 error
+        expect(response.body).to include("cannot contact node at")
+        expect(response).to have_http_status(:unprocessable_entity)
         # make sure the NILM was built
         nilm = Nilm.find_by_name('Test Node')
         expect(nilm).to_not be nil

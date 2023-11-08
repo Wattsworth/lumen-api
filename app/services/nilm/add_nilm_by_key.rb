@@ -12,10 +12,9 @@ class AddNilmByKey
 
     required_keys =
         [:port, :scheme, :name, :api_key, :auth_key]
-
     # sanitize parameters so the next line doesn't raise an exception:
-    request_params.slice!(*required_keys+[:name_is_host, :base_uri])
-    joule_params = request_params.permit(required_keys+[:name_is_host, :base_uri])
+    request_params.slice!(*required_keys+[:name_is_host, :base_uri, :return_address])
+    joule_params = request_params.permit(required_keys+[:name_is_host, :base_uri, :return_address])
     # since we're not explicitly checking for base_uri, give it a default value
     # it should always be present but may be "" which causes the require action to fail
     joule_params[:base_uri]="" if joule_params[:base_uri].nil?
@@ -33,26 +32,32 @@ class AddNilmByKey
       add_error("invalid authorization key")
       return self
     end
-    #2 Figure out the remote URL (resolve IP address to domain name for SSL)
-    if joule_params[:name_is_host].nil?
-      host = remote_ip
+    auth_key.destroy
+    #2 Figure out the Joule URL if it is not specified
+    # (resolve IP address to domain name for SSL)
+    if joule_params.has_key?('return_address')
+      url = URI(joule_params[:return_address])
     else
-      host = joule_params[:name]
+      if joule_params[:name_is_host].nil?
+        host = remote_ip
+      else
+        host = joule_params[:name]
+      end
+      url = URI("http://temp")
+      url.host = host
+      url.port = joule_params[:port]
+      url.scheme = joule_params[:scheme]
+      url.path = joule_params[:base_uri]
     end
-    url = URI("http://temp")
-    url.host = host
-    url.port = joule_params[:port]
-    url.scheme = joule_params[:scheme]
-    url.path = joule_params[:base_uri]
-    # check to see if this is a valid URL for Joule
-    url = verify_url(url,request_params[:api_key])
+    #2 Check to see if the URL works
+    verified_url = verify_url(url,request_params[:api_key])
+    url = verified_url unless verified_url.nil?
     #3 Create the Nilm
     adapter = Joule::Adapter.new(url, joule_params[:api_key])
     service = CreateNilm.new(adapter)
     absorb_status(service.run(name: joule_params[:name], url:url,
                               key: joule_params[:api_key],
                               owner: auth_key.user))
-    auth_key.destroy if service.success?
     @nilm = service.nilm
     self
   end

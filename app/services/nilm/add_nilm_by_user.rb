@@ -18,7 +18,7 @@ class AddNilmByUser
         [:port, :scheme, :name, :api_key] +
         [:first_name, :last_name, :email, :password]
 
-    request_params = request_params.permit(required_keys+[:name_is_host, :base_uri])
+    request_params = request_params.permit(required_keys+[:name_is_host, :base_uri, :return_address])
     # since we're not explicitly checking for base_uri, give it a default value
     # it should always be present but may be "" which causes the require action to fail
     request_params[:base_uri]="" if request_params[:base_uri].nil?
@@ -36,19 +36,25 @@ class AddNilmByUser
       add_errors(owner.errors.full_messages)
       return self
     end
-    #2 Figure out the remote URL (resolve IP address to domain name for SSL)
-    if request_params[:name_is_host].nil?
-      host = remote_ip
+    #2 Figure out the remote URL if it is not specified
+    # (resolve IP address to domain name for SSL)
+    if request_params.has_key?('return_address')
+      url = URI(request_params[:return_address])
     else
-      host = request_params[:name]
+      if request_params[:name_is_host].nil?
+        host = remote_ip
+      else
+        host = request_params[:name]
+      end
+      url = URI("http://temp")
+      url.host = host
+      url.port = request_params[:port]
+      url.scheme = request_params[:scheme]
+      url.path = request_params[:base_uri]
     end
-    url = URI("http://temp")
-    url.host = host
-    url.port = request_params[:port]
-    url.scheme = request_params[:scheme]
-    url.path = request_params[:base_uri]
     # check to see if this is a valid URL for Joule
-    url = verify_url(url,request_params[:api_key])
+    verified_url = verify_url(url,request_params[:api_key])
+    url = verified_url unless verified_url.nil?
     #3 Create the Nilm
     adapter = Joule::Adapter.new(url, request_params[:api_key])
     service = CreateNilm.new(adapter)

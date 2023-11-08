@@ -38,12 +38,11 @@ class NilmsController < ApplicationController
       @service = AddNilmByKey.new
     end
     @service.run(params, request.remote_ip)
-    if @service.success?
-      @nilm = @service.nilm
-      @role = 'owner'
+    errors = @service.warnings+@service.errors
+    if errors.empty?
       render plain: "ok"
     else
-      render plain: @service.errors.join(", "), status: :unprocessable_entity
+      render plain: errors.join(", "), status: :unprocessable_entity
     end
   end
 

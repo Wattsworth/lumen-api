@@ -2,10 +2,6 @@ module VerifyUrl
 
   def verify_url(orig_url, key)
     url = orig_url.dup
-    # only verify when the host is 127.0.0.1
-    if orig_url.host!='127.0.0.1'
-      return orig_url
-    end
     begin
       resp = HTTParty.get(url, verify: false,
                           headers: {'X-API-KEY': key})
@@ -23,6 +19,6 @@ module VerifyUrl
       return url if resp.parsed_response.downcase == 'joule server'
     rescue StandardError #ignore exceptions
     end
-    return orig_url # unsuccessful modification, return the original url
+    nil # url is not valid and cannot be successfully modified
   end
 end

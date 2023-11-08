@@ -84,8 +84,8 @@ RSpec.describe 'AddNilmByKey' do
       expect(Nilm.count).to eq 1
       # owner doesn't get permissions on the existing nilm
       expect(owner.admins_nilm?(nilm)).to be false
-      # auth key is not deleted
-      expect(NilmAuthKey.count).to eq 1
+      # auth key is deleted
+      expect(NilmAuthKey.count).to eq 0
     end
 
   end
