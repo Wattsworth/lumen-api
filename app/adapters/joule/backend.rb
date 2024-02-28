@@ -221,7 +221,7 @@ module Joule
       query['end'] = end_time unless end_time.nil?
       query['limit'] = max_events
       query['filter'] = filter.to_json unless filter.nil?
-
+      query['include-ongoing-events'] = 1
       options = {query: query}
       begin
         resp = self.class.get("#{@url}/event/data.json", options)

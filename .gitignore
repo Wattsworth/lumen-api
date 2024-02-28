@@ -27,3 +27,5 @@ vagrant_boxes/.vagrant
 coverage
 .idea
 .DS_Store
+
+.ipynb_checkpoints

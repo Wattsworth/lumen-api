@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:3030/event/data.json?end=1611421235000000&filter=%5B%5D&id=2&limit=200&start=1611421210000000
+    uri: https://127.0.0.1:3030/event/data.json?end=1611421235000000&filter=%5B%5D&id=2&include-ongoing-events=1&limit=200&start=1611421210000000
     body:
       encoding: US-ASCII
       string: ''
